@@ -1,1 +1,4 @@
 bin-debug/
+.vscode/
+.wing/
+bin-release/
