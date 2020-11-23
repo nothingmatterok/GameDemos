@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<e:Skin class="StartPanelSkin"
+	height="300" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:tween="egret.tween.*" width="400">
+	<w:Declarations>
+		<tween:TweenGroup id="labelAnim">
+			<tween:TweenItem target="{label}">
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{1}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:To duration="500" ease="quadIn">
+					<tween:props>
+						<e:Object alpha="{0.3}"/>
+					</tween:props>
+				</tween:To>
+				<tween:To duration="500" ease="quadIn">
+					<tween:props>
+						<e:Object alpha="{1}"/>
+					</tween:props>
+				</tween:To>
+			</tween:TweenItem>
+		</tween:TweenGroup>
+	</w:Declarations>
+	<e:TextInput id="pswdTextInput" width="300" height="40" verticalCenter="0" horizontalCenter="0"/>
+	<e:Button id="confirmButton" label="确认" width="160" height="80" horizontalCenter="0" verticalCenter="100"/>
+	<e:Label id="label" text="请输入密码" verticalCenter="-42" horizontalCenter="-80"/>
+</e:Skin>

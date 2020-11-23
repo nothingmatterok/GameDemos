@@ -34,6 +34,8 @@ declare module skins{
 	class ScrollerSkin extends eui.Skin{
 	}
 }
+declare class StartPanelSkin extends eui.Skin{
+}
 declare module skins{
 	class TextInputSkin extends eui.Skin{
 	}
