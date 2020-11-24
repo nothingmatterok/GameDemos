@@ -1,0 +1,68 @@
+class SceneManager{
+
+	public curScene: IScene;
+	private static _instance: SceneManager;
+
+	private constructor(){
+	}
+
+	public static get Ins():SceneManager{
+		if(SceneManager._instance){
+			return SceneManager._instance;
+		}
+		SceneManager._instance = new SceneManager();
+		return SceneManager._instance;
+	}
+
+	/**
+	 * 设置初始场景
+	 */
+	public initial(){
+		this.setScene(new MainScene());
+	}
+
+	/**
+	 * switch scene
+	 */
+	public setScene(scene: IScene){
+		LayerManager.Ins.showLoadingUILayer();
+		let oldScene = this.curScene;
+		this.curScene = scene;
+		if (oldScene != null){
+			oldScene.defaultRelease();
+			oldScene.release();
+			oldScene.releaseResource();
+		}
+		this.loadCurScene();
+	}
+
+	/**
+	 * call when scene load;
+	 * loading resource (async) of the scene;
+	 * and then initializing the scene, 
+	 * finally removing loadingUILayer (onSceneLoadingCompelete)
+	 */
+	private loadCurScene(): void{
+		this.curScene.loadResource().then(
+			()=>{
+				this.curScene.initial();
+				this.onSceneLoadingCompelete();
+			}
+		);
+	}
+
+	/**
+	 * call after scene loading compelete
+	 */
+	private onSceneLoadingCompelete(): void{
+		LayerManager.Ins.hideLoadingUILayer();
+	}
+
+	/**
+	 * call by every frame
+	 */
+	public update(){
+		this.curScene.update();
+	}
+
+}

@@ -22,7 +22,7 @@
 			</tween:TweenItem>
 		</tween:TweenGroup>
 	</w:Declarations>
-	<e:TextInput id="pswdTextInput" width="300" height="40" verticalCenter="0" horizontalCenter="0"/>
-	<e:Button id="confirmButton" label="确认" width="160" height="80" horizontalCenter="0" verticalCenter="100"/>
-	<e:Label id="label" text="请输入密码" verticalCenter="-42" horizontalCenter="-80"/>
+	<e:TextInput id="pswdTextInput" width="400" height="70" verticalCenter="0" horizontalCenter="0"/>
+	<e:Button id="confirmButton" label="确认" width="160" height="80" horizontalCenter="120" verticalCenter="125"/>
+	<e:Label id="label" text="请输入密码" horizontalCenter="0" fontFamily="Microsoft YaHei" verticalCenter="-100" textColor="0xFF4500"/>
 </e:Skin>

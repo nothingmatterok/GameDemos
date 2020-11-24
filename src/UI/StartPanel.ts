@@ -2,10 +2,10 @@ class StartPanel extends eui.Component {
     public pswdTextInput: eui.TextInput
     public confirmButton: eui.Button
 
-    constructor(width: number, height: number) {
-        super()
-        this.width = width
-        this.height = height
+    constructor() {
+        super();
+        this.width = GameRoot.GameStage.stageWidth;
+        this.height = GameRoot.GameStage.stageHeight;
         this.addEventListener(eui.UIEvent.COMPLETE, this.panelEventInit, this);
     }
 
@@ -14,18 +14,21 @@ class StartPanel extends eui.Component {
     }
 
     private confirmPswd(event: egret.TouchEvent) {
+        if (this.pswdTextInput.text.length == 0) {
+            alert("验证失败");
+            return;
+        }
         this.confirmButton.enabled = false;
-        httpGet(VERIFYURL + this.pswdTextInput.text, this.onGetComplete,
-            this.onGetIOError, this.onGetProgress, this)
+        Util.httpGet(VERIFYURL + this.pswdTextInput.text.substring(0, 10),
+            this.onGetComplete, this.onGetIOError, this.onGetProgress, this)
     }
 
     private onGetComplete(event: egret.Event): void {
         let request = <egret.HttpRequest>event.currentTarget
-        let result = request.response.substring(0,1)
-        
+        let result = request.response.substring(0, 1)
+
         // 如果验证失败
-        if (result != "y")
-        {
+        if (result != "y") {
             alert("验证失败")
             this.confirmButton.enabled = true
             return

@@ -58,19 +58,25 @@ class Main extends eui.UILayer {
     }
 
     private async runGame() {
+        // 创建底色
+        let bg = Util.createColorBG(this.stage.stageWidth, this.stage.stageHeight);
+        this.stage.addChild(bg);
+        // 预加载通用资源
         await this.loadResource()
-        let testUI = new StartPanel(this.stage.stageWidth, this.stage.stageHeight)
-        this.stage.addChild(testUI)
+        // 游戏初始化
+        GameRoot.Ins.init(this.stage);
+        // TODO: 等待移动到GameRoot逻辑中
+        let testUI = new StartPanel();
+        this.stage.addChild(testUI);
     }
 
     private async loadResource() {
         try {
-            const loadingView = new LoadingUI();
-            this.stage.addChild(loadingView);
+            this.stage.addChild(LoadingUI.Ins);
             await RES.loadConfig("resource/default.res.json", "resource/");
             await this.loadTheme();
-            await RES.loadGroup("preload", 0, loadingView);
-            this.stage.removeChild(loadingView);
+            await RES.loadGroup("preload", 0, LoadingUI.Ins);
+            this.stage.removeChild(LoadingUI.Ins);
         }
         catch (e) {
             console.error(e);

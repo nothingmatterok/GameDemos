@@ -2,3 +2,4 @@ bin-debug/
 .vscode/
 .wing/
 bin-release/
+.DS_Store
