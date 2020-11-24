@@ -23,7 +23,7 @@ class Util {
      * @param alpha 
      */
     public static createColorBG(width:number, height:number, 
-        color:number=0xFAEBD7, alpha:number=1): egret.Shape{
+        color:number=ColorDef.AntiqueWhite, alpha:number=1): egret.Shape{
         let shape = new egret.Shape();
         shape.width = width;
         shape.height = height;
@@ -103,5 +103,17 @@ class Util {
         request.addEventListener(egret.Event.COMPLETE, onGetComplete, eventObj);
         request.addEventListener(egret.IOErrorEvent.IO_ERROR, onGetIOError, eventObj);
         request.addEventListener(egret.ProgressEvent.PROGRESS, onGetProgress, eventObj);
+    }
+
+
+    /**
+     * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
+     * Create a Bitmap object according to name keyword.As for the property of name please refer to the configuration file of resources/resource.json.
+     */
+    public static createBitmapByName(name: string): egret.Bitmap {
+        let result = new egret.Bitmap();
+        let texture: egret.Texture = RES.getRes(name);
+        result.texture = texture;
+        return result;
     }
 }

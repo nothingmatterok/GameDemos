@@ -18,6 +18,10 @@ declare module skins{
 	class ItemRendererSkin extends eui.Skin{
 	}
 }
+declare class L1MainUISkin extends eui.Skin{
+}
+declare class MainUISkin extends eui.Skin{
+}
 declare module skins{
 	class PanelSkin extends eui.Skin{
 	}

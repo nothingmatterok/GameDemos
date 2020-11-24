@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<e:Skin class="L1MainUISkin"
+	 width="400"
+	height="300" xmlns:e="http://ns.egret.com/eui">
+	<e:Button id="backButton" label="返回" left="30" top="30"/>
+</e:Skin>

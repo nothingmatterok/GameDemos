@@ -1,9 +1,12 @@
 class LayerManager {
 
+	// 游戏层，显示游戏对象等
 	public gameLayer: egret.DisplayObjectContainer;
+	// UI层，显示UI
 	public uiLayer: eui.UILayer;
-	public popUpLayer: eui.UILayer;
+	// loading层，只显示loading界面
 	public loadingUI: LoadingUI;
+
 	private static _instance: LayerManager;
 	public static get Ins(): LayerManager {
 		if (this._instance == null) {
@@ -15,24 +18,25 @@ class LayerManager {
 	private constructor() { }
 
 	public initial() {
-		this.loadingUI = LoadingUI.Ins;
+		this.loadingUI = new LoadingUI();
+		this.loadingUI.initial();
 		this.uiLayer = new eui.UILayer();
 		this.gameLayer = new egret.DisplayObjectContainer();
-		this.popUpLayer = new eui.UILayer();
+		
+		// 防止盖住需要交互的对象
 		this.loadingUI.touchEnabled = false;
 		this.uiLayer.touchEnabled = false;
 		this.gameLayer.touchEnabled = false;
-		this.popUpLayer.touchEnabled = false;
 
 		// add layer to stage
 		GameRoot.GameStage.addChild(this.gameLayer);
 		GameRoot.GameStage.addChild(this.uiLayer);
-		GameRoot.GameStage.addChild(this.popUpLayer);
 		GameRoot.GameStage.addChild(this.loadingUI);
 	}
 
+
 	public showLoadingUILayer(): void {
-		this.loadingUI.initial();
+		this.loadingUI.clear();
 		this.loadingUI.visible = true;
 		this.loadingUI.touchEnabled = true;
 	}
@@ -45,6 +49,5 @@ class LayerManager {
 	public clear(): void {
 		this.gameLayer.removeChildren();
 		this.uiLayer.removeChildren();
-		this.popUpLayer.removeChildren();
 	}
 }

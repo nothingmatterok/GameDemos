@@ -1,6 +1,6 @@
 class StartPanel extends eui.Component {
-    public pswdTextInput: eui.TextInput
-    public confirmButton: eui.Button
+    private pswdTextInput: eui.TextInput
+    private confirmButton: eui.Button
 
     constructor() {
         super();
@@ -10,7 +10,14 @@ class StartPanel extends eui.Component {
     }
 
     private panelEventInit() {
-        this.confirmButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.confirmPswd, this);
+        this.confirmButton.addEventListener(egret.TouchEvent.TOUCH_TAP, 
+            this.confirmPswd, this
+        );
+    }
+
+    // 测试用
+    private confirmPswdDebug(){
+        SceneManager.Ins.setScene(new MainScene());
     }
 
     private confirmPswd(event: egret.TouchEvent) {
@@ -31,11 +38,14 @@ class StartPanel extends eui.Component {
         if (result != "y") {
             alert("验证失败")
             this.confirmButton.enabled = true
-            return
+            return;
         }
 
-        //todo: 如果验证成功进入下一个界面
-        alert("验证成功")
+        ToastInfoManager.newRedToast("验证成功");
+
+        setTimeout(() => {
+            SceneManager.Ins.setScene(new MainScene());
+        }, 1000);
 
     }
 
@@ -48,7 +58,5 @@ class StartPanel extends eui.Component {
     private onGetProgress(event: egret.ProgressEvent): void {
         // console.log("get progress : " + Math.floor(100 * event.bytesLoaded / event.bytesTotal) + "%");
     }
-
-
 
 }

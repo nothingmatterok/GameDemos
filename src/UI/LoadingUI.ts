@@ -1,28 +1,24 @@
 class LoadingUI extends eui.UILayer implements RES.PromiseTaskReporter {
 
-	private static _instance: LoadingUI;
 	private _progressLabel: eui.Label;
 
-	public static get Ins():LoadingUI{
-		if(LoadingUI._instance){
-			return LoadingUI._instance;
-		}
-		LoadingUI._instance = new LoadingUI();
-		return LoadingUI._instance;
-    }
-
-	private constructor() {
+	public constructor() {
 		super();
 		this._progressLabel = new eui.Label();
 		this._progressLabel.horizontalCenter = 0;
 		this._progressLabel.verticalCenter = 0;
 		this.addChild(this._progressLabel);
-		this._progressLabel.text = "Loading...";
 	}
 
+	/**
+	 * GameRoot启动后初始化
+	 */
 	public initial(): void {
 		let bg = Util.createColorBG(GameRoot.GameStage.stageWidth, GameRoot.GameStage.stageHeight);
 		this.addChildAt(bg, 0);
+	}
+
+	public clear(): void{
 		this._progressLabel.text = "Loading...";
 	}
 

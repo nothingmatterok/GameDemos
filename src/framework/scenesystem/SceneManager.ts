@@ -18,7 +18,7 @@ class SceneManager{
 	 * 设置初始场景
 	 */
 	public initial(){
-		this.setScene(new MainScene());
+		this.setScene(new StartScene());
 	}
 
 	/**
@@ -32,6 +32,7 @@ class SceneManager{
 			oldScene.defaultRelease();
 			oldScene.release();
 			oldScene.releaseResource();
+			oldScene = null;
 		}
 		this.loadCurScene();
 	}

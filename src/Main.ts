@@ -65,18 +65,16 @@ class Main extends eui.UILayer {
         await this.loadResource()
         // 游戏初始化
         GameRoot.Ins.init(this.stage);
-        // TODO: 等待移动到GameRoot逻辑中
-        let testUI = new StartPanel();
-        this.stage.addChild(testUI);
     }
 
     private async loadResource() {
         try {
-            this.stage.addChild(LoadingUI.Ins);
+            let loadingUI = new LoadingUI();
+            this.stage.addChild(loadingUI);
             await RES.loadConfig("resource/default.res.json", "resource/");
             await this.loadTheme();
-            await RES.loadGroup("preload", 0, LoadingUI.Ins);
-            this.stage.removeChild(LoadingUI.Ins);
+            await RES.loadGroup("preload", 0, loadingUI);
+            this.stage.removeChild(loadingUI);
         }
         catch (e) {
             console.error(e);
@@ -94,26 +92,4 @@ class Main extends eui.UILayer {
         })
     }
 
-    /**
-     * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
-     * Create a Bitmap object according to name keyword.As for the property of name please refer to the configuration file of resources/resource.json.
-     */
-    private createBitmapByName(name: string): egret.Bitmap {
-        let result = new egret.Bitmap();
-        let texture: egret.Texture = RES.getRes(name);
-        result.texture = texture;
-        return result;
-    }
-
-    /**
-     * 点击按钮
-     * Click the button
-     */
-    private onButtonClick(e: egret.TouchEvent) {
-        let panel = new eui.Panel();
-        panel.title = "Title";
-        panel.horizontalCenter = 0;
-        panel.verticalCenter = 0;
-        this.addChild(panel);
-    }
 }

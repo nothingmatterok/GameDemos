@@ -24,12 +24,12 @@ class GameRoot {
 
     public init(stage: egret.Stage):void{
         this._gameStage = stage;
-        // TODO: 增加各个System的初始化
-        // SceneManager.Ins.initial();
-        // LayerManager.Ins.initial();
+        MessageManager.Ins.initial(stage);
+        LayerManager.Ins.initial();
+        SceneManager.Ins.initial();
     }
     
     private update(): void{
-        // TODO: 各个系统的update
+        SceneManager.Ins.update();
     }
 }
