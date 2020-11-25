@@ -20,7 +20,7 @@ class MainUI extends eui.Component {
     }
 
     private tol2(){
-        ToastInfoManager.newRedToast("尽请期待");
+        ToastInfoManager.newRedToast("敬请期待");
     }
 
 }
