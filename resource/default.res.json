@@ -3,6 +3,10 @@
 		{
 			"keys": "checkbox_select_disabled_png,checkbox_select_down_png,checkbox_select_up_png,checkbox_unselect_png,selected_png,border_png,header_png,radiobutton_select_disabled_png,radiobutton_select_down_png,radiobutton_select_up_png,radiobutton_unselect_png,roundthumb_png,thumb_png,track_png,tracklight_png,handle_png,off_png,on_png,button_down_png,button_up_png,thumb_pb_png,track_pb_png,track_sb_png",
 			"name": "preload"
+		},
+		{
+			"keys": "1_portrait_png,10_portrait_png,11_portrait_png,12_portrait_png,13_portrait_png,14_portrait_png,15_portrait_png,16_portrait_png,17_portrait_png,2_portrait_png,3_portrait_png,4_portrait_png,5_portrait_png,6_portrait_png,7_portrait_png,8_portrait_png,9_portrait_png",
+			"name": "portrait"
 		}
 	],
 	"resources": [
@@ -120,6 +124,91 @@
 			"url": "assets/ScrollBar/track_sb.png",
 			"type": "image",
 			"name": "track_sb_png"
+		},
+		{
+			"url": "assets/portrait/10_portrait.png",
+			"type": "image",
+			"name": "10_portrait_png"
+		},
+		{
+			"url": "assets/portrait/11_portrait.png",
+			"type": "image",
+			"name": "11_portrait_png"
+		},
+		{
+			"url": "assets/portrait/12_portrait.png",
+			"type": "image",
+			"name": "12_portrait_png"
+		},
+		{
+			"url": "assets/portrait/13_portrait.png",
+			"type": "image",
+			"name": "13_portrait_png"
+		},
+		{
+			"url": "assets/portrait/14_portrait.png",
+			"type": "image",
+			"name": "14_portrait_png"
+		},
+		{
+			"url": "assets/portrait/15_portrait.png",
+			"type": "image",
+			"name": "15_portrait_png"
+		},
+		{
+			"url": "assets/portrait/16_portrait.png",
+			"type": "image",
+			"name": "16_portrait_png"
+		},
+		{
+			"url": "assets/portrait/17_portrait.png",
+			"type": "image",
+			"name": "17_portrait_png"
+		},
+		{
+			"url": "assets/portrait/1_portrait.png",
+			"type": "image",
+			"name": "1_portrait_png"
+		},
+		{
+			"url": "assets/portrait/2_portrait.png",
+			"type": "image",
+			"name": "2_portrait_png"
+		},
+		{
+			"url": "assets/portrait/3_portrait.png",
+			"type": "image",
+			"name": "3_portrait_png"
+		},
+		{
+			"url": "assets/portrait/4_portrait.png",
+			"type": "image",
+			"name": "4_portrait_png"
+		},
+		{
+			"url": "assets/portrait/5_portrait.png",
+			"type": "image",
+			"name": "5_portrait_png"
+		},
+		{
+			"url": "assets/portrait/6_portrait.png",
+			"type": "image",
+			"name": "6_portrait_png"
+		},
+		{
+			"url": "assets/portrait/7_portrait.png",
+			"type": "image",
+			"name": "7_portrait_png"
+		},
+		{
+			"url": "assets/portrait/8_portrait.png",
+			"type": "image",
+			"name": "8_portrait_png"
+		},
+		{
+			"url": "assets/portrait/9_portrait.png",
+			"type": "image",
+			"name": "9_portrait_png"
 		}
 	]
 }

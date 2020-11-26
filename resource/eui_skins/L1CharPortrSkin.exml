@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<e:Skin class="L1CharPortrSkin"
+	 width="100"
+	height="100" xmlns:e="http://ns.egret.com/eui">
+	<e:Group width="100" height="100" horizontalCenter="-50" verticalCenter="-50">
+		<e:Rect id="angerNumCircle" width="100" height="100" touchEnabled="false" ellipseHeight="100" ellipseWidth="100" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0" verticalCenter="0" x="-67" y="-74.99999999999999" strokeColor="0xFF8C00" fillColor="0xFF8C00" scaleX="1" scaleY="1"/>
+		<e:Rect id="hpBg" width="90" height="90" touchEnabled="false" ellipseHeight="90" ellipseWidth="90" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0" verticalCenter="0" x="-61.99999999999997" y="-69.99999999999999" strokeColor="0xFF8C00" fillColor="0xFAEBD7" scaleX="1" scaleY="1"/>
+		<e:Rect id="hpNumCircle" width="90" height="90" touchEnabled="false" ellipseHeight="90" ellipseWidth="90" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0" verticalCenter="0" x="-61.99999999999997" y="-69.99999999999999" fillColor="0x8B0000" scaleX="1" scaleY="1"/>
+		<e:Rect id="portMask" width="80" height="80" touchEnabled="false" ellipseHeight="120" ellipseWidth="120" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0" verticalCenter="0" fillColor="0xB1B1B1" x="-56.99999999999997" y="-64.99999999999999" scaleX="1" scaleY="1"/>
+		<e:Image id="portImage" width="120" height="120" fillMode="scale" touchEnabled="false" visible="true" horizontalCenter="0" verticalCenter="0" x="-77" y="-84.99999999999999" scaleX="1" scaleY="1"/>
+	</e:Group>
+</e:Skin>

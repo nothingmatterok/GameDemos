@@ -7,6 +7,7 @@ class LoadingUI extends eui.UILayer implements RES.PromiseTaskReporter {
 		this._progressLabel = new eui.Label();
 		this._progressLabel.horizontalCenter = 0;
 		this._progressLabel.verticalCenter = 0;
+		this._progressLabel.textColor = ColorDef.Coral;
 		this.addChild(this._progressLabel);
 	}
 

@@ -1,6 +1,7 @@
 class StartPanel extends eui.Component {
     private pswdTextInput: eui.TextInput
     private confirmButton: eui.Button
+    private debugButton: eui.Button;
 
     constructor() {
         super();
@@ -13,11 +14,14 @@ class StartPanel extends eui.Component {
         this.confirmButton.addEventListener(egret.TouchEvent.TOUCH_TAP, 
             this.confirmPswd, this
         );
+
+        // 跳转测试场景
+        this.debugButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.debugTap, this);
     }
 
     // 测试用
-    private confirmPswdDebug(){
-        SceneManager.Ins.setScene(new MainScene());
+    private debugTap(){
+        SceneManager.Ins.setScene(new L1MainStoryScene());
     }
 
     private confirmPswd(event: egret.TouchEvent) {

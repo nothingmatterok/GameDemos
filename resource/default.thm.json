@@ -15,7 +15,9 @@
 		"eui.ItemRenderer": "resource/eui_skins/ItemRendererSkin.exml",
 		"StartPanel": "resource/eui_skins/StartPanelSkin.exml",
 		"MainUI": "resource/eui_skins/MainUISkin.exml",
-		"L1MainUI": "resource/eui_skins/L1MainUISkin.exml"
+		"L1MainUI": "resource/eui_skins/L1MainUISkin.exml",
+		"L1MainStorySceneUI": "resource/eui_skins/L1MainStorySceneUISkin.exml",
+		"L1CharPortr": "resource/eui_skins/L1CharPortrSkin.exml"
 	},
 	"autoGenerateExmlsList": true,
 	"exmls": [
@@ -24,6 +26,8 @@
 		"resource/eui_skins/HScrollBarSkin.exml",
 		"resource/eui_skins/HSliderSkin.exml",
 		"resource/eui_skins/ItemRendererSkin.exml",
+		"resource/eui_skins/L1CharPortrSkin.exml",
+		"resource/eui_skins/L1MainStorySceneUISkin.exml",
 		"resource/eui_skins/L1MainUISkin.exml",
 		"resource/eui_skins/MainUISkin.exml",
 		"resource/eui_skins/PanelSkin.exml",

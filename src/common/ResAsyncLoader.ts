@@ -1,4 +1,4 @@
-class ResAsyncLoadManager {
+class ResAsyncLoader {
 	private _loadResouceLs: MySet<string> = new MySet<string>();
 	public getResAsync(resName:string): Promise<any>;
 	public getResAsync(key: string, compFunc: RES.GetResAsyncCallback, thisObject: any): void;

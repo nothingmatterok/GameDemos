@@ -22,8 +22,8 @@ class Util {
      * @param color 
      * @param alpha 
      */
-    public static createColorBG(width:number, height:number, 
-        color:number=ColorDef.AntiqueWhite, alpha:number=1): egret.Shape{
+    public static createColorBG(width: number, height: number,
+        color: number = ColorDef.AntiqueWhite, alpha: number = 1): egret.Shape {
         let shape = new egret.Shape();
         shape.width = width;
         shape.height = height;
@@ -73,7 +73,7 @@ class Util {
         let endHeight = startHeight * heightRate;
         let endX = startX - (endWidth - startWidth) / 2;
         let endY = startY - (endHeight - startHeight) / 2;
-        egret.Tween.get(obj, {loop: true}).to({
+        egret.Tween.get(obj, { loop: true }).to({
             width: endWidth,
             height: endHeight,
             x: endX,
@@ -115,5 +115,23 @@ class Util {
         let texture: egret.Texture = RES.getRes(name);
         result.texture = texture;
         return result;
+    }
+
+    public static drawAngleCircle(
+        shape: egret.Shape, endAngle: number, radius: number,
+        startAngle: number = 0, color: number = ColorDef.DarkRed, 
+        alpha:number=1,    
+    ) {
+        let _param = Math.PI / 180;
+        shape.graphics.clear();
+        shape.graphics.beginFill(color, alpha);
+        shape.graphics.moveTo(0, 0);
+        let startRadius = startAngle * _param;
+        let startX = Math.cos(startRadius) * radius;
+        let startY = Math.sin(startRadius) * radius;
+        shape.graphics.lineTo(startX, startY);
+        shape.graphics.drawArc(0, 0, radius, startRadius, endAngle * Math.PI / 180);
+        shape.graphics.lineTo(0, 0);
+        shape.graphics.endFill();
     }
 }
