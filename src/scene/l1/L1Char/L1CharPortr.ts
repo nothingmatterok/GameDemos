@@ -40,14 +40,27 @@ class L1CharPortr extends eui.Component{
         this.addChild(this.hpNumMask);
         this.hpNumCircle.mask = this.hpNumMask;
         this.drawHpCircle(1);
+
+        // debug状态给角色增加一个标示
+        if(DEBUG){
+            let label = new eui.Label;
+            label.text = `${this._charId}`;
+            label.y = -30;
+            label.x = 10;
+            label.background = true;
+            label.backgroundColor = ColorDef.AntiqueWhite;
+            if(this._camp==L1Camp.Enemy)label.textColor = ColorDef.DarkRed;
+            else label.textColor = ColorDef.LimeGreen;
+            this.addChild(label);
+        }
         
     }
 
-    private drawHpCircle(hpPercent: number){
+    public drawHpCircle(hpPercent: number){
         this.drawCircle(this.hpNumMask, hpPercent * 360, this.hpNumCircle.width/2);
     }
 
-    private drawAngerCircle(angerPercent: number){
+    public drawAngerCircle(angerPercent: number){
         this.drawCircle(this.angerNumMask, angerPercent, this.angerNumCircle.width/2);
     }
 

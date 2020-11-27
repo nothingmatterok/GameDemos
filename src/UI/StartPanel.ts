@@ -16,7 +16,10 @@ class StartPanel extends eui.Component {
         );
 
         // 跳转测试场景
-        this.debugButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.debugTap, this);
+        if(DEBUG){
+            this.debugButton.visible = true;
+            this.debugButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.debugTap, this);
+        }
     }
 
     // 测试用
@@ -25,6 +28,10 @@ class StartPanel extends eui.Component {
     }
 
     private confirmPswd(event: egret.TouchEvent) {
+        if (DEBUG){
+            SceneManager.Ins.setScene(new MainScene());
+            return;
+        }
         if (this.pswdTextInput.text.length == 0) {
             alert("验证失败");
             return;

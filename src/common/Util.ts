@@ -117,16 +117,24 @@ class Util {
         return result;
     }
 
+    /**
+     * 画一个带角度的圆形，从竖直的方向开始往右边画，会先清除Shape内的内容
+     * @param shape
+     * @param endAngle 
+     * @param radius 
+     * @param startAngle 
+     * @param color 
+     * @param alpha 
+     */
     public static drawAngleCircle(
         shape: egret.Shape, endAngle: number, radius: number,
         startAngle: number = 0, color: number = ColorDef.DarkRed, 
         alpha:number=1,    
     ) {
-        let _param = Math.PI / 180;
         shape.graphics.clear();
         shape.graphics.beginFill(color, alpha);
         shape.graphics.moveTo(0, 0);
-        let startRadius = startAngle * _param;
+        let startRadius = startAngle * angle2RadParam;
         let startX = Math.cos(startRadius) * radius;
         let startY = Math.sin(startRadius) * radius;
         shape.graphics.lineTo(startX, startY);
@@ -134,4 +142,13 @@ class Util {
         shape.graphics.lineTo(0, 0);
         shape.graphics.endFill();
     }
+
+    public static pointDistance(p1:[number, number], p2:[number, number]): number{
+        let xDis = p1[0] - p2[0];
+        let yDis = p1[1] - p2[1];
+        return Math.sqrt(xDis * xDis + yDis * yDis );
+    }
+
 }
+
+const angle2RadParam = Math.PI / 180;

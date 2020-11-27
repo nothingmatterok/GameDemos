@@ -1,0 +1,1 @@
+const L1CHARMINDIS = 80;
