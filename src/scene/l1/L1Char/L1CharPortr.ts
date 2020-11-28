@@ -7,6 +7,7 @@ class L1CharPortr extends eui.Component{
     private angerNumMask: egret.Shape;
     private hpNumMask: egret.Shape;
     private contentGroup: eui.Group;
+    public rotationCircle: eui.Group;
     private _camp: L1Camp;
     private _charId: number;
 
@@ -71,12 +72,15 @@ class L1CharPortr extends eui.Component{
         Util.drawAngleCircle(shape, endAngle, radius, startAngle);
     }
 
-    // 攻击的时候，头像晃动一下做一下表示
+    // 攻击的时候，头像向rotation方向动一下，做一下表示
     public attakAnim(){
         let tw = egret.Tween.get(this.contentGroup);
-        tw.to({x: -55, y:-55}, 200).to({x:-50, y:-50}, 200);
+        const step = 10;
+        let rad = this.rotationCircle.rotation * angle2RadParam;
+        let xChange = step * Math.cos(rad);
+        let yChange = step * Math.sin(rad);
+        tw.to({x: -50 + xChange, y: -50 + yChange}, 200).to({x:-50, y:-50}, 200);
     }
-
     
 }
 

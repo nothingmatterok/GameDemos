@@ -149,6 +149,35 @@ class Util {
         return Math.sqrt(xDis * xDis + yDis * yDis );
     }
 
+    /**
+     * 返回center到end的射线与竖直向下线往逆时针方向的弧度值 
+     * @param center 
+     * @param end 
+     */
+    public static getRad(center: [number, number], end: [number, number]): number {
+        let longS = Util.pointDistance(center, end);
+        let yDis = end[1] - center[1];
+        let xDis = end[0] - center[0];
+        let sinAngle = xDis / longS;
+        let cosAngle = yDis / longS;
+        let rad = Math.acos(yDis / longS)
+        if (sinAngle > 0) return rad;
+        // 如果sin小于0，说明acos要反向一下
+        return -rad;
+    }
+
+    public static isNumEqual(a:number, b:number, tolerant: number=3):boolean{
+        return Math.abs(a-b)<tolerant;
+    }
+
+    // 将角度规范到-180-180内
+    public static degNormalize(deg: number): number{
+        deg = deg % 360;
+        if (deg > 180) return deg - 360;
+        if (deg < -180) return deg + 360;
+        return deg;
+    }
+
 }
 
 const angle2RadParam = Math.PI / 180;

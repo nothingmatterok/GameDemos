@@ -5,12 +5,10 @@ class L1MainStoryScene extends IScene {
     private _enemies: L1Char[] = [];
 
     public battleEnd: boolean = false;
-    public initialed: boolean = false;
 
     public initial() {
         LayerManager.Ins.uiLayer.addChild(new L1MainStorySceneUI());
         this.initialGameLayer();
-        this.initialed = true;
     }
 
     private initialGameLayer() {
@@ -34,8 +32,6 @@ class L1MainStoryScene extends IScene {
     }
 
     public update(){
-        if(!this.initialed) return; // 初始化以后才允许update，否则可能会报空
-
         if(this.battleEnd) return;
         // 胜利判定
         let palyerAliveNum = 0;

@@ -19,16 +19,25 @@ class L1Char {
         this.charPort.y = value;
     }
 
+    public set rotation(v: number) {
+        this.charPort.rotationCircle.rotation = v;
+    }
+
+    public get rotation(): number {
+        return this.charPort.rotationCircle.rotation;
+    }
+
     // TODO: 通过读取数据初始化角色属性
     public maxHp: number = 1000;
     public maxAnger: number = 100;
     public defend: number = 10;
     public atk: number = 300;
-    public range: number = 100;
+    public range: number = 300;
     public normalAtkRate: number = 60; // 60 / 攻击间隔(s)
     public skillCD: number = 1.4; // TODO: 等待技能系统实现
     public alive: boolean = true;
     public moveSpeed: number = 80; // 每s多少米
+    public rotationSpeed: number = 180;// 每s多少度
 
 
     // 运行时状态
@@ -77,31 +86,61 @@ class L1Char {
     public update() {
         if (!this.alive) return;
         this.frameAdd += 1;
+
         // 如果目标不存在或死亡，找一个新的目标
         if (this._normalAttakTarget == null || (!this._normalAttakTarget.alive)) {
             this._normalAttakTarget = this.findNormalATKTarget(this.oppos);
+            if (this._normalAttakTarget == null) {
+                // 如果找不到目标说明游戏结束了，直接返回
+                return;
+            }
             // console.log(`${this.charId}find new target${this._normalAttakTarget.charId}`);
         }
+
         // 找一个合适的位置
         let destPos = this.findATKLocation();
-        // 取整数
+        // 取整数方便计算
         this._destPos = [Math.ceil(destPos[0]), Math.ceil(destPos[1])]
-        // 如果位置没有变化，进入攻击状态
-        if (this.isSamePos([this.x, this.y], this._destPos)) {
-            // TODO:CD管理
-            // CD到了&&有目标&&目标在范围内
-            if (this.frameAdd >= 30 && this._normalAttakTarget != null && this.targetInRange()) {
-                this.frameAdd = 0;
-                this._normalAttakTarget.curHp -= this.atk;
-                this.charPort.attakAnim();
-                // console.log(`${this.charId} attak ${this.charId}`);
-            }
-        } else {
-            // 如果位置变化了，进入移动状态（）
+
+        // 如果位置发生变化
+        if (!this.isSamePos([this.x, this.y], this._destPos)) {
             this.movingTo(this._destPos);
-            // console.log(`${this.charId} to ${this._destPos}`);
+            // 如果角度不对，还需要一边转动一边移动
+            let destRotDeg = this.getRotationToPos(this._destPos);
+            destRotDeg = this.getPropDestRotation(destRotDeg);
+            this.rotTo(destRotDeg);
+            return;
+        }
+        // 先进行转向目标
+        let destRotDeg = this.getRotationToPos([this._normalAttakTarget.x, this._normalAttakTarget.y]);
+        destRotDeg = this.getPropDestRotation(destRotDeg);
+        this.rotTo(destRotDeg);
+        // TODO:CD管理
+        // CD到了&&有目标&&目标在范围内&&方向合适
+        if (this.frameAdd >= 30 && this.targetInRange() && Util.isNumEqual(this.rotation, destRotDeg)) {
+            this.frameAdd = 0;
+            this._normalAttakTarget.curHp -= this.atk;
+            this.charPort.attakAnim();
+            // console.log(`${this.charId} attak ${this.charId}`);
         }
 
+    }
+
+    private getRotationToPos(pos: [number, number]): number {
+        let targetRad = Util.getRad([this.x, this.y], pos);
+        // 与竖直向下的夹角的角度90度 = this.rotation的0度，这里做一个到自己的rotation的变换
+        // 需要注意rotaion与getRad的+方向是相反的
+        return Math.ceil(Util.degNormalize(90 - targetRad / angle2RadParam ));
+    }
+
+    // 根据自己的角度，再对角度进行一个转换，得到距离最近的角度表示，防止 -179 -> 180这种情况
+    private getPropDestRotation(deg: number):number{
+        let minDis = Math.abs(deg-this.rotation);
+        let dis360 = Math.abs(deg + 360 - this.rotation);
+        let disSub360 = Math.abs(deg - 360 - this.rotation);
+        if (dis360 < minDis) return deg + 360;
+        if (disSub360 < minDis) return deg -360;
+        return deg;
     }
 
     private isSamePos(pos1: [number, number], pos2: [number, number], delta: number = 6): boolean {
@@ -109,12 +148,37 @@ class L1Char {
     }
 
     private movingTo(desPos: [number, number]) {
-        let rad = this.getRad([this.x, this.y], desPos);
+        let rad = Util.getRad([this.x, this.y], desPos);
         // 每帧多少s * 每秒多少米
         const frameTime = 1 / GameRoot.GameStage.frameRate;
         let frameSpeed = frameTime * this.moveSpeed;
         this.x = Math.ceil(this.x + frameSpeed * Math.sin(rad));
         this.y = Math.ceil(this.y + frameSpeed * Math.cos(rad));
+    }
+
+    private rotTo(deg: number) {
+        if(Util.isNumEqual(deg, this.rotation)) {
+            return;
+        }
+
+        console.log(`${this.charId} from ${this.rotation} to ${deg}`);
+        
+        // 每帧多少度
+        const frameTime = 1 / GameRoot.GameStage.frameRate;
+        let frameRotSpeed = frameTime * this.rotationSpeed;
+        if (Math.abs(this.rotation - deg) < frameRotSpeed) {
+            this.rotation = deg;
+            return;
+        }
+        if (this.rotation > deg) {
+            this.rotation -= frameRotSpeed;
+            return;
+        }
+        if (this.rotation < deg) {
+            this.rotation += frameRotSpeed;
+            return;
+        }
+
     }
 
     /**
@@ -157,7 +221,7 @@ class L1Char {
         if ((this._normalAttakTarget == null || this.targetInRange()) && this.isPosLegal(this.x, this.y)) {
             return [this.x, this.y];
         }
-        
+
         // 如果有目标，且攻击不到或当前位置不合法，找一个最恰当的位置（不会和其他冲撞）
         // 判定规则如下：
         // 1.从当前点和目标连一条直线，判断刚好等于射程的点是不是可以，如果合法就返回
@@ -168,7 +232,7 @@ class L1Char {
         let targetY = this._normalAttakTarget.y;
         let x: number = 0;
         let y: number = 0;
-        let targetRad = this.getRad([targetX, targetY], [this.x, this.y]);
+        let targetRad = Util.getRad([targetX, targetY], [this.x, this.y]);
         // 30度的弧度增量
         const rad30Add = 30 * angle2RadParam;
         // 判断第一条，距离刚好
@@ -210,23 +274,6 @@ class L1Char {
         let x = center[0] + radius * Math.sin(rad);
         let y = center[1] + radius * Math.cos(rad);
         return [x, y];
-    }
-
-    /**
-     * 返回center到end的射线与竖直向下线往逆时针方向的弧度值 
-     * @param center 
-     * @param end 
-     */
-    private getRad(center: [number, number], end: [number, number]): number {
-        let longS = Util.pointDistance(center, end);
-        let yDis = end[1] - center[1];
-        let xDis = end[0] - center[0];
-        let sinAngle = xDis / longS;
-        let cosAngle = yDis / longS;
-        let rad = Math.acos(yDis / longS)
-        if (sinAngle > 0) return rad;
-        // 如果sin小于0，说明acos要反向一下
-        return -rad;
     }
 
     /**

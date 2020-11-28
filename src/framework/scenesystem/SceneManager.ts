@@ -27,27 +27,29 @@ class SceneManager{
 	public setScene(scene: IScene){
 		LayerManager.Ins.showLoadingUILayer();
 		let oldScene = this.curScene;
-		this.curScene = scene;
+		this.curScene = null; // 先将当前场景置空，加载完成后再赋值为scene
 		if (oldScene != null){
 			oldScene.defaultRelease();
 			oldScene.release();
 			oldScene.releaseResource();
 			oldScene = null;
 		}
-		this.loadCurScene();
+		this.loadScene(scene);
 	}
 
 	/**
 	 * call when scene load;
 	 * loading resource (async) of the scene;
 	 * and then initializing the scene, 
+	 * 场景初始化之后再将SceneManager.curscene设置为该场景
 	 * finally removing loadingUILayer (onSceneLoadingCompelete)
 	 */
-	private loadCurScene(): void{
-		this.curScene.loadResource().then(
+	private loadScene(scene: IScene): void{
+		scene.loadResource().then(
 			()=>{
-				this.curScene.initial();
+				scene.initial();
 				this.onSceneLoadingCompelete();
+				this.curScene = scene;
 			}
 		);
 	}
@@ -63,7 +65,9 @@ class SceneManager{
 	 * call by every frame
 	 */
 	public update(){
-		this.curScene.update();
+		if(this.curScene != null){
+			this.curScene.update();
+		}
 	}
 
 }
