@@ -6,6 +6,7 @@ class L1CharPortr extends eui.Component{
     private hpNumCircle: eui.Rect;
     private angerNumMask: egret.Shape;
     private hpNumMask: egret.Shape;
+    private contentGroup: eui.Group;
     private _camp: L1Camp;
     private _charId: number;
 
@@ -68,6 +69,12 @@ class L1CharPortr extends eui.Component{
         let startAngle = -90;
         endAngle -= 90;
         Util.drawAngleCircle(shape, endAngle, radius, startAngle);
+    }
+
+    // 攻击的时候，头像晃动一下做一下表示
+    public attakAnim(){
+        let tw = egret.Tween.get(this.contentGroup);
+        tw.to({x: -55, y:-55}, 200).to({x:-50, y:-50}, 200);
     }
 
     

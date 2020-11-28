@@ -93,6 +93,7 @@ class L1Char {
             if (this.frameAdd >= 30 && this._normalAttakTarget != null && this.targetInRange()) {
                 this.frameAdd = 0;
                 this._normalAttakTarget.curHp -= this.atk;
+                this.charPort.attakAnim();
                 // console.log(`${this.charId} attak ${this.charId}`);
             }
         } else {
