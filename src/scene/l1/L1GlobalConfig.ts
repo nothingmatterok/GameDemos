@@ -1,1 +1,1 @@
-const L1CHARMINDIS = 80;
+const L1CHARMINDIS = 60;

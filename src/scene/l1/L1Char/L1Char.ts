@@ -23,7 +23,7 @@ class L1Char {
     public maxHp: number = 1000;
     public maxAnger: number = 100;
     public defend: number = 10;
-    public atk: number = 400;
+    public atk: number = 300;
     public range: number = 100;
     public normalAtkRate: number = 60; // 60 / 攻击间隔(s)
     public skillCD: number = 1.4; // TODO: 等待技能系统实现
@@ -177,7 +177,7 @@ class L1Char {
         let targetRadAdd = targetRad;
         for (let i = 1; i < 12; i++) {
             targetRadAdd = targetRadAdd + rad30Add;
-            [x, y] = this.getLinePosByRad([targetX, targetY], targetRad, this.range);
+            [x, y] = this.getLinePosByRad([targetX, targetY], targetRadAdd, this.range);
             if (this.isPosLegal(x, y)) return [x, y];
         }
         // 判断第三条，向角色靠拢
