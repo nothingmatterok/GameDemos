@@ -6,7 +6,7 @@ class L1CharPortr extends eui.Component{
     private hpNumCircle: eui.Rect;
     private angerNumMask: egret.Shape;
     private hpNumMask: egret.Shape;
-    private contentGroup: eui.Group;
+    public contentGroup: eui.Group;
     public rotationCircle: eui.Group;
     private _camp: L1Camp;
     private _charId: number;
@@ -33,13 +33,13 @@ class L1CharPortr extends eui.Component{
 
         // 初始化怒气条环形mask
         this.angerNumMask = new egret.Shape();
-        this.addChild(this.angerNumMask);
+        this.contentGroup.addChild(this.angerNumMask);
         this.angerNumCircle.mask = this.angerNumMask;
         this.drawAngerCircle(0);
 
         // 初始化hp条环形mask
         this.hpNumMask = new egret.Shape();
-        this.addChild(this.hpNumMask);
+        this.contentGroup.addChild(this.hpNumMask);
         this.hpNumCircle.mask = this.hpNumMask;
         this.drawHpCircle(1);
 
@@ -47,23 +47,31 @@ class L1CharPortr extends eui.Component{
         if(DEBUG){
             let label = new eui.Label;
             label.text = `${this._charId}`;
-            label.y = -30;
-            label.x = 10;
+            label.y = 20;
+            label.x = 60;
             label.background = true;
             label.backgroundColor = ColorDef.AntiqueWhite;
             if(this._camp==L1Camp.Enemy)label.textColor = ColorDef.DarkRed;
             else label.textColor = ColorDef.LimeGreen;
-            this.addChild(label);
+            this.contentGroup.addChild(label);
         }
         
     }
 
     public drawHpCircle(hpPercent: number){
+        this.hpNumMask.x = 0
+        this.hpNumMask.y = 0;
         this.drawCircle(this.hpNumMask, hpPercent * 360, this.hpNumCircle.width/2);
+        this.hpNumMask.x = this.contentGroup.width/2;
+        this.hpNumMask.y = this.contentGroup.width/2;
     }
 
     public drawAngerCircle(angerPercent: number){
-        this.drawCircle(this.angerNumMask, angerPercent, this.angerNumCircle.width/2);
+        this.angerNumMask.x = 0
+        this.angerNumMask.y = 0;
+        this.drawCircle(this.angerNumMask, angerPercent * 360, this.angerNumCircle.width/2);
+        this.angerNumMask.x = this.contentGroup.width/2;
+        this.angerNumMask.y = this.contentGroup.width/2;
     }
 
     private drawCircle(shape: egret.Shape, endAngle: number, radius:number){
@@ -72,15 +80,37 @@ class L1CharPortr extends eui.Component{
         Util.drawAngleCircle(shape, endAngle, radius, startAngle);
     }
 
-    // 攻击的时候，头像向rotation方向动一下，做一下表示
-    public attakAnim(){
-        let tw = egret.Tween.get(this.contentGroup);
-        const step = 10;
+    public startAnim(posList:Array<[number, number]>, durations: Array<number>){
+        egret.Tween.removeTweens(this.contentGroup);
         let rad = this.rotationCircle.rotation * angle2RadParam;
-        let xChange = step * Math.cos(rad);
-        let yChange = step * Math.sin(rad);
-        tw.to({x: -50 + xChange, y: -50 + yChange}, 200).to({x:-50, y:-50}, 200);
+        let startPos = posList[0];
+        let [startXRot, startYRot] = this.getAngleCoorSysPos(startPos, rad);
+        this.contentGroup.x = startXRot;
+        this.contentGroup.y = startYRot;
+        let tw = egret.Tween.get(this.contentGroup);
+        for(let i=0; i<durations.length;i++){
+            let [nextXRot, nextYRot] = this.getAngleCoorSysPos(posList[i+1], rad);
+            let duration = durations[i];
+            tw.to({x:nextXRot, y:nextYRot}, duration);
+        }
     }
+
+    /**
+     * 获取在常规坐标系坐标为pos的点，如果换到往逆时针方向rad角度的坐标系中
+     * 其坐标是多少
+     * @param pos 
+     * @param rad 
+     */
+    private getAngleCoorSysPos(pos:[number, number], rad:number): [number, number]{
+        let x = pos[0];
+        let y = pos[1];
+        let cosR = Math.cos(-rad);
+        let sinR = Math.sin(-rad);
+        let x1 = x * cosR + y * sinR;
+        let y1 = y * cosR - x * sinR;
+        return [x1, y1];
+    }
+
     
 }
 

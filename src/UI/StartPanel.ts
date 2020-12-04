@@ -17,19 +17,33 @@ class StartPanel extends eui.Component {
 
         // 跳转测试场景
         if(DEBUG){
+            this._testShape = new eui.Button();
+            this.addChild(this._testShape);
             this.debugButton.visible = true;
             this.debugButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.debugTap, this);
         }
     }
 
+    private _testShape: eui.Button;
+    private _testNum: number = 0;
     // 测试用
     private debugTap(){
-        SceneManager.Ins.setScene(new L1MainStoryScene());
+        this._testNum += 1;
+        if(this._testNum % 2 ==0){
+            egret.Tween.removeTweens(this._testShape);
+            let tw = egret.Tween.get(this._testShape);
+            tw.to({x:this._testShape.x + 100}, 2000);
+        } else {
+            egret.Tween.removeTweens(this._testShape);
+            let tw = egret.Tween.get(this._testShape);
+            tw.to({x:this._testShape.x - 100}, 2000);
+        }
+
     }
 
     private confirmPswd(event: egret.TouchEvent) {
         if (DEBUG){
-            SceneManager.Ins.setScene(new MainScene());
+            SceneManager.Ins.setScene(new L1MainStoryScene());
             return;
         }
         if (this.pswdTextInput.text.length == 0) {

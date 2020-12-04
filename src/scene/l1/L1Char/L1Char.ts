@@ -5,6 +5,8 @@ class L1Char {
     public charId: number;
     public oppos: L1Char[];
     public coops: L1Char[];
+    public skills: IL1Skill[];
+    public skillManager: L1SkillManager;
     public get x(): number {
         return this.charPort.x;
     }
@@ -41,10 +43,11 @@ class L1Char {
 
 
     // 运行时状态
-    private _normalAttakTarget: L1Char;
+    public normalAttakTarget: L1Char;
     private _destPos: [number, number] = [0, 0];
     private _curHp: number = 1000;
     private _curAnger: number = 0;
+    private normalAttackSkill: IL1Skill;
 
     public set curHp(value: number) {
         if (value <= 0) {
@@ -52,8 +55,6 @@ class L1Char {
             this._curHp = 0;
             this.alive = false;
             this.charPort.drawHpCircle(0);
-            this.x = 10000;
-            this.y = 10000;
             this.removeFromScene();
         } else {
             this._curHp = value;
@@ -67,16 +68,20 @@ class L1Char {
         this.camp = camp;
         this.charId = charId;
         this.charPort = new L1CharPortr(camp, charId);
-        // 临时生成到合适的位置
+
+        // TODO:临时生成到合适的位置
         this.x = GameRoot.GameStage.stageWidth * (1 / 2) + camp * 200;
         this.y = GameRoot.GameStage.stageHeight * (1 / 10) + (charId + charId % 2) * 60;
-
     }
 
-    public initial(oppos: L1Char[], coops: L1Char[]) {
+    public initial(oppos: L1Char[], coops: L1Char[],  skillManager: L1SkillManager) {
         this.oppos = oppos;
         this.coops = coops;
-
+        this.normalAttackSkill = new NormalAttakSkill();
+        this.normalAttackSkill.Intial(1000, this);
+        this.skillManager = skillManager;
+        this.skills = [new DemoSkill1()];
+        skillManager.allSkillList.addList(this.skills);
         //TODO:临时测试
         this.maxHp = 1000 + (this.charId % 3) * 1000;
         this.curHp = this.maxHp;
@@ -88,9 +93,9 @@ class L1Char {
         this.frameAdd += 1;
 
         // 如果目标不存在或死亡，找一个新的目标
-        if (this._normalAttakTarget == null || (!this._normalAttakTarget.alive)) {
-            this._normalAttakTarget = this.findNormalATKTarget(this.oppos);
-            if (this._normalAttakTarget == null) {
+        if (this.normalAttakTarget == null || (!this.normalAttakTarget.alive)) {
+            this.normalAttakTarget = this.findNormalATKTarget(this.oppos);
+            if (this.normalAttakTarget == null) {
                 // 如果找不到目标说明游戏结束了，直接返回
                 return;
             }
@@ -112,19 +117,18 @@ class L1Char {
             return;
         }
         // 先进行转向目标
-        let destRotDeg = this.getRotationToPos([this._normalAttakTarget.x, this._normalAttakTarget.y]);
+        let destRotDeg = this.getRotationToPos([this.normalAttakTarget.x, this.normalAttakTarget.y]);
         destRotDeg = this.getPropDestRotation(destRotDeg);
         this.rotTo(destRotDeg);
         // TODO:CD管理
         // CD到了&&有目标&&目标在范围内&&方向合适
         if (this.frameAdd >= 30 && this.targetInRange() && Util.isNumEqual(this.rotation, destRotDeg)) {
             this.frameAdd = 0;
-            this._normalAttakTarget.curHp -= this.atk;
-            this.charPort.attakAnim();
+            this.skillManager.castSkill(this.normalAttackSkill);
             // console.log(`${this.charId} attak ${this.charId}`);
         }
-
     }
+
 
     private getRotationToPos(pos: [number, number]): number {
         let targetRad = Util.getRad([this.x, this.y], pos);
@@ -156,12 +160,16 @@ class L1Char {
         this.y = Math.ceil(this.y + frameSpeed * Math.cos(rad));
     }
 
+    public startAnim(posList:Array<[number, number]>, durations: Array<number>){
+        this.charPort.startAnim(posList, durations);
+    }
+
     private rotTo(deg: number) {
         if(Util.isNumEqual(deg, this.rotation)) {
             return;
         }
 
-        console.log(`${this.charId} from ${this.rotation} to ${deg}`);
+        // console.log(`${this.charId} from ${this.rotation} to ${deg}`);
         
         // 每帧多少度
         const frameTime = 1 / GameRoot.GameStage.frameRate;
@@ -210,7 +218,7 @@ class L1Char {
 
 
     private targetInRange(): boolean {
-        return Math.abs(this.disFrom(this._normalAttakTarget) - this.range) < 10;
+        return Math.abs(this.disFrom(this.normalAttakTarget) - this.range) < 10;
     }
 
     /**
@@ -218,7 +226,7 @@ class L1Char {
      */
     private findATKLocation(): [number, number] {
         // 如果没有目标，或目标在射程范围内，且坐标合法,返回自己的坐标
-        if ((this._normalAttakTarget == null || this.targetInRange()) && this.isPosLegal(this.x, this.y)) {
+        if ((this.normalAttakTarget == null || this.targetInRange()) && this.isPosLegal(this.x, this.y)) {
             return [this.x, this.y];
         }
 
@@ -228,8 +236,8 @@ class L1Char {
         // 2.如果不可以，以射程为半径，画一个圆，每30度查看一个点是否可以，如果合法就返回
         // 3.如果没有就看射程往内（角色之间最小距离）范围区域是否可以，如果合法就返回
         // 4.如果没有就直接往连线的反方向外一点点判断，直到位置合法
-        let targetX = this._normalAttakTarget.x;
-        let targetY = this._normalAttakTarget.y;
+        let targetX = this.normalAttakTarget.x;
+        let targetY = this.normalAttakTarget.y;
         let x: number = 0;
         let y: number = 0;
         let targetRad = Util.getRad([targetX, targetY], [this.x, this.y]);
@@ -254,7 +262,7 @@ class L1Char {
         }
         // 判断最后一条，从距离射程开始往反方向判断，直到距离大于当前位置，则设置为当前位置
         disToCenter = this.range + L1CHARMINDIS / 4;
-        let maxDis = this.disFrom(this._normalAttakTarget);
+        let maxDis = this.disFrom(this.normalAttakTarget);
         while (disToCenter < maxDis) {
             [x, y] = this.getLinePosByRad([targetX, targetY], targetRad, disToCenter);
             if (this.isPosLegal(x, y)) return [x, y];
@@ -313,4 +321,10 @@ class L1Char {
         LayerManager.Ins.gameLayer.removeChild(this.charPort);
     }
 
+    public skillCastBreak(){
+        egret.Tween.removeTweens(this.charPort.contentGroup);
+    }
+
 } 
+
+
