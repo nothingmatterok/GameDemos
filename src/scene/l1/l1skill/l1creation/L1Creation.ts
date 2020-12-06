@@ -149,9 +149,8 @@ class L1Creation {
         this.flyToRad(rad);
     }
 
-    public static readonly CLOSETOMAXDES = 10;
     private closeTo(pos1: [number, number], pos2: [number, number]) {
-        return Util.pointDistance(pos1, pos2) < L1Creation.CLOSETOMAXDES;
+        return Util.pointDistance(pos1, pos2) < this._flySpeedFrame + 20;
     }
 
     /**
