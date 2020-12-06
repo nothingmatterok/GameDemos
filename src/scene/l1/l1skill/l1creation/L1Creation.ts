@@ -53,7 +53,7 @@ class L1Creation {
         targetChar: L1Char = null, startPos: [number, number],
         posDest: [number, number] = null, directRad: number = null,
     ) {
-        GameRoot.GameStage.addChild(this._contentGroup);
+        LayerManager.Ins.gameLayer.addChild(this._contentGroup);
         this._caster = caster;
         this._config = config;
         this._targetChar = targetChar;
@@ -163,7 +163,7 @@ class L1Creation {
     }
 
     public lifeEnd() {
-        GameRoot.GameStage.removeChild(this._contentGroup);
+        LayerManager.Ins.gameLayer.removeChild(this._contentGroup);
         this._config = null;
     }
 
