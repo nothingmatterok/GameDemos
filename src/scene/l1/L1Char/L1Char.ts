@@ -10,20 +10,23 @@ class L1Char {
     private _curHp: number;
     private _curAnger: number = 0;
 
-    public addAngerNumber(v: number){
+    public addAngerNumber(v: number) {
         let curAnger = this._curAnger + v;
-        if (curAnger > L1CharAttr.MAXANGER){
+        if (curAnger > L1CharAttr.MAXANGER) {
             curAnger = L1CharAttr.MAXANGER;
         }
         this._curAnger = curAnger;
-        if (this._charPort.initialed){
-            this._charPort.drawAngerCircle(curAnger/L1CharAttr.MAXANGER);
+        if (this._charPort.initialed) {
+            this._charPort.drawAngerCircle(curAnger / L1CharAttr.MAXANGER);
         }
     }
 
     // 运行时状态
     public normalAttakTarget: L1Char;
     private _destPos: [number, number] = [0, 0];
+    public buffStatus: MySet<L1BuffStatus>;
+    public buffs: MySet<L1Buff>;
+
 
     // 角色技能信息
     public charId: number;
@@ -34,8 +37,8 @@ class L1Char {
     // 角色阵营信息
     public camp: L1Camp;
     public oppos: L1Char[];
-    public coops: L1Char[]; 
-    
+    public coops: L1Char[];
+
     // 辅助成员信息
     private _charPort: L1CharPortr;
     public skillManager: L1SkillManager;
@@ -48,7 +51,7 @@ class L1Char {
         return this._charPort.y;
     }
 
-    public get pos(): [number, number]{
+    public get pos(): [number, number] {
         return [this.x, this.y]
     }
 
@@ -68,15 +71,15 @@ class L1Char {
     }
 
     private rawAttr: L1CharAttr;
-    public get moveSpeed(): number{
+    public get moveSpeed(): number {
         return this.rawAttr.moveSpeed;
     }
-    public get rotationSpeed(): number{
+    public get rotationSpeed(): number {
         return this.rawAttr.rotationSpeed;
     }
 
     public set curHp(value: number) {
-        if(!this.alive){
+        if (!this.alive) {
             return;
         }
         if (value > this.maxHp) value = this.maxHp;
@@ -88,7 +91,7 @@ class L1Char {
             this.removeFromScene();
         } else {
             this._curHp = value;
-            if(this._charPort.initialed){
+            if (this._charPort.initialed) {
                 this._charPort.drawHpCircle(value / this.maxHp);
             }
         }
@@ -101,7 +104,7 @@ class L1Char {
         this.camp = camp;
         this.skillManager = (SceneManager.Ins.curScene as L1NormalBattleScene).skillManager;
         this.charId = charId;
-        this._charPort = new L1CharPortr(camp, charId); 
+        this._charPort = new L1CharPortr(camp, charId);
         // TODO: 根据charId读取数据，生成对应的角色信息
         this.name = `${this.charId}`;
         this.rawAttr = new L1CharAttr();
@@ -114,7 +117,7 @@ class L1Char {
         this.dodgePoint = this.rawAttr.dodgePoint;
         this.critPoint = this.rawAttr.critPoint;
         this.critTime = this.rawAttr.critTime;
-        if(this.charId % 3 == 0){
+        if (this.charId % 3 == 0) {
             this.normalAttackSkill = new NormalAttakCloseSkill(this);
             this.rawAttr.range = 120;
             this.rawAttr.atk = this.atk *= 2;
@@ -125,7 +128,8 @@ class L1Char {
         // 构建其他运行时内容
         this.skillManager.allSkillList.addList(this.skills);
         this.skillManager.allSkillList.add(this.normalAttackSkill);
-
+        this.buffStatus = new MySet<number>();
+        this.buffs = new MySet<L1Buff>();
 
         // TODO:临时生成到合适的位置
         this.x = GameRoot.GameStage.stageWidth * (1 / 2) + camp * 200;
@@ -141,6 +145,7 @@ class L1Char {
     public update() {
         // 如果单位已经死亡，不再维护任何状态
         if (!this.alive) return;
+        if (this.isDizz()) return;
 
         // 寻找不目标，如果目标不存在或死亡，找一个新的目标
         if (this.normalAttakTarget == null || (!this.normalAttakTarget.alive)) {
@@ -171,16 +176,16 @@ class L1Char {
         let destRotDeg = this.getRotationToPos([this.normalAttakTarget.x, this.normalAttakTarget.y]);
         destRotDeg = this.getPropDestRotation(destRotDeg);
         this.rotTo(destRotDeg);
-        if(!Util.isNumEqual(this.rotation, destRotDeg)){
+        if (!Util.isNumEqual(this.rotation, destRotDeg)) {
             // 如果还在转向就返回，如果已经完成转向进入下一步技能释放过程
             return;
         }
 
         // 判断需要释放的技能
         // 1.如果怒气满了，按照技能顺序判断是否存在cd OK的技能，进行释放
-        if(this._curAnger == L1CharAttr.MAXANGER){
-            for(let skill of this.skills){
-                if (skill.isCoolDown()){
+        if (this._curAnger == L1CharAttr.MAXANGER && !this.isSlient()) {
+            for (let skill of this.skills) {
+                if (skill.isCoolDown()) {
                     this.skillManager.castSkill(skill);
                     this.addAngerNumber(-L1CharAttr.MAXANGER);
                     return;
@@ -194,23 +199,23 @@ class L1Char {
         }
     }
 
-    
+
 
 
     private getRotationToPos(pos: [number, number]): number {
         let targetRad = Util.getRad([this.x, this.y], pos);
         // 与竖直向下的夹角的角度90度 = this.rotation的0度，这里做一个到自己的rotation的变换
         // 需要注意rotaion与getRad的+方向是相反的
-        return Math.ceil(Util.degNormalize(90 - targetRad / angle2RadParam ));
+        return Math.ceil(Util.degNormalize(90 - targetRad / angle2RadParam));
     }
 
     // 根据自己的角度，再对角度进行一个转换，得到距离最近的角度表示，防止 -179 -> 180这种情况
-    private getPropDestRotation(deg: number):number{
-        let minDis = Math.abs(deg-this.rotation);
+    private getPropDestRotation(deg: number): number {
+        let minDis = Math.abs(deg - this.rotation);
         let dis360 = Math.abs(deg + 360 - this.rotation);
         let disSub360 = Math.abs(deg - 360 - this.rotation);
         if (dis360 < minDis) return deg + 360;
-        if (disSub360 < minDis) return deg -360;
+        if (disSub360 < minDis) return deg - 360;
         return deg;
     }
 
@@ -227,17 +232,17 @@ class L1Char {
         this.y = Math.ceil(this.y + frameSpeed * Math.cos(rad));
     }
 
-    public startAnim(posList:Array<[number, number]>, durations: Array<number>){
+    public startAnim(posList: Array<[number, number]>, durations: Array<number>) {
         this._charPort.startAnim(posList, durations);
     }
 
     private rotTo(deg: number) {
-        if(Util.isNumEqual(deg, this.rotation)) {
+        if (Util.isNumEqual(deg, this.rotation)) {
             return;
         }
 
         // console.log(`${this.charId} from ${this.rotation} to ${deg}`);
-        
+
         // 每帧多少度
         const frameTime = 1 / GameRoot.GameStage.frameRate;
         let frameRotSpeed = frameTime * this.rotationSpeed;
@@ -281,7 +286,7 @@ class L1Char {
 
 
     private targetInRange(): boolean {
-        return this.rawAttr.range - this.disFrom(this.normalAttakTarget)  > -10;
+        return this.rawAttr.range - this.disFrom(this.normalAttakTarget) > -10;
     }
 
     /**
@@ -384,10 +389,92 @@ class L1Char {
         LayerManager.Ins.gameLayer.removeChild(this._charPort);
     }
 
-    public skillCastBreak(){
+    public skillCastBreak() {
         egret.Tween.removeTweens(this._charPort.contentGroup);
     }
 
-} 
+    public get DODGE(): number {
+        return Math.min(L1CharAttr.MAXDODGEP, this.dodgePoint);
+    }
+
+    public isDizz(): boolean {
+        return L1BuffStatus.DIZZ in this.buffStatus;
+    }
+
+    public isSlient(): boolean {
+        return L1BuffStatus.SLIENT in this.buffStatus;
+    }
+
+    public refreshBuffAttr() {
+        // 计算生效buff
+        let attrBuffTemp: L1Buff[] = [];
+        for (let buff of this.buffs.data) {
+            let isAffect = buff.config.isAffect(this, buff.caster);
+            if (buff.config.buffType == L1BuffType.ATTRCHANGE && isAffect) {
+                attrBuffTemp.push(buff);
+            }
+        }
+
+        // 统计增益比例及数值
+        let attrAdd: { [key: string]: number } = {}
+        let attrRatio: { [key: string]: number } = {}
+        for (let attrName of L1CharAttr.ATTRNAMES) {
+            attrAdd[attrName] = 0;
+            attrRatio[attrName] = 0;
+        }
+        for (let buff of attrBuffTemp) {
+            for (let attrName of L1CharAttr.ATTRNAMES) {
+                if (attrName in buff.config.attrAddAbs) {
+                    attrAdd[attrName] += buff.config.attrAddAbs[attrName];
+                }
+                if (attrName in buff.config.attrAddRatio) {
+                    attrRatio[attrName] += buff.config.attrAddRatio[attrName];
+                }
+            }
+        }
+
+        // 计算增益后属性
+        this.atk = this.rawAttr.atk * (1 + attrRatio[L1ATTRNAME.ATK]) + attrAdd[L1ATTRNAME.ATK];
+        this.def = this.rawAttr.def * (1 + attrRatio[L1ATTRNAME.DEF]) + attrAdd[L1ATTRNAME.DEF];
+        this.critPoint  = this.rawAttr.critPoint * (1 + attrRatio[L1ATTRNAME.CRITP]) + attrAdd[L1ATTRNAME.CRITP];
+        this.dodgePoint  = this.rawAttr.dodgePoint * (1 + attrRatio[L1ATTRNAME.DODGEP]) + attrAdd[L1ATTRNAME.DODGEP];
+        let maxHp =  this.rawAttr.maxHp * (1 + attrRatio[L1ATTRNAME.MAXHP]) + attrAdd[L1ATTRNAME.MAXHP];
+        if(maxHp > this.maxHp){
+            let addHp = maxHp - this.maxHp;
+            this.curHp += addHp;
+            this.maxHp = maxHp;
+        }
+        this.critTime  = this.rawAttr.critTime * (1 + attrRatio[L1ATTRNAME.CRITT]) + attrAdd[L1ATTRNAME.CRITT];
+    }
+
+    public refreshBuffStatus() {
+        // 计算状态
+        this.buffStatus.removeAll();
+        let statusTemp: L1BuffStatus[] = [];
+        for (let buff of this.buffs.data) {
+            let isAffect = buff.config.isAffect(this, buff.caster);
+            if (buff.config.buffType == L1BuffType.STATUS && isAffect ){
+                statusTemp.push(buff.config.status);
+            }
+        }
+        for (let status of statusTemp) {
+            this.buffStatus.add(status);
+        }
+
+        // 跟新状态表示
+        if (this.isDizz()) {
+            this._charPort.toDizz();
+        } else {
+            this._charPort.outDizz();
+        }
+
+        if (this.isSlient()) {
+            this._charPort.toSlient();
+        } else {
+            this._charPort.outSlient();
+        }
+    }
+
+}
 
 

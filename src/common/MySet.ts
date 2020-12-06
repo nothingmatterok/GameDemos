@@ -12,6 +12,10 @@ class MySet<T> {
         return Util.removeObjFromArray(this.data, a);
     }
 
+    public removeAll(){
+        this.data = [];
+    }
+
     public addList(a: any[]): void{
         for(let e of a){
             this.add(e);

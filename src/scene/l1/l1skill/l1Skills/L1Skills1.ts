@@ -6,7 +6,7 @@ class DemoHealSkill extends IL1Skill {
         return [this.char];
     }
 
-    private harmConfig = new L1HarmConfig(
+    private static readonly harmConfig = new L1HarmConfig(
         (caster: L1Char, target) => {
             let isCrit = L1Harm.isRandTrue(caster.critPoint);
             let healNum = caster.maxHp * 0.2; // 治疗最大血量的20%
@@ -23,7 +23,7 @@ class DemoHealSkill extends IL1Skill {
             this.char.startAnim([[0, 0], [0, 10], [0, -10], [0, 0]], [75, 150, 75]);
         }
         tl[150] = () => { // 第75ms执行
-            L1Harm.harm(this.char, this.targets, this.harmConfig)
+            L1Harm.harm(this.char, this.targets, DemoHealSkill.harmConfig)
         }
     }
 
@@ -34,13 +34,25 @@ class NormalAttakRangeSkill extends IL1Skill {
         return [this.char.normalAttakTarget];
     }
 
-    private _bullet: L1CreationConfig = new L1CreationConfig(
+    private static readonly BULLET: L1CreationConfig = new L1CreationConfig(
         5, L1CrtnFlyType.CHAR, L1CrTnAffectContType.ONECE,
         L1CrTnAffectTargetSetType.PRESET, L1CrtnAffectTargetCamp.OTHER,
         800, 1, 10, (targets: L1Char[], caster: L1Char) => {
             L1Harm.harm(caster, targets)
         }, 1, ColorDef.DarkOrange
     )
+
+    private static readonly BUFF1: L1BuffConfig = new L1BuffConfig(
+        1000, 1000, L1BuffType.ATTRCHANGE, L1BuffStatus.NORMAL,
+        "攻击 +10", {"ATK": 10}
+    );
+
+    private static readonly BUFF2: L1BuffConfig = new L1BuffConfig(
+        10000, 1000, L1BuffType.AFFECT, L1BuffStatus.NORMAL,
+        "持续掉血", null, null, (target: L1Char, caster: L1Char)=>{
+            L1Harm.harm(caster, [target], new L1HarmConfig(()=>{return [false, 88]}))
+        }
+    );
 
     protected skillConfig(): void {
         let tl = this.timeLine = {};
@@ -49,9 +61,11 @@ class NormalAttakRangeSkill extends IL1Skill {
             this.char.startAnim([[0, 0], [10, 0], [-5, 0], [0, 0]], [75, 100, 50]);
             this.char.addAngerNumber(15);
             this.newCreation(
-                this._bullet, this.char,
+                NormalAttakRangeSkill.BULLET, this.char,
                 this.targets[0], this.char.pos, this.targets[0].pos
             );
+            this.newBuff(NormalAttakRangeSkill.BUFF1, this.char, this.char);
+            this.newBuff(NormalAttakRangeSkill.BUFF2, this.targets[0], this.char);
         }
     }
 }

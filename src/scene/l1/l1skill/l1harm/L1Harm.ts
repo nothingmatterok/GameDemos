@@ -32,7 +32,7 @@ class L1Harm {
             ToastInfoManager.newToast(
                 `${extraText}${harmText}`, color,
                 target.y - 40, target.x - GameRoot.GameStage.stageWidth / 2,
-                -50, 0, 2500, size, true, egret.Ease.quadOut
+                -50, 0, 2500, size, false, egret.Ease.quadOut
             );
         }
     }

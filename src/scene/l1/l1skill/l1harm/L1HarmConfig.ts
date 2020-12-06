@@ -8,7 +8,7 @@ class L1HarmConfig {
         } else {
             this.harmFunc = (caster: L1Char, target: L1Char) => {
                 let isCrit = L1Harm.isRandTrue(caster.critPoint);
-                let isDodge = L1Harm.isRandTrue(target.dodgePoint);
+                let isDodge = L1Harm.isRandTrue(target.DODGE);
                 let harm = 0;
                 if (!isDodge) {
                     let ratio = isCrit ? caster.critTime : 1;

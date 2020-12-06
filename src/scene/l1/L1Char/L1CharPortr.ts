@@ -12,6 +12,8 @@ class L1CharPortr extends eui.Component{
     private _camp: L1Camp;
     private _charId: number;
     public initialed: boolean;
+    private dizzLabel: eui.Label;
+    private slientLabel: eui.Label;
 
     constructor(camp:L1Camp, charId:number) {
         super();
@@ -116,6 +118,22 @@ class L1CharPortr extends eui.Component{
         let x1 = x * cosR + y * sinR;
         let y1 = y * cosR - x * sinR;
         return [x1, y1];
+    }
+
+    public toDizz(){
+        this.dizzLabel.visible = true;
+    }
+
+    public outDizz(){
+        this.dizzLabel.visible = false;
+    }
+
+    public toSlient(){
+        this.slientLabel.visible = true;
+    }
+
+    public outSlient(){
+        this.slientLabel.visible = false;
     }
 
     

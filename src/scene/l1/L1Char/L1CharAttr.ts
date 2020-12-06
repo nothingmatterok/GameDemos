@@ -2,6 +2,10 @@
  * 这个类里存战斗开始前的数值，L1char中存增加了buff以后的数值
  */
 class L1CharAttr{
+    public static readonly ATTRNAMES = [
+        L1ATTRNAME.MAXHP, L1ATTRNAME.ATK, L1ATTRNAME.DEF, 
+        L1ATTRNAME.CRITP, L1ATTRNAME.DODGEP, L1ATTRNAME.CRITT
+    ]; 
     public maxHp: number = 1000; // 最大血量
     public atk: number = 100; // 攻击
     public def: number = 100; // 防御
@@ -11,7 +15,7 @@ class L1CharAttr{
     public critTime: number = 1.2; // 暴击倍率
 
     // 每秒多少m
-    public moveSpeed: number = 80;
+    public moveSpeed: number = 160;
     // 每秒多少度
     public rotationSpeed: number = 180;
     // --------- 其他参数 -----------

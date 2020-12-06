@@ -14,6 +14,8 @@
 					<e:Rect id="rotationPoint" width="8" height="8" touchEnabled="false" ellipseHeight="8" ellipseWidth="8" anchorOffsetX="0" anchorOffsetY="0" strokeColor="0xFF8C00" scaleX="1" scaleY="1" fillColor="0xFF4500" right="-9" top="-4"/>
 				</e:Group>
 			</e:Group>
+			<e:Label id="dizzLabel" text="眩晕" horizontalCenter="0" verticalCenter="-19" size="20" textColor="0xFF0000" visible="false"/>
+			<e:Label id="slientLabel" text="沉默" horizontalCenter="0" verticalCenter="6" x="30" y="45" size="20" textColor="0xFF0000" visible="false"/>
 		</e:Group>
 	</e:Group>
 </e:Skin>

@@ -9,6 +9,7 @@ abstract class IL1Skill {
     protected targets: Array<L1Char>;
     private _endFrame: number; // 结束帧
     private _creationManager: L1CreationManager;
+    private _buffManager: L1BuffManager;
 
     /**
      * 
@@ -18,6 +19,7 @@ abstract class IL1Skill {
     public constructor(char: L1Char) {
         this.char = char;
         this._creationManager = (SceneManager.Ins.curScene as L1NormalBattleScene).creationManager;
+        this._buffManager = (SceneManager.Ins.curScene as L1NormalBattleScene).buffManager;
         this.skillConfig();
         let frameRateMs = GameRoot.GameStage.frameRate / 1000;
         this._frameCD = Math.ceil(this.cdMs * frameRateMs);
@@ -105,6 +107,12 @@ abstract class IL1Skill {
     ) {
         this._creationManager.newCreation(config, caster, targetChar, startPos, posDest, directRad);
     }
+
+    public newBuff(config: L1BuffConfig, target: L1Char, caster: L1Char){
+        this._buffManager.newBuff(config, target, caster);
+    }
+
+
 
 }
 
