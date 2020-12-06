@@ -4,6 +4,8 @@
  */
 abstract class IScene{
 
+    public isInitialed: boolean = false;
+
     /**
      * call by scenemanager when scene loaded
      */

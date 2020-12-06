@@ -43,7 +43,7 @@ class StartPanel extends eui.Component {
 
     private confirmPswd(event: egret.TouchEvent) {
         if (DEBUG){
-            SceneManager.Ins.setScene(new L1MainStoryScene());
+            SceneManager.Ins.setScene(new L1NormalBattleScene());
             return;
         }
         if (this.pswdTextInput.text.length == 0) {

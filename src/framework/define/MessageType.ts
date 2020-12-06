@@ -1,3 +1,3 @@
 enum MessageType{
-
+    L1CRTNDESTROYED = "L1CRTNDESTROYED",
 }

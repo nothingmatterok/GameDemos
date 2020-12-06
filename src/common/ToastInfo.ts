@@ -1,33 +1,39 @@
-class ToastInfoManager{
+class ToastInfoManager {
 
 	private static _labelPools: eui.Label[] = [];
 
-	public static newToast(info: string, color:number=ColorDef.DodgerBlue): void{
+	public static newToast(
+		info: string, color: number = ColorDef.DodgerBlue,
+		startY: number = 60, horizontalCenter: number = 0,
+		animYStep: number = -100, animXStep: number = 0,
+		animTime: number = 6000, labelSize: number = 30, 
+		labelBold: boolean = true, ease: (t: number)=>number = egret.Ease.circOut
+	): void {
 		let label: eui.Label;
-		if (this._labelPools.length > 0){
+		if (this._labelPools.length > 0) {
 			label = this._labelPools.pop()
-		}else{
+		} else {
 			label = new eui.Label();
-			label.horizontalCenter = 0;
 		}
 		label.textColor = color;
-		label.y = 60;
+		label.horizontalCenter = horizontalCenter;
+		label.y = startY;
 		label.alpha = 1;
-		label.size = 30;
+		label.size = labelSize;
 		label.text = info;
-		label.bold = true;
+		label.bold = labelBold;
 		LayerManager.Ins.uiLayer.addChild(label);
 		egret.Tween.get(label).to(
-			{y: label.y - 100, alpha: 0}, 6000, egret.Ease.circOut
+			{ y: label.y + animYStep, horizontalCenter: label.horizontalCenter + animXStep, alpha: 0 }, animTime, ease
 		).call(
-			()=>{
+			() => {
 				LayerManager.Ins.uiLayer.removeChild(label);
 				this._labelPools.push(label);
 			}
 		)
 	}
 
-	public static newRedToast(info: string): void{
+	public static newRedToast(info: string): void {
 		ToastInfoManager.newToast(info, ColorDef.Coral);
 	}
 }

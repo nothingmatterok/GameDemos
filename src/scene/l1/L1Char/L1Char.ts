@@ -1,108 +1,158 @@
 class L1Char {
-    private charPort: L1CharPortr;
-    public name: string;
-    public camp: L1Camp;
-    public charId: number;
-    public oppos: L1Char[];
-    public coops: L1Char[];
-    public skills: IL1Skill[];
-    public skillManager: L1SkillManager;
-    public get x(): number {
-        return this.charPort.x;
-    }
-    public get y(): number {
-        return this.charPort.y;
-    }
+    // 运行时属性，可能在运行时修改
+    public maxHp: number;
+    public def: number;
+    public atk: number;
+    public critPoint: number;
+    public dodgePoint: number;
+    public critTime: number;
+    public alive: boolean;
+    private _curHp: number;
+    private _curAnger: number = 0;
 
-    public set x(value: number) {
-        this.charPort.x = value;
+    public addAngerNumber(v: number){
+        let curAnger = this._curAnger + v;
+        if (curAnger > L1CharAttr.MAXANGER){
+            curAnger = L1CharAttr.MAXANGER;
+        }
+        this._curAnger = curAnger;
+        if (this._charPort.initialed){
+            this._charPort.drawAngerCircle(curAnger/L1CharAttr.MAXANGER);
+        }
     }
-    public set y(value: number) {
-        this.charPort.y = value;
-    }
-
-    public set rotation(v: number) {
-        this.charPort.rotationCircle.rotation = v;
-    }
-
-    public get rotation(): number {
-        return this.charPort.rotationCircle.rotation;
-    }
-
-    // TODO: 通过读取数据初始化角色属性
-    public maxHp: number = 1000;
-    public maxAnger: number = 100;
-    public defend: number = 10;
-    public atk: number = 300;
-    public range: number = 300;
-    public normalAtkRate: number = 60; // 60 / 攻击间隔(s)
-    public skillCD: number = 1.4; // TODO: 等待技能系统实现
-    public alive: boolean = true;
-    public moveSpeed: number = 80; // 每s多少米
-    public rotationSpeed: number = 180;// 每s多少度
-
 
     // 运行时状态
     public normalAttakTarget: L1Char;
     private _destPos: [number, number] = [0, 0];
-    private _curHp: number = 1000;
-    private _curAnger: number = 0;
+
+    // 角色技能信息
+    public charId: number;
+    public name: string;
+    public skills: IL1Skill[];
     private normalAttackSkill: IL1Skill;
 
+    // 角色阵营信息
+    public camp: L1Camp;
+    public oppos: L1Char[];
+    public coops: L1Char[]; 
+    
+    // 辅助成员信息
+    private _charPort: L1CharPortr;
+    public skillManager: L1SkillManager;
+
+
+    public get x(): number {
+        return this._charPort.x;
+    }
+    public get y(): number {
+        return this._charPort.y;
+    }
+
+    public get pos(): [number, number]{
+        return [this.x, this.y]
+    }
+
+    public set x(value: number) {
+        this._charPort.x = value;
+    }
+    public set y(value: number) {
+        this._charPort.y = value;
+    }
+
+    public set rotation(v: number) {
+        this._charPort.rotationCircle.rotation = v;
+    }
+
+    public get rotation(): number {
+        return this._charPort.rotationCircle.rotation;
+    }
+
+    private rawAttr: L1CharAttr;
+    public get moveSpeed(): number{
+        return this.rawAttr.moveSpeed;
+    }
+    public get rotationSpeed(): number{
+        return this.rawAttr.rotationSpeed;
+    }
+
     public set curHp(value: number) {
+        if(!this.alive){
+            return;
+        }
+        if (value > this.maxHp) value = this.maxHp;
         if (value <= 0) {
-            // TODO: 执行死亡
             this._curHp = 0;
             this.alive = false;
-            this.charPort.drawHpCircle(0);
+            this._charPort.drawHpCircle(0);
+            // TODO: 增加死亡动画，并在动画结束后移除
             this.removeFromScene();
         } else {
             this._curHp = value;
-            this.charPort.drawHpCircle(value / this.maxHp);
+            if(this._charPort.initialed){
+                this._charPort.drawHpCircle(value / this.maxHp);
+            }
         }
     }
 
     public get curHp(): number { return this._curHp; }
 
     constructor(camp: L1Camp, charId: number) {
+        this.alive = true;
         this.camp = camp;
+        this.skillManager = (SceneManager.Ins.curScene as L1NormalBattleScene).skillManager;
         this.charId = charId;
-        this.charPort = new L1CharPortr(camp, charId);
+        this._charPort = new L1CharPortr(camp, charId); 
+        // TODO: 根据charId读取数据，生成对应的角色信息
+        this.name = `${this.charId}`;
+        this.rawAttr = new L1CharAttr();
+        this.skills = [new DemoHealSkill(this)];
+        this.maxHp = this.rawAttr.maxHp;
+        this.curHp = this.maxHp;
+        this._curAnger = 0;
+        this.def = this.rawAttr.def;
+        this.atk = this.rawAttr.atk;
+        this.dodgePoint = this.rawAttr.dodgePoint;
+        this.critPoint = this.rawAttr.critPoint;
+        this.critTime = this.rawAttr.critTime;
+        if(this.charId % 3 == 0){
+            this.normalAttackSkill = new NormalAttakCloseSkill(this);
+            this.rawAttr.range = 120;
+            this.rawAttr.atk = this.atk *= 2;
+        } else {
+            this.normalAttackSkill = new NormalAttakRangeSkill(this);
+        }
+
+        // 构建其他运行时内容
+        this.skillManager.allSkillList.addList(this.skills);
+        this.skillManager.allSkillList.add(this.normalAttackSkill);
+
 
         // TODO:临时生成到合适的位置
         this.x = GameRoot.GameStage.stageWidth * (1 / 2) + camp * 200;
         this.y = GameRoot.GameStage.stageHeight * (1 / 10) + (charId + charId % 2) * 60;
+
     }
 
-    public initial(oppos: L1Char[], coops: L1Char[],  skillManager: L1SkillManager) {
+    public initial(oppos: L1Char[], coops: L1Char[]) {
         this.oppos = oppos;
         this.coops = coops;
-        this.normalAttackSkill = new NormalAttakSkill();
-        this.normalAttackSkill.Intial(1000, this);
-        this.skillManager = skillManager;
-        this.skills = [new DemoSkill1()];
-        skillManager.allSkillList.addList(this.skills);
-        //TODO:临时测试
-        this.maxHp = 1000 + (this.charId % 3) * 1000;
-        this.curHp = this.maxHp;
     }
 
-    private frameAdd: number = 0;
     public update() {
+        // 如果单位已经死亡，不再维护任何状态
         if (!this.alive) return;
-        this.frameAdd += 1;
 
-        // 如果目标不存在或死亡，找一个新的目标
+        // 寻找不目标，如果目标不存在或死亡，找一个新的目标
         if (this.normalAttakTarget == null || (!this.normalAttakTarget.alive)) {
             this.normalAttakTarget = this.findNormalATKTarget(this.oppos);
-            if (this.normalAttakTarget == null) {
-                // 如果找不到目标说明游戏结束了，直接返回
-                return;
-            }
             // console.log(`${this.charId}find new target${this._normalAttakTarget.charId}`);
         }
+        // 如果找完目标，目标依然为空，说明游戏结束了，直接返回
+        if (this.normalAttakTarget == null) {
+            return;
+        }
 
-        // 找一个合适的位置
+        // 根据找到的目标，找一个合适的位置
         let destPos = this.findATKLocation();
         // 取整数方便计算
         this._destPos = [Math.ceil(destPos[0]), Math.ceil(destPos[1])]
@@ -116,18 +166,35 @@ class L1Char {
             this.rotTo(destRotDeg);
             return;
         }
+
         // 先进行转向目标
         let destRotDeg = this.getRotationToPos([this.normalAttakTarget.x, this.normalAttakTarget.y]);
         destRotDeg = this.getPropDestRotation(destRotDeg);
         this.rotTo(destRotDeg);
-        // TODO:CD管理
-        // CD到了&&有目标&&目标在范围内&&方向合适
-        if (this.frameAdd >= 30 && this.targetInRange() && Util.isNumEqual(this.rotation, destRotDeg)) {
-            this.frameAdd = 0;
+        if(!Util.isNumEqual(this.rotation, destRotDeg)){
+            // 如果还在转向就返回，如果已经完成转向进入下一步技能释放过程
+            return;
+        }
+
+        // 判断需要释放的技能
+        // 1.如果怒气满了，按照技能顺序判断是否存在cd OK的技能，进行释放
+        if(this._curAnger == L1CharAttr.MAXANGER){
+            for(let skill of this.skills){
+                if (skill.isCoolDown()){
+                    this.skillManager.castSkill(skill);
+                    this.addAngerNumber(-L1CharAttr.MAXANGER);
+                    return;
+                }
+            }
+        }
+
+        // 2.否则判断普通攻击是否cd好了，且目标在普攻范围内，进行释放
+        if (this.targetInRange() && this.normalAttackSkill.isCoolDown()) {
             this.skillManager.castSkill(this.normalAttackSkill);
-            // console.log(`${this.charId} attak ${this.charId}`);
         }
     }
+
+    
 
 
     private getRotationToPos(pos: [number, number]): number {
@@ -161,7 +228,7 @@ class L1Char {
     }
 
     public startAnim(posList:Array<[number, number]>, durations: Array<number>){
-        this.charPort.startAnim(posList, durations);
+        this._charPort.startAnim(posList, durations);
     }
 
     private rotTo(deg: number) {
@@ -212,13 +279,9 @@ class L1Char {
         return Util.pointDistance([other.x, other.y], [this.x, this.y]);
     }
 
-    private disFromPos(other: [number, number]) {
-        return Util.pointDistance([other[0], other[1]], [this.x, this.y]);
-    }
-
 
     private targetInRange(): boolean {
-        return Math.abs(this.disFrom(this.normalAttakTarget) - this.range) < 10;
+        return this.rawAttr.range - this.disFrom(this.normalAttakTarget)  > -10;
     }
 
     /**
@@ -244,29 +307,29 @@ class L1Char {
         // 30度的弧度增量
         const rad30Add = 30 * angle2RadParam;
         // 判断第一条，距离刚好
-        [x, y] = this.getLinePosByRad([targetX, targetY], targetRad, this.range);
+        [x, y] = this.getLinePosByRad([targetX, targetY], targetRad, this.rawAttr.range);
         if (this.isPosLegal(x, y)) return [x, y];
         //判断第二条，以30度累加判断11次找合法点
         let targetRadAdd = targetRad;
         for (let i = 1; i < 12; i++) {
             targetRadAdd = targetRadAdd + rad30Add;
-            [x, y] = this.getLinePosByRad([targetX, targetY], targetRadAdd, this.range);
+            [x, y] = this.getLinePosByRad([targetX, targetY], targetRadAdd, this.rawAttr.range);
             if (this.isPosLegal(x, y)) return [x, y];
         }
         // 判断第三条，向角色靠拢
-        let disToCenter = this.range - L1CHARMINDIS / 4;
-        while (disToCenter > L1CHARMINDIS) {
+        let disToCenter = this.rawAttr.range - L1CharAttr.CHARMINDIS / 4;
+        while (disToCenter > L1CharAttr.CHARMINDIS) {
             [x, y] = this.getLinePosByRad([targetX, targetY], targetRad, disToCenter);
             if (this.isPosLegal(x, y)) return [x, y];
-            disToCenter -= L1CHARMINDIS / 4;
+            disToCenter -= L1CharAttr.CHARMINDIS / 4;
         }
         // 判断最后一条，从距离射程开始往反方向判断，直到距离大于当前位置，则设置为当前位置
-        disToCenter = this.range + L1CHARMINDIS / 4;
+        disToCenter = this.rawAttr.range + L1CharAttr.CHARMINDIS / 4;
         let maxDis = this.disFrom(this.normalAttakTarget);
         while (disToCenter < maxDis) {
             [x, y] = this.getLinePosByRad([targetX, targetY], targetRad, disToCenter);
             if (this.isPosLegal(x, y)) return [x, y];
-            disToCenter += L1CHARMINDIS / 4;
+            disToCenter += L1CharAttr.CHARMINDIS / 4;
         }
         // 找不到合法点，返回自己的点
         return [this.x, this.y];
@@ -293,16 +356,16 @@ class L1Char {
      */
     private isPosLegal(x: number, y: number): boolean {
         // 如果在屏幕外
-        let minX = L1CHARMINDIS / 2;
-        let minY = L1CHARMINDIS / 2;
-        let maxX = GameRoot.GameStage.stageWidth - L1CHARMINDIS / 2;
-        let maxY = GameRoot.GameStage.stageHeight - L1CHARMINDIS / 2;
+        let minX = L1CharAttr.CHARMINDIS / 2;
+        let minY = L1CharAttr.CHARMINDIS / 2;
+        let maxX = GameRoot.GameStage.stageWidth - L1CharAttr.CHARMINDIS / 2;
+        let maxY = GameRoot.GameStage.stageHeight - L1CharAttr.CHARMINDIS / 2;
         if (x < minX || y < minY || x > maxX || y > maxY) return false;
 
         // 如果与与其他任意角色距离小于最小角色间距离
         for (let chars of [this.oppos, this.coops]) {
             for (let char of chars) {
-                if (char.alive && char != this && Util.pointDistance([x, y], [char.x, char.y]) < L1CHARMINDIS) {
+                if (char.alive && char != this && Util.pointDistance([x, y], [char.x, char.y]) < L1CharAttr.CHARMINDIS) {
                     return false;
                 }
             }
@@ -314,15 +377,15 @@ class L1Char {
     }
 
     public addToScene() {
-        LayerManager.Ins.gameLayer.addChild(this.charPort);
+        LayerManager.Ins.gameLayer.addChild(this._charPort);
     }
 
     public removeFromScene() {
-        LayerManager.Ins.gameLayer.removeChild(this.charPort);
+        LayerManager.Ins.gameLayer.removeChild(this._charPort);
     }
 
     public skillCastBreak(){
-        egret.Tween.removeTweens(this.charPort.contentGroup);
+        egret.Tween.removeTweens(this._charPort.contentGroup);
     }
 
 } 

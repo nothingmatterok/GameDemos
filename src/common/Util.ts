@@ -23,7 +23,7 @@ class Util {
      * @param alpha 
      */
     public static createColorBG(width: number, height: number,
-        color: number = ColorDef.AntiqueWhite, alpha: number = 1): egret.Shape {
+        color: number = ColorDef.DimGray, alpha: number = 1): egret.Shape {
         let shape = new egret.Shape();
         shape.width = width;
         shape.height = height;

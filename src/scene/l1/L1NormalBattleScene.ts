@@ -1,6 +1,7 @@
-class L1MainStoryScene extends IScene {
+class L1NormalBattleScene extends IScene {
 
     public skillManager: L1SkillManager;
+    public creationManager: L1CreationManager;
 
     private _resLoad: ResAsyncLoader = new ResAsyncLoader();
     private _players: L1Char[] = [];
@@ -10,7 +11,7 @@ class L1MainStoryScene extends IScene {
 
     public initial() {
         this.skillManager = new L1SkillManager();
-        this.skillManager.initial();
+        this.creationManager = new L1CreationManager();
         LayerManager.Ins.uiLayer.addChild(new L1MainStorySceneUI());
         this.initialGameLayer();
     }
@@ -27,11 +28,11 @@ class L1MainStoryScene extends IScene {
         }
 
         this._enemies.forEach(char => {
-            char.initial(this._players, this._enemies, this.skillManager);
+            char.initial(this._players, this._enemies);
         });
 
         this._players.forEach(char => {
-            char.initial(this._enemies, this._players, this.skillManager);
+            char.initial(this._enemies, this._players);
         });
     }
 
@@ -58,6 +59,7 @@ class L1MainStoryScene extends IScene {
             return;
         }
         this.skillManager.update();
+        this.creationManager.update();
 
         [this._enemies, this._players].forEach(chars => {
             chars.forEach(char => {

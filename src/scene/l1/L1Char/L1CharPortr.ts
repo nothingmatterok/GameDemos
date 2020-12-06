@@ -8,13 +8,16 @@ class L1CharPortr extends eui.Component{
     private hpNumMask: egret.Shape;
     public contentGroup: eui.Group;
     public rotationCircle: eui.Group;
+    public rotationPoint: eui.Rect;
     private _camp: L1Camp;
     private _charId: number;
+    public initialed: boolean;
 
     constructor(camp:L1Camp, charId:number) {
         super();
         this._camp = camp;
         this._charId = charId;
+        this.initialed = false;
         this.addEventListener(eui.UIEvent.COMPLETE, this.UIEventEndInit, this);
     }
 
@@ -43,6 +46,9 @@ class L1CharPortr extends eui.Component{
         this.hpNumCircle.mask = this.hpNumMask;
         this.drawHpCircle(1);
 
+        // 初始化方向点颜色
+        this.rotationPoint.fillColor = this._camp == L1Camp.Player ? ColorDef.LimeGreen : ColorDef.DarkRed;
+
         // debug状态给角色增加一个标示
         if(DEBUG){
             let label = new eui.Label;
@@ -56,6 +62,7 @@ class L1CharPortr extends eui.Component{
             this.contentGroup.addChild(label);
         }
         
+        this.initialed = true;
     }
 
     public drawHpCircle(hpPercent: number){
