@@ -8,9 +8,9 @@ class L1BuffManager{
     }
 
     public update(){
-        // 判断buff消亡
         let buffDeadTemp:L1Buff[] = [];
         for(let buff of this._activateBuffs.data){
+            buff.update();
             if(buff.isLifeEnd()){
                 buffDeadTemp.push(buff);
                 buff.removeFromTarget();
@@ -19,9 +19,6 @@ class L1BuffManager{
         for(let buff of buffDeadTemp){
             this._activateBuffs.remove(buff);
             this._deadBuffs.push(buff);
-        }
-        for(let buff of this._activateBuffs.data){
-            buff.update();
         }
     }
 

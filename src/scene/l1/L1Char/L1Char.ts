@@ -9,6 +9,8 @@ class L1Char {
     public alive: boolean;
     private _curHp: number;
     private _curAnger: number = 0;
+    private _angerAddFrame: number = 0;
+    public inSkillCasting: boolean = false;
 
     public addAngerNumber(v: number) {
         let curAnger = this._curAnger + v;
@@ -31,8 +33,8 @@ class L1Char {
     // 角色技能信息
     public charId: number;
     public name: string;
-    public skills: IL1Skill[];
-    private normalAttackSkill: IL1Skill;
+    public skills: L1Skill[];
+    private normalAttackSkill: L1Skill;
 
     // 角色阵营信息
     public camp: L1Camp;
@@ -108,7 +110,11 @@ class L1Char {
         // TODO: 根据charId读取数据，生成对应的角色信息
         this.name = `${this.charId}`;
         this.rawAttr = new L1CharAttr();
-        this.skills = [new DemoHealSkill(this)];
+        this.skills = [
+            this.skillManager.newSkill(L1SKCFGS.HEALSKILL, this),
+            this.skillManager.newSkill(L1SKCFGS.TEST02, this),
+            this.skillManager.newSkill(L1SKCFGS.TEST01, this)
+        ];
         this.maxHp = this.rawAttr.maxHp;
         this.curHp = this.maxHp;
         this._curAnger = 0;
@@ -117,17 +123,16 @@ class L1Char {
         this.dodgePoint = this.rawAttr.dodgePoint;
         this.critPoint = this.rawAttr.critPoint;
         this.critTime = this.rawAttr.critTime;
+        this._angerAddFrame = this.rawAttr.angerAdds / 60;
         if (this.charId % 3 == 0) {
-            this.normalAttackSkill = new NormalAttakCloseSkill(this);
+            this.normalAttackSkill = this.skillManager.newSkill(L1SKCFGS.NROMATK, this);
             this.rawAttr.range = 120;
             this.rawAttr.atk = this.atk *= 2;
         } else {
-            this.normalAttackSkill = new NormalAttakRangeSkill(this);
+            this.normalAttackSkill = this.skillManager.newSkill(L1SKCFGS.NORMRANGATK, this);
         }
 
         // 构建其他运行时内容
-        this.skillManager.allSkillList.addList(this.skills);
-        this.skillManager.allSkillList.add(this.normalAttackSkill);
         this.buffStatus = new MySet<number>();
         this.buffs = new MySet<L1Buff>();
 
@@ -142,10 +147,20 @@ class L1Char {
         this.coops = coops;
     }
 
+    private _curSkillIndex = 0; // 主动技能释放顺位
+
     public update() {
         // 如果单位已经死亡，不再维护任何状态
         if (!this.alive) return;
+
+        // 默认增加怒气
+        this.addAngerNumber(this._angerAddFrame);
+
+        // 如果眩晕则返回
         if (this.isDizz()) return;
+
+        // 如果在技能释放过程中则返回
+        if (this.inSkillCasting) return;
 
         // 寻找不目标，如果目标不存在或死亡，找一个新的目标
         if (this.normalAttakTarget == null || (!this.normalAttakTarget.alive)) {
@@ -183,12 +198,28 @@ class L1Char {
 
         // 判断需要释放的技能
         // 1.如果怒气满了，按照技能顺序判断是否存在cd OK的技能，进行释放
+        // 按照顺序进行释放，如果有技能在CD，则这一轮跳过该技能，如果所有技能都在CD
+        // 则在下一次技能回到该顺位时，进行到下一步
         if (this._curAnger == L1CharAttr.MAXANGER && !this.isSlient()) {
-            for (let skill of this.skills) {
+            let skillTrunId = this._curSkillIndex;
+            while(true){
+                let skill = this.skills[skillTrunId]
                 if (skill.isCoolDown()) {
                     this.skillManager.castSkill(skill);
                     this.addAngerNumber(-L1CharAttr.MAXANGER);
+                    this._curSkillIndex =  skillTrunId + 1;
+                    if (this._curSkillIndex == this.skills.length) {
+                        this._curSkillIndex = 0;
+                    }
                     return;
+                } else {
+                    skillTrunId += 1;
+                    if (skillTrunId == this.skills.length) {
+                        skillTrunId = 0;
+                    }
+                    if (skillTrunId == this._curSkillIndex) {
+                        break;
+                    }
                 }
             }
         }
@@ -198,9 +229,6 @@ class L1Char {
             this.skillManager.castSkill(this.normalAttackSkill);
         }
     }
-
-
-
 
     private getRotationToPos(pos: [number, number]): number {
         let targetRad = Util.getRad([this.x, this.y], pos);
@@ -389,7 +417,7 @@ class L1Char {
         LayerManager.Ins.gameLayer.removeChild(this._charPort);
     }
 
-    public skillCastBreak() {
+    public endSkillCast() {
         egret.Tween.removeTweens(this._charPort.contentGroup);
     }
 

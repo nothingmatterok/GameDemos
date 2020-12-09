@@ -7,12 +7,13 @@ class L1CharAttr{
         L1ATTRNAME.CRITP, L1ATTRNAME.DODGEP, L1ATTRNAME.CRITT
     ]; 
     public maxHp: number = 1000; // 最大血量
-    public atk: number = 100; // 攻击
+    public atk: number = 40; // 攻击
     public def: number = 100; // 防御
     public range: number = 400; // 普通攻击施法宽度，尽可能大于CHARMINDIS
     public critPoint: number = 10; // 暴击率 = p /100
     public dodgePoint: number = 10; // 闪避率 = p /100
     public critTime: number = 1.2; // 暴击倍率
+    public angerAdds: number = 20; // 每秒增加的怒气
 
     // 每秒多少m
     public moveSpeed: number = 160;

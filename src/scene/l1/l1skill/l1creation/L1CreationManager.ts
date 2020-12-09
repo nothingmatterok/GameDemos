@@ -10,8 +10,10 @@ class L1CreationManager {
 
     public update() {
         // 判断死亡的creation进行移除与加入死亡池
-        let deadCreations = []
+        let deadCreations = [];
+        // 对活着的creation进行更新
         for (let creation of this._activateCreations.data) {
+            creation.update();
             if (creation.isLifeEnd()) {
                 creation.lifeEnd();
                 deadCreations.push(creation)
@@ -20,10 +22,6 @@ class L1CreationManager {
         for (let creation of deadCreations) {
             this._activateCreations.remove(creation);
             this._deadCreations.push(creation);
-        }
-        // 对活着的creation进行更新
-        for (let creation of this._activateCreations.data) {
-            creation.update();
         }
     }
 
