@@ -3,6 +3,10 @@ class L1SkillManager{
     private _skillCastingList: MySet<L1Skill>;
     private _allSkillList: MySet<L1Skill>;
 
+    public static get Ins(): L1SkillManager{
+        return (SceneManager.Ins.curScene as L1NormalBattleScene).skillManager;
+    }
+
     public constructor(){
         this._skillCastingList = new MySet<L1Skill>();
         this._allSkillList = new MySet<L1Skill>(); // 主要进行CD管理

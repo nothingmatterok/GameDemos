@@ -26,4 +26,5 @@
 	<e:Button id="confirmButton" label="确认" width="160" height="80" horizontalCenter="120" verticalCenter="25"/>
 	<e:Label id="label" text="请输入密码" horizontalCenter="122" fontFamily="Microsoft YaHei" verticalCenter="-181" textColor="0xFF7F50"/>
 	<e:Button id="debugButton" label="测试button" height="200" width="200" right="0" bottom="0" visible="false"/>
+	<e:Button id="clearLocalButton" label="清除缓存" right="20" top="20"/>
 </e:Skin>

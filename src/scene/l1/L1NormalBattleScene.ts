@@ -14,20 +14,27 @@ class L1NormalBattleScene extends IScene {
         this.skillManager = new L1SkillManager();
         this.creationManager = new L1CreationManager();
         this.buffManager = new L1BuffManager();
-        LayerManager.Ins.uiLayer.addChild(new L1MainStorySceneUI());
+        LayerManager.Ins.uiLayer.addChild(new L1BattleSceneUI());
         this.initialGameLayer();
     }
 
     private initialGameLayer() {
-        for (let i = 1; i <= 8; i++) {
-            let char = new L1Char(i % 2 * 2 - 1, i);
+        // 从L1Userdata中读取关卡信息
+        let enemiesIds = UserData.l1Data.currentLevelEnemies;
+        for (let i of enemiesIds) {
+            let char = new L1Char(L1Camp.Enemy, i);
             char.addToScene();
-            if (char.camp == L1Camp.Enemy) {
-                this._enemies.push(char);
-            } else {
-                this._players.push(char);
-            }
+            this._enemies.push(char);
         }
+        let charIds = UserData.l1Data.userUseCharIds;
+        for (let i of charIds) {
+            let char = new L1Char(L1Camp.Player, i);
+            char.addToScene();
+            this._players.push(char);
+        }
+
+        this._enemies.sort((a, b) => { return a.rawAttr.posNum - b.rawAttr.posNum });
+        this._players.sort((a, b) => { return a.rawAttr.posNum - b.rawAttr.posNum });
 
         this._enemies.forEach(char => {
             char.initial(this._players, this._enemies);
@@ -38,7 +45,46 @@ class L1NormalBattleScene extends IScene {
         });
     }
 
+    private _battleStart: boolean = false;
+    public battleStart() {
+        this._battleStart = true;
+    }
+
+    private removeChar(charId:number) {
+        let index = -1;
+        for(let i=0;i<this._players.length;i++){
+            if(this._players[i].charId == charId){
+                index = i;
+                break;
+            }
+        }
+        if (index == -1){
+            console.warn("哪里不对劲");
+            return;
+        }
+        this._players.splice(index, 1);
+        this.endReplace();
+    }
+
+    private addChar(charId: number) {
+        let char = new L1Char(L1Camp.Player, charId);
+        char.addToScene();
+        this._players.push(char);
+        this.endReplace();
+    }
+
+    private endReplace() {
+        // 对我方角色重新排序与初始化
+        this._players.sort((a, b) => { return a.rawAttr.posNum - b.rawAttr.posNum });
+        this._players.forEach(char => {
+            char.initial(this._enemies, this._players);
+        });
+    }
+
     public update() {
+        // 如果战斗还没开始
+        if (!this._battleStart) return;
+        // 如果战斗结束了
         if (this.battleEnd) return;
         // 胜利判定
         let palyerAliveNum = 0;

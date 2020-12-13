@@ -72,7 +72,7 @@ class L1Char {
         return this._charPort.rotationCircle.rotation;
     }
 
-    private rawAttr: L1CharAttr;
+    public rawAttr: L1CharAttr;
     public get moveSpeed(): number {
         return this.rawAttr.moveSpeed;
     }
@@ -106,15 +106,12 @@ class L1Char {
         this.camp = camp;
         this.skillManager = (SceneManager.Ins.curScene as L1NormalBattleScene).skillManager;
         this.charId = charId;
-        this._charPort = new L1CharPortr(camp, charId);
-        // TODO: 根据charId读取数据，生成对应的角色信息
-        this.name = `${this.charId}`;
-        this.rawAttr = new L1CharAttr();
-        this.skills = [
-            this.skillManager.newSkill(L1SKCFGS.HEALSKILL, this),
-            this.skillManager.newSkill(L1SKCFGS.TEST02, this),
-            this.skillManager.newSkill(L1SKCFGS.TEST01, this)
-        ];
+        let [attr, skillCfgs, normalSkillCfg, passiveCfgs, name, portImageName] =
+            CHARCFGS[charId];
+        this._charPort = new L1CharPortr(camp, portImageName, charId);
+        this.name = name;
+        this.rawAttr = attr;
+        this.skills = skillCfgs.map((skillCfg) => { return L1SkillManager.Ins.newSkill(skillCfg, this) });
         this.maxHp = this.rawAttr.maxHp;
         this.curHp = this.maxHp;
         this._curAnger = 0;
@@ -124,27 +121,26 @@ class L1Char {
         this.critPoint = this.rawAttr.critPoint;
         this.critTime = this.rawAttr.critTime;
         this._angerAddFrame = this.rawAttr.angerAdds / 60;
-        if (this.charId % 3 == 0) {
-            this.normalAttackSkill = this.skillManager.newSkill(L1SKCFGS.NROMATK, this);
-            this.rawAttr.range = 120;
-            this.rawAttr.atk = this.atk *= 2;
-        } else {
-            this.normalAttackSkill = this.skillManager.newSkill(L1SKCFGS.NORMRANGATK, this);
-        }
+        this.normalAttackSkill = this.skillManager.newSkill(normalSkillCfg, this);
 
         // 构建其他运行时内容
         this.buffStatus = new MySet<number>();
         this.buffs = new MySet<L1Buff>();
-
-        // TODO:临时生成到合适的位置
-        this.x = GameRoot.GameStage.stageWidth * (1 / 2) + camp * 200;
-        this.y = GameRoot.GameStage.stageHeight * (1 / 10) + (charId + charId % 2) * 60;
 
     }
 
     public initial(oppos: L1Char[], coops: L1Char[]) {
         this.oppos = oppos;
         this.coops = coops;
+        // 根据顺位计算初始位置
+        let posIndex = coops.indexOf(this);
+        let xOffsetSymbol = this.camp == L1Camp.Player ? -1 : 1;
+        this.x = (Math.floor(posIndex / 2) * 130 + 130) * xOffsetSymbol + GameRoot.GameStage.stageWidth / 2;
+        this.y = ((posIndex % 2) * 2 - 1) * (70 + Math.floor(posIndex / 2) * 100) + 500;
+        // 转向
+        if(this.camp == L1Camp.Enemy){
+            this.rotation = 180;
+        }
     }
 
     private _curSkillIndex = 0; // 主动技能释放顺位
@@ -202,12 +198,12 @@ class L1Char {
         // 则在下一次技能回到该顺位时，进行到下一步
         if (this._curAnger == L1CharAttr.MAXANGER && !this.isSlient()) {
             let skillTrunId = this._curSkillIndex;
-            while(true){
+            while (true) {
                 let skill = this.skills[skillTrunId]
                 if (skill.isCoolDown()) {
                     this.skillManager.castSkill(skill);
                     this.addAngerNumber(-L1CharAttr.MAXANGER);
-                    this._curSkillIndex =  skillTrunId + 1;
+                    this._curSkillIndex = skillTrunId + 1;
                     if (this._curSkillIndex == this.skills.length) {
                         this._curSkillIndex = 0;
                     }
@@ -395,10 +391,12 @@ class L1Char {
         let maxY = GameRoot.GameStage.stageHeight - L1CharAttr.CHARMINDIS / 2;
         if (x < minX || y < minY || x > maxX || y > maxY) return false;
 
-        // 如果与与其他任意角色距离小于最小角色间距离
+        // 如果与与其他任意角色距离小于最小角色间距离，且与其他人的目标位置小于最小角色距离
         for (let chars of [this.oppos, this.coops]) {
             for (let char of chars) {
-                if (char.alive && char != this && Util.pointDistance([x, y], [char.x, char.y]) < L1CharAttr.CHARMINDIS) {
+                if (char.alive && char != this &&
+                    Util.pointDistance([x, y], [char.x, char.y]) < L1CharAttr.CHARMINDIS &&
+                    Util.pointDistance([x, y], char._destPos) < L1CharAttr.CHARMINDIS) {
                     return false;
                 }
             }
@@ -464,15 +462,15 @@ class L1Char {
         // 计算增益后属性
         this.atk = this.rawAttr.atk * (1 + attrRatio[L1ATTRNAME.ATK]) + attrAdd[L1ATTRNAME.ATK];
         this.def = this.rawAttr.def * (1 + attrRatio[L1ATTRNAME.DEF]) + attrAdd[L1ATTRNAME.DEF];
-        this.critPoint  = this.rawAttr.critPoint * (1 + attrRatio[L1ATTRNAME.CRITP]) + attrAdd[L1ATTRNAME.CRITP];
-        this.dodgePoint  = this.rawAttr.dodgePoint * (1 + attrRatio[L1ATTRNAME.DODGEP]) + attrAdd[L1ATTRNAME.DODGEP];
-        let maxHp =  this.rawAttr.maxHp * (1 + attrRatio[L1ATTRNAME.MAXHP]) + attrAdd[L1ATTRNAME.MAXHP];
-        if(maxHp > this.maxHp){
+        this.critPoint = this.rawAttr.critPoint * (1 + attrRatio[L1ATTRNAME.CRITP]) + attrAdd[L1ATTRNAME.CRITP];
+        this.dodgePoint = this.rawAttr.dodgePoint * (1 + attrRatio[L1ATTRNAME.DODGEP]) + attrAdd[L1ATTRNAME.DODGEP];
+        let maxHp = this.rawAttr.maxHp * (1 + attrRatio[L1ATTRNAME.MAXHP]) + attrAdd[L1ATTRNAME.MAXHP];
+        if (maxHp > this.maxHp) {
             let addHp = maxHp - this.maxHp;
             this.curHp += addHp;
             this.maxHp = maxHp;
         }
-        this.critTime  = this.rawAttr.critTime * (1 + attrRatio[L1ATTRNAME.CRITT]) + attrAdd[L1ATTRNAME.CRITT];
+        this.critTime = this.rawAttr.critTime * (1 + attrRatio[L1ATTRNAME.CRITT]) + attrAdd[L1ATTRNAME.CRITT];
     }
 
     public refreshBuffStatus() {
@@ -481,7 +479,7 @@ class L1Char {
         let statusTemp: L1BuffStatus[] = [];
         for (let buff of this.buffs.data) {
             let isAffect = buff.config.isAffect(this, buff.caster);
-            if (buff.config.buffType == L1BuffType.STATUS && isAffect ){
+            if (buff.config.buffType == L1BuffType.STATUS && isAffect) {
                 statusTemp.push(buff.config.status);
             }
         }

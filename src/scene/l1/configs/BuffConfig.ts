@@ -10,9 +10,10 @@ const L1BUFFCFGS: { [key: string]: L1BuffConfig } = {
         "攻击 +10", {"ATK": 10}
     ),
     "BUFF02" : new L1BuffConfig(
-        10000, 1000, L1BuffType.AFFECT, L1BuffStatus.NORMAL,
+        10000, 1000, L1BuffType.AFFECTPERIOD, L1BuffStatus.NORMAL,
         "持续掉血", null, null, (target: L1Char, caster: L1Char)=>{
             L1Harm.harm(caster, [target], new L1HarmConfig(()=>{return [false, 88]}))
+            L1BuffManager.Ins.newBuff(L1BUFFCFGS.BUFF01, target, caster);
         }
     ),
 }

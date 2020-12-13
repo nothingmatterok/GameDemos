@@ -13,7 +13,7 @@ class L1MainUI extends eui.Component {
 
     private UIEventInit() {
         this.backButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.backToMainScene, this);
-        this.mainStoryButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.toL1MainStoryScene, this);
+        this.mainStoryButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.toL1BattleScene, this);
         this.roughlikeButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.toL1RoughlikeScene, this);
     }
 
@@ -21,7 +21,7 @@ class L1MainUI extends eui.Component {
         SceneManager.Ins.setScene(new MainScene());
     }
 
-    private toL1MainStoryScene(){
+    private toL1BattleScene(){
         SceneManager.Ins.setScene(new L1NormalBattleScene());
     }
 

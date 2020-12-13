@@ -25,7 +25,10 @@ class L1BuffConfig{
         affectFunc: (target: L1Char, caster: L1Char)=>void = ()=>{},
         isAffectDudge: (target: L1Char, caster: L1Char) => boolean = ()=>{
             return true;
-        }
+        },
+        public canBeClear: boolean = true,
+        public isGood: boolean = true,
+        public condCd: number = 1000, // ms
     ){
         this.duration = duration;
         this.period = period;
@@ -40,7 +43,8 @@ class L1BuffConfig{
 }
 
 enum L1BuffType{
-    AFFECT,
+    AFFECTPERIOD,
+    AFFECTCOND,
     ATTRCHANGE,
     STATUS
 }

@@ -24,6 +24,7 @@ class GameRoot {
     }
 
     public init(stage: egret.Stage):void{
+        UserData.initialData();
         this._gameStage = stage;
         MessageManager.Ins.initial(stage);
         LayerManager.Ins.initial();

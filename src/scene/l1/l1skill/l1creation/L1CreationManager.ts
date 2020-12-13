@@ -3,6 +3,11 @@ class L1CreationManager {
     private _deadCreations: L1Creation[];
     private _activateCreations: MySet<L1Creation>;
 
+    public static get Ins(): L1CreationManager{
+        return (SceneManager.Ins.curScene as L1NormalBattleScene).creationManager;
+    }
+
+
     public constructor() {
         this._deadCreations = [];
         this._activateCreations = new MySet<L1Creation>();

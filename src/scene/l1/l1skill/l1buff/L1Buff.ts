@@ -4,6 +4,7 @@ class L1Buff{
     // 运行时状态
     private _periodFrame: number;
     private _durationFrame: number;
+    private _condPeriodFrame: number;
     private _target : L1Char;
     public caster: L1Char;
 
@@ -12,8 +13,10 @@ class L1Buff{
     public initial(config: L1BuffConfig, target: L1Char, caster: L1Char){
         this.config = config;
         let frameMs = GameRoot.GameStage.frameRate / 1000; // 每毫秒多少帧
-        this._periodFrame = this.config.period * frameMs;
-        this._durationFrame = this.config.duration * frameMs;
+        this._periodFrame = Math.ceil(this.config.period * frameMs);
+        this._durationFrame = Math.ceil(this.config.duration * frameMs);
+        this._condPeriodFrame = Math.ceil(this.config.condCd * frameMs);
+        this._preCondAffectFrame = -this._condPeriodFrame;
         this.addToTarget(target);
         this._activateFrame = 0;
         this.caster = caster;
@@ -55,18 +58,31 @@ class L1Buff{
     }
 
     private _activateFrame: number = 0;
+    private _preCondAffectFrame: number;
     public update(){
+        // 循环作用类型
         if(
-            this.config.buffType == L1BuffType.AFFECT && 
+            this.config.buffType == L1BuffType.AFFECTPERIOD && 
             this._activateFrame % this._periodFrame == 0 && 
             this.config.isAffect(this._target, this.caster)
         ){
             this.config.affectFunc(this._target, this.caster);
         }
+        // 条件作用类型
+        if(
+            this.config.buffType == L1BuffType.AFFECTCOND && 
+            this._activateFrame - this._preCondAffectFrame >= this._condPeriodFrame &&
+            this.config.isAffect(this._target, this.caster)
+        ){
+            this.config.affectFunc(this._target, this.caster);
+            this._preCondAffectFrame = this._activateFrame;
+        }
+
         this._activateFrame += 1;
     }
 
     public isLifeEnd(){
+        if (this._durationFrame == 0) return false; // 如果是无限持续，返回false
         return this._activateFrame > this._durationFrame;
     }
 

@@ -70,11 +70,13 @@ const L1SKCFGS: { [key: string]: L1SkillConfig } = {
         40000,
         {
             0: (skill: L1Skill) => { // 第0ms开始执行
-                skill.caster.startAnim([[0, 0], [0, 10], [0, -10], [0, 0]], [75, 150, 75]);
+                skill.caster.startAnim([[0, 0], [0, 20], [0, -20], [0, 0], [-20, 0], [20, 0], [0, 0]], 
+                    [75, 150, 75, 75, 150, 75]);
             },
             150: (skill: L1Skill) => { // 第75ms执行
                 L1Harm.harm(skill.caster, skill.targets, L1HARMCFGS.HEAL01)
-            }
+            },
+            5000 : ()=>{}
         },
         (skill: L1Skill) => {
             return [skill.caster];

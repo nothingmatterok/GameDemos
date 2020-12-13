@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<e:Skin class="L1BattleSceneUISkin"
+	 width="640"
+	height="1136" xmlns:e="http://ns.egret.com/eui">
+	<e:Button id="backButton" label="返回" left="30" top="30"/>
+	<e:Button id="battleStartButton" label="开始战斗" right="50" bottom="50" height="100"/>
+</e:Skin>

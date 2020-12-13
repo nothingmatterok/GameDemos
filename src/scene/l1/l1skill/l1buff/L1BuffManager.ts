@@ -2,6 +2,10 @@ class L1BuffManager{
     private _deadBuffs: L1Buff[];
     private _activateBuffs: MySet<L1Buff>;
 
+    public static get Ins(): L1BuffManager{
+        return (SceneManager.Ins.curScene as L1NormalBattleScene).buffManager;
+    }
+
     public constructor(){
         this._deadBuffs = [];
         this._activateBuffs = new MySet<L1Buff>();

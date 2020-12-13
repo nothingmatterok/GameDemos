@@ -18,9 +18,9 @@ declare module skins{
 	class ItemRendererSkin extends eui.Skin{
 	}
 }
-declare class L1CharPortrSkin extends eui.Skin{
+declare class L1BattleSceneUISkin extends eui.Skin{
 }
-declare class L1MainStorySceneUISkin extends eui.Skin{
+declare class L1CharPortrSkin extends eui.Skin{
 }
 declare class L1MainUISkin extends eui.Skin{
 }

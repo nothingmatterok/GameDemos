@@ -10,15 +10,13 @@ class L1CharPortr extends eui.Component{
     public rotationCircle: eui.Group;
     public rotationPoint: eui.Rect;
     private _camp: L1Camp;
-    private _charId: number;
     public initialed: boolean;
     private dizzLabel: eui.Label;
     private slientLabel: eui.Label;
 
-    constructor(camp:L1Camp, charId:number) {
+    constructor(camp:L1Camp, private _portImage:string, private _charId: number = 0) {
         super();
         this._camp = camp;
-        this._charId = charId;
         this.initialed = false;
         this.addEventListener(eui.UIEvent.COMPLETE, this.UIEventEndInit, this);
     }
@@ -26,7 +24,7 @@ class L1CharPortr extends eui.Component{
     private UIEventEndInit() {
 
         // 根据角色id初始化
-        this.portImage.source = `${this._charId}_portrait_png`;
+        this.portImage.source = this._portImage;
         this.portImage.mask = this.portMask; // 初始化头像mask
 
         // 初始化血条颜色
