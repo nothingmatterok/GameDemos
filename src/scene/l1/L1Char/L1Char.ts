@@ -106,12 +106,11 @@ class L1Char {
         this.camp = camp;
         this.skillManager = (SceneManager.Ins.curScene as L1NormalBattleScene).skillManager;
         this.charId = charId;
-        let [attr, skillCfgs, normalSkillCfg, passiveCfgs, name, portImageName] =
-            CHARCFGS[charId];
-        this._charPort = new L1CharPortr(camp, portImageName, charId);
+        let charConfig = CHARCFGS[charId];
+        this._charPort = new L1CharPortr(camp, charConfig.portImageName, charId);
         this.name = name;
-        this.rawAttr = attr;
-        this.skills = skillCfgs.map((skillCfg) => { return L1SkillManager.Ins.newSkill(skillCfg, this) });
+        this.rawAttr = charConfig.attr;
+        this.skills = charConfig.skills.map((skillCfg) => { return L1SkillManager.Ins.newSkill(skillCfg, this) });
         this.maxHp = this.rawAttr.maxHp;
         this.curHp = this.maxHp;
         this._curAnger = 0;
@@ -121,7 +120,7 @@ class L1Char {
         this.critPoint = this.rawAttr.critPoint;
         this.critTime = this.rawAttr.critTime;
         this._angerAddFrame = this.rawAttr.angerAdds / 60;
-        this.normalAttackSkill = this.skillManager.newSkill(normalSkillCfg, this);
+        this.normalAttackSkill = this.skillManager.newSkill(charConfig.normalSkill, this);
 
         // 构建其他运行时内容
         this.buffStatus = new MySet<number>();

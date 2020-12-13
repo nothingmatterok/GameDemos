@@ -31,7 +31,8 @@ abstract class IScene{
      */
     public defaultRelease(){
         egret.Tween.removeAllTweens();
-		LayerManager.Ins.clear();
+        LayerManager.Ins.clear();
+        MessageManager.Ins.clearListener();
     }
 
     /**

@@ -50,7 +50,7 @@ class L1NormalBattleScene extends IScene {
         this._battleStart = true;
     }
 
-    private removeChar(charId:number) {
+    public removeChar(charId:number) {
         let index = -1;
         for(let i=0;i<this._players.length;i++){
             if(this._players[i].charId == charId){
@@ -62,11 +62,13 @@ class L1NormalBattleScene extends IScene {
             console.warn("哪里不对劲");
             return;
         }
+        let char = this._players[index];
+        char.removeFromScene();
         this._players.splice(index, 1);
         this.endReplace();
     }
 
-    private addChar(charId: number) {
+    public addChar(charId: number) {
         let char = new L1Char(L1Camp.Player, charId);
         char.addToScene();
         this._players.push(char);
@@ -79,6 +81,7 @@ class L1NormalBattleScene extends IScene {
         this._players.forEach(char => {
             char.initial(this._enemies, this._players);
         });
+        
     }
 
     public update() {

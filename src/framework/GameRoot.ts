@@ -4,11 +4,6 @@ class GameRoot {
     private _initialed: boolean = false;
     
 	private constructor(){
-		MessageManager.Ins.addEventListener(
-            egret.Event.ENTER_FRAME, 
-            this.update, 
-            this
-        );
     }
     
     public static get GameStage(): egret.Stage{
@@ -31,6 +26,11 @@ class GameRoot {
         SceneManager.Ins.initial();
         TimeScaleManager.Ins.initial();
         this._initialed = true;
+        this._gameStage.addEventListener(
+            egret.Event.ENTER_FRAME, 
+            this.update, 
+            this
+        );
     }
     
     private update(): void{

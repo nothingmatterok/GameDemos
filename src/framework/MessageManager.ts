@@ -25,11 +25,24 @@ class MessageManager extends egret.DisplayObject{
 		stage.addChild(this);
 	}
 
-	// TODO: 管理一个订阅事件列表，以便可以方便的清除，需要记录 订阅事件 / 触发函数 / this对象
-
-
 	public sendMessage(type: string, messageContent:any=null){
 		this.dispatchEvent(new Message(messageContent, type));
+	}
+
+	private _listenerList:[string, Function, any][] = [];
+
+	public addEventListener(type: string, listener: Function, thisObject: any){
+		super.addEventListener(type, listener, thisObject);
+		this._listenerList.push([type, listener, thisObject]);
+	}
+
+	public clearListener(){
+		for(let l of this._listenerList){
+			let [type, listener, thisObject] = l;
+			this.removeEventListener(type, listener, thisObject);
+		}
+		this._listenerList = [];
+		
 	}
 
 }
