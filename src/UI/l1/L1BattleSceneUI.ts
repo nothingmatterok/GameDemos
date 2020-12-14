@@ -14,7 +14,8 @@ class L1BattleSceneUI extends eui.Component{
         this._selectIds = [];
     }
 
-    public battleEnd(){
+    public battleEnd(isVictory:boolean){
+        if(!isVictory) this.nextLevelButton.label = "Retry";
         this.nextLevelButton.visible = true;
     }
 

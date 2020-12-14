@@ -11,10 +11,11 @@ class L1NormalBattleScene extends IScene {
     private _battleSceneUI: L1BattleSceneUI;
 
     private _battleEnd: boolean = false;
+    private _victoryCamp: L1Camp;
     public get BattleEnd(): boolean{return this._battleEnd};
     public set BattleEnd(v:boolean){
-        this._battleEnd = true;
-        if(v == true){
+        this._battleEnd = v;
+        if(v == true && this._victoryCamp == L1Camp.Player){
             if (UserData.l1Data.levelType == L1LevelType.MainStory){
                 let maxId = Object.keys(L1LevelCFGS).length - 1;
                 let id = UserData.l1Data.CurMainStoryId + 1;
@@ -22,7 +23,10 @@ class L1NormalBattleScene extends IScene {
                     UserData.l1Data.CurMainStoryId = id;
                 }
             }
-            this._battleSceneUI.battleEnd();
+            this._battleSceneUI.battleEnd(true);
+        }
+        if (v == true && this._victoryCamp == L1Camp.Enemy){
+            this._battleSceneUI.battleEnd(false);
         }
     }
 
@@ -123,11 +127,13 @@ class L1NormalBattleScene extends IScene {
             });
         });
         if (palyerAliveNum == 0) {
+            this._victoryCamp = L1Camp.Enemy;
             this.BattleEnd = true;
             ToastInfoManager.newRedToast("战斗失败");
             return;
         }
         if (enemyAliveNum == 0) {
+            this._victoryCamp = L1Camp.Player;
             this.BattleEnd = true;
             ToastInfoManager.newRedToast("战斗胜利");
             return;

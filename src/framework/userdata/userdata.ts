@@ -23,7 +23,8 @@ class UserData{
     }
 
     public static clearLocalData(){
-        egret.localStorage.clear()
+        egret.localStorage.clear();
+        this.initialData();
     }
 
 }
