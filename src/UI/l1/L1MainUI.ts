@@ -22,6 +22,7 @@ class L1MainUI extends eui.Component {
     }
 
     private toL1BattleScene(){
+        UserData.l1Data.levelType = L1LevelType.MainStory;
         SceneManager.Ins.setScene(new L1NormalBattleScene());
     }
 

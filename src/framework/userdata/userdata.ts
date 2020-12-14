@@ -1,9 +1,13 @@
 class UserData{
 
-    public static l1Data = new L1Data();
+    public static l1Data: L1Data;
 
     public static initialData(){
-        this.l1Data.initial();
+        let data = UserData.getObject("L1Data");
+        this.l1Data = new L1Data();
+        if (data){
+            this.l1Data.initialByData(data);
+        }
     }
 
     public static setObject(key: string, value: any){

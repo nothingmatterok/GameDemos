@@ -8,25 +8,42 @@ class L1NormalBattleScene extends IScene {
     private _players: L1Char[] = [];
     private _enemies: L1Char[] = [];
 
-    public battleEnd: boolean = false;
+    private _battleSceneUI: L1BattleSceneUI;
+
+    private _battleEnd: boolean = false;
+    public get BattleEnd(): boolean{return this._battleEnd};
+    public set BattleEnd(v:boolean){
+        this._battleEnd = true;
+        if(v == true){
+            if (UserData.l1Data.levelType == L1LevelType.MainStory){
+                let maxId = Object.keys(L1LevelCFGS).length - 1;
+                let id = UserData.l1Data.CurMainStoryId + 1;
+                if (id <= maxId) {
+                    UserData.l1Data.CurMainStoryId = id;
+                }
+            }
+            this._battleSceneUI.battleEnd();
+        }
+    }
 
     public initial() {
         this.skillManager = new L1SkillManager();
         this.creationManager = new L1CreationManager();
         this.buffManager = new L1BuffManager();
-        LayerManager.Ins.uiLayer.addChild(new L1BattleSceneUI());
+        this._battleSceneUI = new L1BattleSceneUI();
+        LayerManager.Ins.uiLayer.addChild(this._battleSceneUI);
         this.initialGameLayer();
     }
 
     private initialGameLayer() {
         // 从L1Userdata中读取关卡信息
-        let enemiesIds = UserData.l1Data.currentLevelEnemies;
+        let enemiesIds = this.readEnemiesIds();
         for (let i of enemiesIds) {
             let char = new L1Char(L1Camp.Enemy, i);
             char.addToScene();
             this._enemies.push(char);
         }
-        let charIds = UserData.l1Data.userUseCharIds;
+        let charIds = UserData.l1Data.UserUseCharIds;
         for (let i of charIds) {
             let char = new L1Char(L1Camp.Player, i);
             char.addToScene();
@@ -43,6 +60,12 @@ class L1NormalBattleScene extends IScene {
         this._players.forEach(char => {
             char.initial(this._enemies, this._players);
         });
+    }
+
+    private readEnemiesIds(): number[]{
+        if(UserData.l1Data.levelType == L1LevelType.MainStory){
+            return L1LevelCFGS[UserData.l1Data.CurMainStoryId];
+        }
     }
 
     private _battleStart: boolean = false;
@@ -88,7 +111,7 @@ class L1NormalBattleScene extends IScene {
         // 如果战斗还没开始
         if (!this._battleStart) return;
         // 如果战斗结束了
-        if (this.battleEnd) return;
+        if (this.BattleEnd) return;
         // 胜利判定
         let palyerAliveNum = 0;
         let enemyAliveNum = 0;
@@ -100,12 +123,12 @@ class L1NormalBattleScene extends IScene {
             });
         });
         if (palyerAliveNum == 0) {
-            this.battleEnd = true;
+            this.BattleEnd = true;
             ToastInfoManager.newRedToast("战斗失败");
             return;
         }
         if (enemyAliveNum == 0) {
-            this.battleEnd = true;
+            this.BattleEnd = true;
             ToastInfoManager.newRedToast("战斗胜利");
             return;
         }

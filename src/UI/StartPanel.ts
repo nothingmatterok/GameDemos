@@ -36,6 +36,7 @@ class StartPanel extends eui.Component {
 
     private confirmPswd(event: egret.TouchEvent) {
         if (DEBUG) {
+            UserData.l1Data.levelType = L1LevelType.MainStory;
             SceneManager.Ins.setScene(new L1NormalBattleScene());
             return;
         }
