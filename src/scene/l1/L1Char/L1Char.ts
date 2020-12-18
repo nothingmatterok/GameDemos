@@ -108,7 +108,7 @@ class L1Char {
         this.charId = charId;
         let charConfig = CHARCFGS[charId];
         this._charPort = new L1CharPortr(camp, charConfig.portImageName, charId);
-        this.name = name;
+        this.name = charConfig.name;
         this.rawAttr = charConfig.attr;
         this.skills = charConfig.skills.map((skillCfg) => { return L1SkillManager.Ins.newSkill(skillCfg, this) });
         this.maxHp = this.rawAttr.maxHp;
@@ -126,6 +126,14 @@ class L1Char {
         this.buffStatus = new MySet<number>();
         this.buffs = new MySet<L1Buff>();
 
+        MessageManager.Ins.addEventListener(MessageType.L1BATTLECHARPORTTAP, this.portTap, this);
+    }
+
+    private portTap(msg: Message){
+        // 如果点击的是自己持有的头像，发送一个自己被点击的消息，主要是为了解除双向持有，懒得做手动release
+        if(msg.messageContent == this._charPort){
+            MessageManager.Ins.sendMessage(MessageType.L1BATTLECHARTAP, this);
+        }
     }
 
     public initial(oppos: L1Char[], coops: L1Char[]) {

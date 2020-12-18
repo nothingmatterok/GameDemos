@@ -19,6 +19,11 @@ class L1CharPortr extends eui.Component{
         this._camp = camp;
         this.initialed = false;
         this.addEventListener(eui.UIEvent.COMPLETE, this.UIEventEndInit, this);
+        this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.tapEvent, this);
+    }
+
+    private tapEvent(){
+        MessageManager.Ins.sendMessage(MessageType.L1BATTLECHARPORTTAP, this);
     }
 
     private UIEventEndInit() {

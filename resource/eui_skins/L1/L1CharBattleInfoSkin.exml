@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='utf-8'?>
+<e:Skin class="L1CharBattleInfoSkin"
+	 width="500"
+	height="800" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*">
+	<e:Rect id="bgRect" width="100%" height="100%" y="0" x="0" fillColor="0xFFFFFF" fillAlpha="0.2" visible="true"/>
+	<e:Group width="400" height="550" horizontalCenter="0" top="100">
+		<e:Rect width="100%" height="100%" alpha="0.5" scaleX="1" scaleY="1" fillAlpha="1" x="0" y="0"/>
+		<e:Rect width="90%" height="120" alpha="0.4" scaleX="1" scaleY="1" bottom="180" horizontalCenter="0" fillAlpha="0.5"/>
+		<e:Rect width="90%" height="120" alpha="0.4" scaleX="1" scaleY="1" bottom="30" horizontalCenter="0" fillAlpha="0.5" x="30" y="360"/>
+		<e:Label text="SKILLS" bottom="105" left="-20" size="45" rotation="340" textColor="0xFF8C00"/>
+		<e:Label text="STATUS" bottom="245" left="-20" size="45" rotation="340" textColor="0xFF8C00"/>
+		<e:Group width="100%" height="61" x="0" anchorOffsetX="0" anchorOffsetY="0" top="0" y="-312.99" scaleX="1" scaleY="1">
+			<e:Rect width="100%" height="100%" x="0" y="0" ellipseWidth="0" ellipseHeight="0" fillColor="0x696969" fillAlpha="0.5" visible="true"/>
+			<e:Label id="charNameLabel" text="四字角色" horizontalCenter="0" verticalCenter="0" size="30" textColor="0xFFFFFF"/>
+		</e:Group>
+		<e:Group height="40" x="20" y="80" anchorOffsetX="0" anchorOffsetY="0" width="80" scaleX="1" scaleY="1">
+			<e:Rect width="100%" height="100%" x="0" y="0" ellipseWidth="20" ellipseHeight="20" fillColor="0xFF8C00"/>
+			<e:Label horizontalCenter="0" verticalCenter="0" size="25" text="攻击" textColor="0xFFFFFF"/>
+		</e:Group>
+		<e:Group height="40" x="110" y="80" anchorOffsetX="0" anchorOffsetY="0" width="80" scaleX="1" scaleY="1">
+			<e:Rect width="100%" height="100%" x="0" y="0" ellipseWidth="20" ellipseHeight="20" fillColor="0xFF8C00"/>
+			<e:Label id="atkNumLabel" horizontalCenter="0" verticalCenter="0" size="25" text="120" textColor="0xFFFFFF"/>
+		</e:Group>
+		<e:Group height="40" x="220" y="80" anchorOffsetX="0" anchorOffsetY="0" width="80" scaleX="1" scaleY="1">
+			<e:Rect width="100%" height="100%" x="0" y="0" ellipseWidth="20" ellipseHeight="20" fillColor="0xFF8C00"/>
+			<e:Label horizontalCenter="0" verticalCenter="0" size="25" text="防御" textColor="0xFFFFFF"/>
+		</e:Group>
+		<e:Group height="40" x="310" y="80" anchorOffsetX="0" anchorOffsetY="0" width="80" scaleX="1" scaleY="1">
+			<e:Rect width="100%" height="100%" x="0" y="0" ellipseWidth="20" ellipseHeight="20" fillColor="0xFF8C00"/>
+			<e:Label id="defNumLabel" horizontalCenter="0" verticalCenter="0" size="25" text="120" textColor="0xFFFFFF"/>
+		</e:Group>
+		<e:Group height="40" x="20.207" y="131" anchorOffsetX="0" anchorOffsetY="0" width="80" scaleX="1" scaleY="1">
+			<e:Rect width="100%" height="100%" x="0" y="0" ellipseWidth="20" ellipseHeight="20" fillColor="0xFF8C00"/>
+			<e:Label horizontalCenter="0" verticalCenter="0" size="25" text="暴击" textColor="0xFFFFFF"/>
+		</e:Group>
+		<e:Group height="40" x="110.207" y="131" anchorOffsetX="0" anchorOffsetY="0" width="80" scaleX="1" scaleY="1">
+			<e:Rect width="100%" height="100%" x="0" y="0" ellipseWidth="20" ellipseHeight="20" fillColor="0xFF8C00"/>
+			<e:Label id="critPLabel" horizontalCenter="0" verticalCenter="0" size="25" text="120" textColor="0xFFFFFF"/>
+		</e:Group>
+		<e:Group height="40" x="220.207" y="131" anchorOffsetX="0" anchorOffsetY="0" width="80" scaleX="1" scaleY="1">
+			<e:Rect width="100%" height="100%" x="0" y="0" ellipseWidth="20" ellipseHeight="20" fillColor="0xFF8C00"/>
+			<e:Label horizontalCenter="0" verticalCenter="0" size="25" text="爆伤" textColor="0xFFFFFF"/>
+		</e:Group>
+		<e:Group height="40" x="310.207" y="131" anchorOffsetX="0" anchorOffsetY="0" width="80" scaleX="1" scaleY="1">
+			<e:Rect width="100%" height="100%" x="0" y="0" ellipseWidth="20" ellipseHeight="20" fillColor="0xFF8C00"/>
+			<e:Label id="critRLabel" horizontalCenter="0" verticalCenter="0" size="25" text="120" textColor="0xFFFFFF"/>
+		</e:Group>
+		<e:Group height="40" x="20.211" y="178" anchorOffsetX="0" anchorOffsetY="0" width="80" scaleX="1" scaleY="1">
+			<e:Rect width="100%" height="100%" x="0" y="0" ellipseWidth="20" ellipseHeight="20" fillColor="0xFF8C00"/>
+			<e:Label horizontalCenter="0" verticalCenter="0" size="25" text="闪避" textColor="0xFFFFFF"/>
+		</e:Group>
+		<e:Group height="40" x="110.211" y="178" anchorOffsetX="0" anchorOffsetY="0" width="80" scaleX="1" scaleY="1">
+			<e:Rect width="100%" height="100%" x="0" y="0" ellipseWidth="20" ellipseHeight="20" fillColor="0xFF8C00"/>
+			<e:Label id="dodgeLabel" horizontalCenter="0" verticalCenter="0" size="25" text="120" textColor="0xFFFFFF"/>
+		</e:Group>
+		<e:Group height="40" x="220.211" y="178" anchorOffsetX="0" anchorOffsetY="0" width="80" scaleX="1" scaleY="1">
+			<e:Rect width="100%" height="100%" x="0" y="0" ellipseWidth="20" ellipseHeight="20" fillColor="0xFF8C00"/>
+			<e:Label horizontalCenter="0" verticalCenter="0" size="25" text="射程" textColor="0xFFFFFF"/>
+		</e:Group>
+		<e:Group height="40" x="310.211" y="178" anchorOffsetX="0" anchorOffsetY="0" width="80" scaleX="1" scaleY="1">
+			<e:Rect width="100%" height="100%" x="0" y="0" ellipseWidth="20" ellipseHeight="20" fillColor="0xFF8C00"/>
+			<e:Label id="rangeLabel" horizontalCenter="0" verticalCenter="0" size="25" text="120" textColor="0xFFFFFF"/>
+		</e:Group>
+		<e:Scroller id="buffScroller" width="90%" height="120" horizontalCenter="0" bottom="180" x="-402" y="-72.99999999999997" scaleX="1" scaleY="1">
+			<e:Group id="buffScrollerGroup">
+			</e:Group>
+		</e:Scroller>
+		<e:Scroller width="90%" height="120" id="skillScroller" horizontalCenter="0" x="-402.9999999999999" bottom="30" y="107.00000000000001" scaleX="1" scaleY="1">
+			<e:Group id="skillScrollerGroup" x="1" y="22">
+			</e:Group>
+		</e:Scroller>
+		<e:Rect id="hpRateRect" width="38%" height="5" y="60" fillColor="0x32CD32" x="0"/>
+		<e:Label id="maxHpLabel" text="2000" y="36" size="25" right="0"/>
+	</e:Group>
+</e:Skin>

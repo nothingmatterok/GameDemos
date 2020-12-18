@@ -5,6 +5,8 @@ class L1BattleSceneUI extends eui.Component{
     private portImageGroup: eui.Group;
     private _selectIds: number[];// 已上场数量
     private nextLevelButton: eui.Button;
+    private mainStoryLevelName: eui.Label;
+    public charBattleInfo: L1BattleInfo;
 
     constructor() {
         super();
@@ -13,6 +15,11 @@ class L1BattleSceneUI extends eui.Component{
         this.addEventListener(eui.UIEvent.COMPLETE, this.UIEventInit, this);
         this._selectIds = [];
     }
+
+    public update(){
+        this.charBattleInfo.update();
+    }
+
 
     public battleEnd(isVictory:boolean){
         if(!isVictory) this.nextLevelButton.label = "Retry";
@@ -35,6 +42,11 @@ class L1BattleSceneUI extends eui.Component{
                 port.select();
                 this._selectIds.push(port.charId);
             }
+        }
+
+        if (UserData.l1Data.levelType == L1LevelType.MainStory){
+            this.mainStoryLevelName.visible = true;
+            this.mainStoryLevelName.text = `${UserData.l1Data.CurMainStoryId+1}关`
         }
 
     }

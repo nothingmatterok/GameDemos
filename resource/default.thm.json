@@ -17,7 +17,9 @@
 		"MainUI": "resource/eui_skins/MainUISkin.exml",
 		"L1MainUI": "resource/eui_skins/L1/L1MainUISkin.exml",
 		"L1BattleSceneUI": "resource/eui_skins/L1/L1BattleSceneUISkin.exml",
-		"L1CharPortr": "resource/eui_skins/L1/L1CharPortrSkin.exml"
+		"L1CharPortr": "resource/eui_skins/L1/L1CharPortrSkin.exml",
+		"L1TouchLabel": "resource/eui_skins/L1/L1TouchLabelSkin.exml",
+		"L1BattleInfo": "resource/eui_skins/L1/L1CharBattleInfoSkin.exml"
 	},
 	"autoGenerateExmlsList": true,
 	"exmls": [
@@ -27,8 +29,10 @@
 		"resource/eui_skins/HSliderSkin.exml",
 		"resource/eui_skins/ItemRendererSkin.exml",
 		"resource/eui_skins/L1/L1BattleSceneUISkin.exml",
+		"resource/eui_skins/L1/L1CharBattleInfoSkin.exml",
 		"resource/eui_skins/L1/L1CharPortrSkin.exml",
 		"resource/eui_skins/L1/L1MainUISkin.exml",
+		"resource/eui_skins/L1/L1TouchLabelSkin.exml",
 		"resource/eui_skins/MainUISkin.exml",
 		"resource/eui_skins/PanelSkin.exml",
 		"resource/eui_skins/ProgressBarSkin.exml",

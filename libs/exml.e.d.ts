@@ -20,9 +20,13 @@ declare module skins{
 }
 declare class L1BattleSceneUISkin extends eui.Skin{
 }
+declare class L1CharBattleInfoSkin extends eui.Skin{
+}
 declare class L1CharPortrSkin extends eui.Skin{
 }
 declare class L1MainUISkin extends eui.Skin{
+}
+declare class L1TouchLabelSkin extends eui.Skin{
 }
 declare class MainUISkin extends eui.Skin{
 }

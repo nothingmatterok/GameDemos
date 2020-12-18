@@ -141,6 +141,7 @@ class L1NormalBattleScene extends IScene {
         this.skillManager.update();
         this.creationManager.update();
         this.buffManager.update();
+        this._battleSceneUI.update();
 
         [this._enemies, this._players].forEach(chars => {
             chars.forEach(char => {

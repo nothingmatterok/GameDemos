@@ -17,7 +17,7 @@
 		"bin-debug/scene/l1/l1skill/l1creation/L1CreationConfig.js",
 		"bin-debug/scene/l1/l1skill/l1harm/L1HarmConfig.js",
 		"bin-debug/scene/l1/l1skill/l1Skill/L1SkillConfig.js",
-		"bin-debug/scene/l1/configs/BuffConfig.js",
+		"bin-debug/scene/l1/configs/SkillConfig.js",
 		"bin-debug/framework/AnimManager.js",
 		"bin-debug/framework/GameRoot.js",
 		"bin-debug/framework/LayerManager.js",
@@ -35,8 +35,8 @@
 		"bin-debug/scene/l1/L1MainScene.js",
 		"bin-debug/scene/l1/L1NormalBattleScene.js",
 		"bin-debug/scene/l1/L1RoughlikeScene.js",
+		"bin-debug/scene/l1/configs/BuffConfig.js",
 		"bin-debug/GlobalConfig.js",
-		"bin-debug/scene/l1/configs/SkillConfig.js",
 		"bin-debug/scene/l1/configs/CharConfig.js",
 		"bin-debug/scene/l1/configs/CreationConfig.js",
 		"bin-debug/scene/l1/configs/HarmConfig.js",
@@ -59,8 +59,10 @@
 		"bin-debug/UI/LoadingUI.js",
 		"bin-debug/UI/MainUI.js",
 		"bin-debug/UI/StartPanel.js",
+		"bin-debug/UI/l1/L1BattleInfo.js",
 		"bin-debug/UI/l1/L1BattleSceneUI.js",
 		"bin-debug/UI/l1/L1BattleUIPort.js",
-		"bin-debug/UI/l1/L1MainUI.js"
+		"bin-debug/UI/l1/L1MainUI.js",
+		"bin-debug/UI/l1/L1TouchLabel.js"
 	]
 }
