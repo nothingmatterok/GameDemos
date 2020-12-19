@@ -1,6 +1,7 @@
 class L1BuffConfig{
     public constructor(
         public id: string,
+        public descr: string = "测试效果描述",
         public duration: number = 1000,
         public period: number = 500,
         public buffType: L1BuffType = L1BuffType.ATTRCHANGE,
@@ -14,7 +15,7 @@ class L1BuffConfig{
         },
         public canBeClear: boolean = true,
         public isGood: boolean = true,
-        public condCd: number = 1000, // ms
+        public condCd: number = 1000, // 作用效果冷却时间
     ){
     }
 }

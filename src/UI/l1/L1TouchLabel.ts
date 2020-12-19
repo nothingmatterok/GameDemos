@@ -5,22 +5,22 @@ class L1TouchLabel extends eui.Component {
     private buffTierLabel: eui.Label;
     private skillCDLabel: eui.Label;
 
-    private _constructTmp: [L1Skill, L1Char, L1BuffConfig, number];
+    public info: [L1Skill, L1Char, L1BuffConfig, number];
 
     public constructor(skill: L1Skill, char: L1Char, buffConfig: L1BuffConfig, buffTier: number) {
         super();
-        this._constructTmp = [skill, char, buffConfig, buffTier];
+        this.info = [skill, char, buffConfig, buffTier];
         this.addEventListener(eui.UIEvent.COMPLETE, this.UIEventInit, this);
     }
 
     private isCurSkill(): boolean {
-        let char = this._constructTmp[1];
-        let skill = this._constructTmp[0];
-        return char.skills[char.curSkillIndex] == this._constructTmp[0];
+        let char = this.info[1];
+        let skill = this.info[0];
+        return char.skills[char.curSkillIndex] == skill;
     }
 
     private UIEventInit() {
-        let [skill, _, buffConfig, buffTier] = this._constructTmp;
+        let [skill, _, buffConfig, buffTier] = this.info;
         if (skill) {
             this.nameLabel.text = skill.config.name;
             this.skillCDLabel.visible = true;
@@ -35,10 +35,15 @@ class L1TouchLabel extends eui.Component {
         this.width = 100;
         this.height = 100;
         this.y = 10;
+
+        this.addEventListener(egret.TouchEvent.TOUCH_TAP, ()=>{
+            MessageManager.Ins.sendMessage(MessageType.L1TOUCHLABELTAP, this);
+        }, this);
+        
     }
 
     public updateSkillCd() {
-        let skill = this._constructTmp[0]
+        let skill = this.info[0]
         if (skill) {
             let curCDS = skill.CDRUN / GameRoot.GameStage.frameRate;
             if (curCDS == 0) {

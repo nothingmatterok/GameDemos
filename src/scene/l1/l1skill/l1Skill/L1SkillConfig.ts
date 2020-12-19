@@ -8,6 +8,7 @@ class L1SkillConfig{
      */
     public constructor(public name:string, public cdMs: number, 
         public timeLine: { [key: number]: (skill: L1Skill)=>void},
-        public skillTargetFind: (skill: L1Skill)=>Array<L1Char>
+        public skillTargetFind: (skill: L1Skill)=>Array<L1Char>,
+        public descr: string
     ){}
 }

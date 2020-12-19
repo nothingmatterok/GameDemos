@@ -70,6 +70,11 @@
 			</e:Group>
 		</e:Scroller>
 		<e:Rect id="hpRateRect" width="38%" height="5" y="60" fillColor="0x32CD32" x="0"/>
+		<e:Rect id="angerRateRect" width="0%" height="5" bottom="0" fillColor="0xFF8C00" x="0"/>
 		<e:Label id="maxHpLabel" text="2000" y="36" size="25" right="0"/>
+	</e:Group>
+	<e:Group id="descrGroup" width="400" height="100" y="660" horizontalCenter="0" visible="false">
+		<e:Rect width="100%" height="100%" x="0" y="0" fillAlpha="0.5"/>
+		<e:Label id="descrLabel" text="Label" size="20" left="10" right="10" top="5"/>
 	</e:Group>
 </e:Skin>

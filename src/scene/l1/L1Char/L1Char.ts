@@ -8,16 +8,16 @@ class L1Char {
     public critTime: number;
     public alive: boolean;
     private _curHp: number;
-    private _curAnger: number = 0;
+    public curAnger: number = 0;
     private _angerAddFrame: number = 0;
     public inSkillCasting: boolean = false;
 
     public addAngerNumber(v: number) {
-        let curAnger = this._curAnger + v;
+        let curAnger = this.curAnger + v;
         if (curAnger > L1CharAttr.MAXANGER) {
             curAnger = L1CharAttr.MAXANGER;
         }
-        this._curAnger = curAnger;
+        this.curAnger = curAnger;
         if (this._charPort.initialed) {
             this._charPort.drawAngerCircle(curAnger / L1CharAttr.MAXANGER);
         }
@@ -113,7 +113,7 @@ class L1Char {
         this.skills = charConfig.skills.map((skillCfg) => { return L1SkillManager.Ins.newSkill(skillCfg, this) });
         this.maxHp = this.rawAttr.maxHp;
         this.curHp = this.maxHp;
-        this._curAnger = 0;
+        this.curAnger = 0;
         this.def = this.rawAttr.def;
         this.atk = this.rawAttr.atk;
         this.dodgePoint = this.rawAttr.dodgePoint;
@@ -202,7 +202,7 @@ class L1Char {
         // 判断需要释放的技能
         // 如果怒气满了，按照技能顺序判断是否存在cd OK的技能，进行释放
         // 按照顺序进行释放，如果有技能在CD，则等待技能CD好了以后才释放，先进入普攻流程
-        if (this._curAnger == L1CharAttr.MAXANGER && !this.isSlient()) {
+        if (this.curAnger == L1CharAttr.MAXANGER && !this.isSlient()) {
             let skillTrunId = this.curSkillIndex;
             let skill = this.skills[skillTrunId]
             if (skill.isCoolDown()) {

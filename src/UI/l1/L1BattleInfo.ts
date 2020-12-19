@@ -12,6 +12,9 @@ class L1BattleInfo extends eui.Component{
     private maxHpLabel: eui.Label;
     private hpRateRect: eui.Rect;
     private curChar: L1Char;
+    private descrGroup: eui.Group;
+    private descrLabel: eui.Label;
+    private angerRateRect: eui.Rect;
 
     public constructor(){
         super();
@@ -24,6 +27,7 @@ class L1BattleInfo extends eui.Component{
             this.curChar = null;
         }, this);
         MessageManager.Ins.addEventListener(MessageType.L1BATTLECHARTAP, this.charTap, this);
+        MessageManager.Ins.addEventListener(MessageType.L1TOUCHLABELTAP, this.touchLabelTap, this);
     }
 
     private _skillTouchLabel: L1TouchLabel[];
@@ -45,7 +49,7 @@ class L1BattleInfo extends eui.Component{
         for(let i in char.skills){
             let skill = char.skills[i];
             let touchLabel: L1TouchLabel = new L1TouchLabel(skill, char, null, 0);
-            touchLabel.x = 150 * parseInt(i) + 5;
+            touchLabel.x = 120 * parseInt(i) + 5;
             this.skillScrollerGroup.addChild(touchLabel);
             this._skillTouchLabel.push(touchLabel);
         }
@@ -63,10 +67,23 @@ class L1BattleInfo extends eui.Component{
         for(let buffID in stat){
             let [config, tier] = stat[buffID];
             let touchLabel: L1TouchLabel = new L1TouchLabel(null, null, config, tier);
-            touchLabel.x = 150 * i + 5;
+            touchLabel.x = 120 * i + 5;
             this.buffScrollerGroup.addChild(touchLabel);
             i += 1;
         }
+        // 隐藏info面板
+        this.descrGroup.visible = false;
+    }
+
+    private touchLabelTap(msg: Message){
+        let touchLabel: L1TouchLabel = msg.messageContent;
+        this.descrGroup.visible = true;
+        let infoSkill = touchLabel.info[0];
+        let infoBuffConfig = touchLabel.info[2];
+        let info = "";
+        if(infoSkill) info = infoSkill.config.descr;
+        if (infoBuffConfig) info = infoBuffConfig.descr;
+        this.descrLabel.text = info;
     }
 
     public update(){
@@ -74,6 +91,7 @@ class L1BattleInfo extends eui.Component{
             let char = this.curChar;
             this.maxHpLabel.text = `${char.maxHp}`;
             this.hpRateRect.percentWidth = char.curHp / char.maxHp * 100;
+            this.angerRateRect.percentWidth = char.curAnger / L1CharAttr.MAXANGER * 100;
             this.atkNumLabel.text = `${char.atk}`;
             this.defNumLabel.text = `${char.def}`;
             this.dodgeLabel.text = `${char.dodgePoint}`;
