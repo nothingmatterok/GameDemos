@@ -129,9 +129,9 @@ class L1Char {
         MessageManager.Ins.addEventListener(MessageType.L1BATTLECHARPORTTAP, this.portTap, this);
     }
 
-    private portTap(msg: Message){
+    private portTap(msg: Message) {
         // 如果点击的是自己持有的头像，发送一个自己被点击的消息，主要是为了解除双向持有，懒得做手动release
-        if(msg.messageContent == this._charPort){
+        if (msg.messageContent == this._charPort) {
             MessageManager.Ins.sendMessage(MessageType.L1BATTLECHARTAP, this);
         }
     }
@@ -145,12 +145,12 @@ class L1Char {
         this.x = (Math.floor(posIndex / 2) * 130 + 130) * xOffsetSymbol + GameRoot.GameStage.stageWidth / 2;
         this.y = ((posIndex % 2) * 2 - 1) * (70 + Math.floor(posIndex / 2) * 100) + 500;
         // 转向
-        if(this.camp == L1Camp.Enemy){
+        if (this.camp == L1Camp.Enemy) {
             this.rotation = 180;
         }
     }
 
-    private _curSkillIndex = 0; // 主动技能释放顺位
+    public curSkillIndex = 0; // 主动技能释放顺位
 
     public update() {
         // 如果单位已经死亡，不再维护任何状态
@@ -200,30 +200,19 @@ class L1Char {
         }
 
         // 判断需要释放的技能
-        // 1.如果怒气满了，按照技能顺序判断是否存在cd OK的技能，进行释放
-        // 按照顺序进行释放，如果有技能在CD，则这一轮跳过该技能，如果所有技能都在CD
-        // 则在下一次技能回到该顺位时，进行到下一步
+        // 如果怒气满了，按照技能顺序判断是否存在cd OK的技能，进行释放
+        // 按照顺序进行释放，如果有技能在CD，则等待技能CD好了以后才释放，先进入普攻流程
         if (this._curAnger == L1CharAttr.MAXANGER && !this.isSlient()) {
-            let skillTrunId = this._curSkillIndex;
-            while (true) {
-                let skill = this.skills[skillTrunId]
-                if (skill.isCoolDown()) {
-                    this.skillManager.castSkill(skill);
-                    this.addAngerNumber(-L1CharAttr.MAXANGER);
-                    this._curSkillIndex = skillTrunId + 1;
-                    if (this._curSkillIndex == this.skills.length) {
-                        this._curSkillIndex = 0;
-                    }
-                    return;
-                } else {
-                    skillTrunId += 1;
-                    if (skillTrunId == this.skills.length) {
-                        skillTrunId = 0;
-                    }
-                    if (skillTrunId == this._curSkillIndex) {
-                        break;
-                    }
+            let skillTrunId = this.curSkillIndex;
+            let skill = this.skills[skillTrunId]
+            if (skill.isCoolDown()) {
+                this.skillManager.castSkill(skill);
+                this.addAngerNumber(-L1CharAttr.MAXANGER);
+                this.curSkillIndex = skillTrunId + 1;
+                if (this.curSkillIndex == this.skills.length) {
+                    this.curSkillIndex = 0;
                 }
+                return;
             }
         }
 
@@ -442,7 +431,7 @@ class L1Char {
         // 计算生效buff
         let attrBuffTemp: L1Buff[] = [];
         for (let buff of this.buffs.data) {
-            let isAffect = buff.config.isAffect(this, buff.caster);
+            let isAffect = buff.config.isAffectDudge(this, buff.caster);
             if (buff.config.buffType == L1BuffType.ATTRCHANGE && isAffect) {
                 attrBuffTemp.push(buff);
             }
@@ -485,7 +474,7 @@ class L1Char {
         this.buffStatus.removeAll();
         let statusTemp: L1BuffStatus[] = [];
         for (let buff of this.buffs.data) {
-            let isAffect = buff.config.isAffect(this, buff.caster);
+            let isAffect = buff.config.isAffectDudge(this, buff.caster);
             if (buff.config.buffType == L1BuffType.STATUS && isAffect) {
                 statusTemp.push(buff.config.status);
             }

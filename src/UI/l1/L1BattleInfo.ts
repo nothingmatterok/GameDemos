@@ -26,7 +26,7 @@ class L1BattleInfo extends eui.Component{
         MessageManager.Ins.addEventListener(MessageType.L1BATTLECHARTAP, this.charTap, this);
     }
 
-
+    private _skillTouchLabel: L1TouchLabel[];
     private charTap(msg: Message){ 
         let char:L1Char = msg.messageContent;
         this.curChar = char;
@@ -40,13 +40,33 @@ class L1BattleInfo extends eui.Component{
         this.critPLabel.text = `${char.critPoint}`;
         this.critRLabel.text = `${char.critTime}`;
         this.rangeLabel.text = `${char.rawAttr.range}`;
+        this._skillTouchLabel = [];
+        // 技能组信息初始化
         for(let i in char.skills){
             let skill = char.skills[i];
-            let touchLabel: L1TouchLabel = new L1TouchLabel(skill.config.name);
+            let touchLabel: L1TouchLabel = new L1TouchLabel(skill, char, null, 0);
             touchLabel.x = 150 * parseInt(i) + 5;
             this.skillScrollerGroup.addChild(touchLabel);
+            this._skillTouchLabel.push(touchLabel);
         }
-        
+        // 状态组信息初始化
+        let stat: {[key:string]:[L1BuffConfig, number]} = {}
+        for(let buff of char.buffs.data){
+            let buffID = buff.config.id;
+            if(buffID in stat){
+                stat[buffID][1] += 1;
+            } else if(buff.config.name != "") {
+                stat[buffID] = [buff.config, 1];
+            }
+        }
+        let i = 0;
+        for(let buffID in stat){
+            let [config, tier] = stat[buffID];
+            let touchLabel: L1TouchLabel = new L1TouchLabel(null, null, config, tier);
+            touchLabel.x = 150 * i + 5;
+            this.buffScrollerGroup.addChild(touchLabel);
+            i += 1;
+        }
     }
 
     public update(){
@@ -59,8 +79,9 @@ class L1BattleInfo extends eui.Component{
             this.dodgeLabel.text = `${char.dodgePoint}`;
             this.critPLabel.text = `${char.critPoint}`;
             this.critRLabel.text = `${char.critTime}`;
-            // TODO:跟新buff信息与技能CD信息
-
+            for(let skillTouchLabel of this._skillTouchLabel){
+                skillTouchLabel.updateSkillCd();
+            }
         }
     }
 

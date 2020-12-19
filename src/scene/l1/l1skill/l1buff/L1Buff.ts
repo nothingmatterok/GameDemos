@@ -64,17 +64,17 @@ class L1Buff{
         if(
             this.config.buffType == L1BuffType.AFFECTPERIOD && 
             this._activateFrame % this._periodFrame == 0 && 
-            this.config.isAffect(this._target, this.caster)
+            this.config.isAffectDudge(this._target, this.caster)
         ){
-            this.config.affectFunc(this._target, this.caster);
+            this.config.isAffectDudge(this._target, this.caster);
         }
         // 条件作用类型
         if(
             this.config.buffType == L1BuffType.AFFECTCOND && 
             this._activateFrame - this._preCondAffectFrame >= this._condPeriodFrame &&
-            this.config.isAffect(this._target, this.caster)
+            this.config.isAffectDudge(this._target, this.caster)
         ){
-            this.config.affectFunc(this._target, this.caster);
+            this.config.isAffectDudge(this._target, this.caster);
             this._preCondAffectFrame = this._activateFrame;
         }
 

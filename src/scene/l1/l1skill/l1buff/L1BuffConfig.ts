@@ -1,44 +1,21 @@
 class L1BuffConfig{
-    // 持续时间 ms buff飘字名称（攻击 + 10%）
-    // 作用类型 作用型 间隔性 间隔范围 作用函数
-    // 作用类型 属性增减型
-    // 作用类型 状态型 眩晕 沉默 其他表示型BUFF
-    // 生效判定&&作用判定函数
-    public duration: number; // ms
-    public period: number;
-    public name: string;
-    public buffType: L1BuffType;
-    public status: L1BuffStatus;
-    public attrAddAbs: {[key: string]: number};
-    public attrAddRatio: {[key: string]: number};
-    public affectFunc: (target: L1Char, caster: L1Char)=>void;
-    public isAffect: (target: L1Char, caster: L1Char) => boolean;
-
     public constructor(
-        duration: number = 1000,
-        period: number = 500,
-        buffType: L1BuffType = L1BuffType.ATTRCHANGE,
-        status: L1BuffStatus = L1BuffStatus.NORMAL,
-        name : string = "",
-        attrAddAbs: {[key: string]: number} = {},
-        attrAddRatio: {[key: string]: number} = {},
-        affectFunc: (target: L1Char, caster: L1Char)=>void = ()=>{},
-        isAffectDudge: (target: L1Char, caster: L1Char) => boolean = ()=>{
+        public id: string,
+        public duration: number = 1000,
+        public period: number = 500,
+        public buffType: L1BuffType = L1BuffType.ATTRCHANGE,
+        public status: L1BuffStatus = L1BuffStatus.NORMAL,
+        public name : string = "",
+        public attrAddAbs: {[key: string]: number} = {},
+        public attrAddRatio: {[key: string]: number} = {},
+        public affectFunc: (target: L1Char, caster: L1Char)=>void = ()=>{},
+        public isAffectDudge: (target: L1Char, caster: L1Char) => boolean = ()=>{
             return true;
         },
         public canBeClear: boolean = true,
         public isGood: boolean = true,
         public condCd: number = 1000, // ms
     ){
-        this.duration = duration;
-        this.period = period;
-        this.buffType = buffType;
-        this.status = status;
-        this.name = name;
-        this.attrAddAbs = attrAddAbs;
-        this.attrAddRatio = attrAddRatio;
-        this.affectFunc = affectFunc;
-        this.isAffect = isAffectDudge;
     }
 }
 

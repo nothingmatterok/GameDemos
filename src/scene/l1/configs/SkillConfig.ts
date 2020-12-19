@@ -23,7 +23,6 @@ const L1SKCFGS: { [key: string]: L1SkillConfig } = {
         },
         (skill: L1Skill) => {
             return [skill.caster.normalAttakTarget];
-
         }
     ),
     // 远距离普通攻击 
@@ -38,6 +37,7 @@ const L1SKCFGS: { [key: string]: L1SkillConfig } = {
                     L1CRTNCFGS.NORMBULLET01, skill.caster,
                     skill.targets[0], skill.caster.pos, skill.targets[0].pos
                 );
+                skill.newBuff(L1BUFFCFGS["BUFF01"], skill.caster, skill.caster);
             },
             225: () => { }
         },
@@ -69,11 +69,11 @@ const L1SKCFGS: { [key: string]: L1SkillConfig } = {
         "测试大招",
         40000,
         {
-            0: (skill: L1Skill) => { // 第0ms开始执行
+            0: (skill: L1Skill) => {
                 skill.caster.startAnim([[0, 0], [0, 20], [0, -20], [0, 0], [-20, 0], [20, 0], [0, 0]], 
                     [75, 150, 75, 75, 150, 75]);
             },
-            150: (skill: L1Skill) => { // 第75ms执行
+            150: (skill: L1Skill) => {
                 L1Harm.harm(skill.caster, skill.targets, L1HARMCFGS.HEAL01)
             },
             5000 : ()=>{}

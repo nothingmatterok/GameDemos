@@ -6,5 +6,8 @@
 		<e:Rect width="100%" height="100%" scaleX="1" scaleY="1" ellipseWidth="30" ellipseHeight="30" x="0" y="0" fillColor="0xD2B48C"/>
 		<e:Rect id="cdRect" width="0" height="100%" scaleX="1" scaleY="1" ellipseWidth="0" ellipseHeight="0" fillColor="0x696969" strokeAlpha="1" fillAlpha="0.5" visible="true" right="0" bottom="0"/>
 		<e:Label id="nameLabel" text="Label" horizontalCenter="0" verticalCenter="0" textColor="0xFFFFFF" size="20"/>
+		<e:Label id="buffTierLabel" text="x3" size="20" bottom="5" right="5" visible="false"/>
+		<e:Label id="skillPreStateLabel" text="等待释放" size="20" horizontalCenter="0" visible="false" top="5" textColor="0x8B0000" bold="true"/>
+		<e:Label id="skillCDLabel" text="xx/10s" size="20" horizontalCenter="0" visible="false" x="70" bottom="5" height="20"/>
 	</e:Group>
 </e:Skin>
