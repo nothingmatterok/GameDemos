@@ -1,4 +1,64 @@
-const L1SKCFGS: { [key: string]: L1SkillConfig } = {
+
+function GetCHARCFGS():{[key:number]: L1CharConfig}{
+
+var L1HARMCFGS: { [key: string]: L1HarmConfig } = {
+    // 模版
+    "TEMPLATE" : new L1HarmConfig(
+        (caster: L1Char, target: L1Char) => {return [true, 0]}
+    ), 
+    // 测试治疗伤害
+    "HEAL01" : new L1HarmConfig(
+        (caster, target) => {
+            let isCrit = L1Harm.isRandTrue(caster.critPoint);
+            let healNum = caster.maxHp * 0.2; // 治疗最大血量的20%
+            if (isCrit) healNum *= caster.critTime;
+            return [isCrit, -healNum];
+        }
+    ),
+
+}
+
+let L1BUFFCFGS: { [key: string]: L1BuffConfig } = {
+    "TEMPLATE": new L1BuffConfig(
+        "TEMPLATE", "模版", 1000, 1000, L1BuffType.ATTRCHANGE, L1BuffStatus.NORMAL, "",
+        {}, {},
+        (target: L1Char, caster: L1Char) => { },
+        (target: L1Char, caster: L1Char) => { return true }
+    ),
+    "BUFF01" : new L1BuffConfig(
+        "BUFF01", "攻击+10", 3000, 1000, L1BuffType.ATTRCHANGE, L1BuffStatus.NORMAL,
+        "攻击 +10", {"ATK": 10}
+    ),
+    "BUFF02" : new L1BuffConfig(
+        "BUFF02", "每1s对自身造成10点伤害，持续10s",10000, 1000, L1BuffType.AFFECTPERIOD, L1BuffStatus.NORMAL,
+        "持续掉血", null, null, (target: L1Char, caster: L1Char)=>{
+            L1Harm.harm(caster, [target], new L1HarmConfig(()=>{return [false, 10]}))
+            L1BuffManager.Ins.newBuff(L1BUFFCFGS.BUFF01, target, caster);
+        }
+    ),
+}
+
+let L1CRTNCFGS: { [key: string]: L1CreationConfig } = {
+    "TEMPLATE": new L1CreationConfig(
+        100, L1CrtnFlyType.FIX, L1CrTnAffectContType.ONECE,
+        L1CrTnAffectTargetSetType.PRESET, L1CrtnAffectTargetCamp.OTHER,
+        400, 1000, 200,
+        (targets: L1Char[], caster: L1Char) => { },
+        0.9, ColorDef.DarkOrange
+    ),
+
+    // 普攻远程子弹
+    "NORMBULLET01" : new L1CreationConfig(
+        5, L1CrtnFlyType.CHAR, L1CrTnAffectContType.ONECE,
+        L1CrTnAffectTargetSetType.PRESET, L1CrtnAffectTargetCamp.OTHER,
+        800, 1, 10, (targets: L1Char[], caster: L1Char) => {
+            L1Harm.harm(caster, targets)
+        }, 1, ColorDef.DarkOrange
+    ),
+
+}
+
+let L1SKCFGS: { [key: string]: L1SkillConfig } = {
     // 模版
     "TEMPLATE": new L1SkillConfig(
         "",
@@ -113,4 +173,80 @@ const L1SKCFGS: { [key: string]: L1SkillConfig } = {
 
 }
 
+return  {
+    1 : new L1CharConfig(
+        new L1CharAttr(1000, 200, 200, 400, 10, 10, 1.2, 100),
+        [L1SKCFGS.HEALSKILL, L1SKCFGS.TEST01, L1SKCFGS.TEST02],
+        L1SKCFGS.NORMRANGATK,
+        [],
+        "测试角色1",
+        "1_portrait_png"
+    ),
+    2 : new L1CharConfig(
+        new L1CharAttr(1000, 200, 200, 120, 10, 10, 1.2, 0),
+        [L1SKCFGS.HEALSKILL, L1SKCFGS.TEST01, L1SKCFGS.TEST02],
+        L1SKCFGS.NROMATK,
+        [],
+        "测试角色2",
+        "2_portrait_png"
+    ),
+    3 : new L1CharConfig(
+        new L1CharAttr(1000, 200, 200, 400, 10, 10, 1.2, 200),
+        [L1SKCFGS.HEALSKILL, L1SKCFGS.TEST01, L1SKCFGS.TEST02],
+        L1SKCFGS.NORMRANGATK,
+        [],
+        "测试角色3",
+        "3_portrait_png"
+    ),
+    4 : new L1CharConfig(
+        new L1CharAttr(1000, 200, 200, 400, 10, 10, 1.2, 200),
+        [L1SKCFGS.HEALSKILL, L1SKCFGS.TEST01, L1SKCFGS.TEST02],
+        L1SKCFGS.NORMRANGATK,
+        [],
+        "测试角色4",
+        "4_portrait_png"
+    ),
+    5 : new L1CharConfig(
+        new L1CharAttr(1000, 200, 200, 400, 10, 10, 1.2, 200),
+        [L1SKCFGS.HEALSKILL, L1SKCFGS.TEST01, L1SKCFGS.TEST02],
+        L1SKCFGS.NORMRANGATK,
+        [],
+        "测试角色5",
+        "5_portrait_png"
+    ),
+    6 : new L1CharConfig(
+        new L1CharAttr(1000, 200, 200, 400, 10, 10, 1.2, 200),
+        [L1SKCFGS.HEALSKILL, L1SKCFGS.TEST01, L1SKCFGS.TEST02],
+        L1SKCFGS.NORMRANGATK,
+        [],
+        "测试角色6",
+        "6_portrait_png"
+    ),
+    7 : new L1CharConfig(
+        new L1CharAttr(1000, 200, 200, 400, 10, 10, 1.2, 200),
+        [L1SKCFGS.HEALSKILL, L1SKCFGS.TEST01, L1SKCFGS.TEST02],
+        L1SKCFGS.NORMRANGATK,
+        [],
+        "测试角色7",
+        "7_portrait_png"
+    ),
+    8 : new L1CharConfig(
+        new L1CharAttr(1000, 200, 200, 400, 10, 10, 1.2, 200),
+        [L1SKCFGS.HEALSKILL, L1SKCFGS.TEST01, L1SKCFGS.TEST02],
+        L1SKCFGS.NORMRANGATK,
+        [],
+        "测试角色8",
+        "8_portrait_png"
+    ),    
+}
+}
+function GetL1LevelCFGS():{[key:number]:number[]}{
+return {
+    0 : [1,1],
+    1 : [1, 1, 1],
+    2 : [1, 1, 2, 2]
+}
+}
 
+var L1CHARCFGS = GetCHARCFGS();
+var L1LevelCFGS = GetL1LevelCFGS();

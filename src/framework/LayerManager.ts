@@ -23,11 +23,6 @@ class LayerManager {
 		this.uiLayer = new eui.UILayer();
 		this.gameLayer = new egret.DisplayObjectContainer();
 		
-		// 防止盖住需要交互的对象
-		this.loadingUI.touchEnabled = false;
-		this.uiLayer.touchEnabled = false;
-		this.gameLayer.touchEnabled = false;
-
 		// add layer to stage
 		GameRoot.GameStage.addChild(this.gameLayer);
 		GameRoot.GameStage.addChild(this.uiLayer);

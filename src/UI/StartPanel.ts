@@ -6,8 +6,8 @@ class StartPanel extends eui.Component {
 
     constructor() {
         super();
-        this.width = GameRoot.GameStage.stageWidth;
-        this.height = GameRoot.GameStage.stageHeight;
+        this.width = GameRoot.StageWidth;
+        this.height = GameRoot.StageHeight;
         this.addEventListener(eui.UIEvent.COMPLETE, this.panelEventInit, this);
     }
 
@@ -22,7 +22,7 @@ class StartPanel extends eui.Component {
             }, this
         );
 
-        // 跳转测试场景
+        // DEBUG按键跳转测试场景
         if (DEBUG) {
             this.debugButton.visible = true;
             this.debugButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.debugTap, this);
@@ -31,15 +31,10 @@ class StartPanel extends eui.Component {
 
     // 测试用
     private debugTap() {
-
+        SceneManager.Ins.setScene(new L2MainScene());
     }
 
     private confirmPswd(event: egret.TouchEvent) {
-        if (DEBUG) {
-            UserData.l1Data.levelType = L1LevelType.MainStory;
-            SceneManager.Ins.setScene(new L1NormalBattleScene());
-            return;
-        }
         if (this.pswdTextInput.text.length == 0) {
             alert("验证失败");
             return;

@@ -58,11 +58,13 @@ class Main extends eui.UILayer {
     }
 
     private async runGame() {
+        
         // 创建底色
         let bg = Util.createColorBG(this.stage.stageWidth, this.stage.stageHeight);
         this.stage.addChild(bg);
+        
         // 预加载通用资源
-        await this.loadResource()
+        await this.loadResource();
         // 游戏初始化
         GameRoot.Ins.init(this.stage);
     }
@@ -71,6 +73,7 @@ class Main extends eui.UILayer {
         try {
             let loadingUI = new LoadingUI();
             this.stage.addChild(loadingUI);
+            
             await RES.loadConfig("resource/default.res.json", "resource/");
             await this.loadTheme();
             await RES.loadGroup("preload", 0, loadingUI);

@@ -106,7 +106,7 @@ class L1Char {
         this.camp = camp;
         this.skillManager = (SceneManager.Ins.curScene as L1NormalBattleScene).skillManager;
         this.charId = charId;
-        let charConfig = CHARCFGS[charId];
+        let charConfig = L1CHARCFGS[charId];
         this._charPort = new L1CharPortr(camp, charConfig.portImageName, charId);
         this.name = charConfig.name;
         this.rawAttr = charConfig.attr;

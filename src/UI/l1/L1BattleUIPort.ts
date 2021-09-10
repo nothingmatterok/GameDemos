@@ -10,7 +10,7 @@ class L1BattleUIPort extends eui.Group{
     
     public constructor(public charId: number){
         super();
-        let charConfig = CHARCFGS[charId];
+        let charConfig = L1CHARCFGS[charId];
         let imageName = charConfig.portImageName;
         let image = new eui.Image(imageName);
         image.width = 120;

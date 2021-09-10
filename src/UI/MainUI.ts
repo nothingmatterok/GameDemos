@@ -5,8 +5,8 @@ class MainUI extends eui.Component {
 
     constructor() {
         super();
-        this.width = GameRoot.GameStage.stageWidth;
-        this.height = GameRoot.GameStage.stageHeight;
+        this.width = GameRoot.StageWidth;
+        this.height = GameRoot.StageHeight;
         this.addEventListener(eui.UIEvent.COMPLETE, this.mainUIEventInit, this);
     }
 
@@ -20,7 +20,7 @@ class MainUI extends eui.Component {
     }
 
     private tol2(){
-        ToastInfoManager.newRedToast("敬请期待");
+        SceneManager.Ins.setScene(new L2MainScene());
     }
 
 }

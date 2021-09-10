@@ -1,3 +1,4 @@
+// 废弃
 class TimeScaleManager {
     private static _instance: TimeScaleManager;
     private _timeScale: number = 1;
