@@ -50,6 +50,7 @@
 		"bin-debug/scene/l1/l1skill/l1Skill/L1Skill.js",
 		"bin-debug/scene/l1/l1skill/l1Skill/L1SkillConfig.js",
 		"bin-debug/scene/l1/l1skill/l1Skill/L1SkillManager.js",
+		"bin-debug/scene/l2/L2Cell.js",
 		"bin-debug/scene/l2/L2MainScene.js",
 		"bin-debug/UI/LoadingUI.js",
 		"bin-debug/UI/MainUI.js",

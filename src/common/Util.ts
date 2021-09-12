@@ -128,8 +128,8 @@ class Util {
      */
     public static drawAngleCircle(
         shape: egret.Shape, endAngle: number, radius: number,
-        startAngle: number = 0, color: number = ColorDef.DarkRed, 
-        alpha:number=1,    
+        startAngle: number = 0, color: number = ColorDef.DarkRed,
+        alpha: number = 1,
     ) {
         shape.graphics.clear();
         shape.graphics.beginFill(color, alpha);
@@ -143,10 +143,28 @@ class Util {
         shape.graphics.endFill();
     }
 
-    public static pointDistance(p1:[number, number], p2:[number, number]): number{
+    /**
+     * 画一个正方形
+     * @param shape 要被绘制的对象
+     * @param width 
+     * @param color 
+     * @param alpha 
+     */
+    public static drawSquar(
+        shape: egret.Shape, width: number,
+        color: number = ColorDef.Tan, alpha: number = 1
+    ) {
+        shape.graphics.clear();
+        shape.graphics.beginFill(color, alpha);
+        shape.graphics.drawRect(0, 0, width, width);
+        shape.graphics.endFill();
+    }
+
+    
+    public static pointDistance(p1: [number, number], p2: [number, number]): number {
         let xDis = p1[0] - p2[0];
         let yDis = p1[1] - p2[1];
-        return Math.sqrt(xDis * xDis + yDis * yDis );
+        return Math.sqrt(xDis * xDis + yDis * yDis);
     }
 
     /**
@@ -166,12 +184,12 @@ class Util {
         return -rad;
     }
 
-    public static isNumEqual(a:number, b:number, tolerant: number=3):boolean{
-        return Math.abs(a-b)<tolerant;
+    public static isNumEqual(a: number, b: number, tolerant: number = 3): boolean {
+        return Math.abs(a - b) < tolerant;
     }
 
     // 将角度规范到-180-180内
-    public static degNormalize(deg: number): number{
+    public static degNormalize(deg: number): number {
         deg = deg % 360;
         if (deg > 180) return deg - 360;
         if (deg < -180) return deg + 360;
