@@ -17,7 +17,7 @@ class L1NormalBattleScene extends IScene {
         this._battleEnd = v;
         if(v == true && this._victoryCamp == L1Camp.Player){
             if (UserData.l1Data.levelType == L1LevelType.MainStory){
-                let maxId = Object.keys(L1LevelCFGS).length - 1;
+                let maxId = Object.keys(L1Config.Ins.L1LevelCFGS).length - 1;
                 let id = UserData.l1Data.CurMainStoryId + 1;
                 if (id <= maxId) {
                     UserData.l1Data.CurMainStoryId = id;
@@ -68,7 +68,7 @@ class L1NormalBattleScene extends IScene {
 
     private readEnemiesIds(): number[]{
         if(UserData.l1Data.levelType == L1LevelType.MainStory){
-            return L1LevelCFGS[UserData.l1Data.CurMainStoryId];
+            return L1Config.Ins.L1LevelCFGS[UserData.l1Data.CurMainStoryId];
         }
     }
 

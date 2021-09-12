@@ -1,5 +1,4 @@
 class L1Data{
-
     private currentMainStoryId: number = 0;
     private userUseCharIds: number[] = [1,2,3,4];
     private userAllCharIds: number[] = [1,2,3,4,5,6,7,8];

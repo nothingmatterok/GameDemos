@@ -26,6 +26,7 @@ class LayerManager {
 		// add layer to stage
 		GameRoot.GameStage.addChild(this.gameLayer);
 		GameRoot.GameStage.addChild(this.uiLayer);
+		this.uiLayer.touchThrough = true;
 		GameRoot.GameStage.addChild(this.loadingUI);
 	}
 

@@ -89,7 +89,6 @@ class L1Char {
             this._curHp = 0;
             this.alive = false;
             this._charPort.drawHpCircle(0);
-            // TODO: 增加死亡动画，并在动画结束后移除
             this.removeFromScene();
         } else {
             this._curHp = value;
@@ -106,7 +105,7 @@ class L1Char {
         this.camp = camp;
         this.skillManager = (SceneManager.Ins.curScene as L1NormalBattleScene).skillManager;
         this.charId = charId;
-        let charConfig = L1CHARCFGS[charId];
+        let charConfig: L1CharConfig = L1Config.Ins.L1CHARCFGS[charId];
         this._charPort = new L1CharPortr(camp, charConfig.portImageName, charId);
         this.name = charConfig.name;
         this.rawAttr = charConfig.attr;
