@@ -28,12 +28,12 @@ class L2Cell extends egret.Shape{
         this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onTap, this);
     }
 
-    private changeColor(color: number){
+    public changeColor(color: number){
         Util.drawSquar(this, this.width, color);
     }
 
     private onTap(): void{
-        console.log(`访问了第${this.row}列，第${this.col}行`);
-        this.changeColor(ColorDef.DarkRed);
+        MessageManager.Ins.sendMessage(MessageType.L2CELLTAP, this);
+        MessageManager.Ins.sendMessage(MessageType.L2USEENERGY, this)
     }
 }

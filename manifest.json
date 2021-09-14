@@ -10,10 +10,11 @@
 	"game": [
 		"bin-debug/framework/scenesystem/IScene.js",
 		"bin-debug/scene/l1/L1GlobalConfig.js",
-		"bin-debug/scene/l1/configs/L1Config.js",
+		"bin-debug/scene/l1/L1Char/L1CharAttr.js",
 		"bin-debug/Platform.js",
 		"bin-debug/ThemeAdapter.js",
 		"bin-debug/common/L2Filters.js",
+		"bin-debug/common/MyLinkedList.js",
 		"bin-debug/common/MySet.js",
 		"bin-debug/common/ResAsyncLoader.js",
 		"bin-debug/common/ToastInfo.js",
@@ -34,9 +35,9 @@
 		"bin-debug/scene/l1/L1MainScene.js",
 		"bin-debug/scene/l1/L1NormalBattleScene.js",
 		"bin-debug/scene/l1/L1RoughlikeScene.js",
-		"bin-debug/GlobalConfig.js",
+		"bin-debug/scene/l1/configs/L1Config.js",
 		"bin-debug/scene/l1/L1Char/L1Char.js",
-		"bin-debug/scene/l1/L1Char/L1CharAttr.js",
+		"bin-debug/GlobalConfig.js",
 		"bin-debug/scene/l1/L1Char/L1CharConfig.js",
 		"bin-debug/scene/l1/L1Char/L1CharPortr.js",
 		"bin-debug/scene/l1/l1skill/l1buff/L1Buff.js",
@@ -51,7 +52,10 @@
 		"bin-debug/scene/l1/l1skill/l1Skill/L1SkillConfig.js",
 		"bin-debug/scene/l1/l1skill/l1Skill/L1SkillManager.js",
 		"bin-debug/scene/l2/L2Cell.js",
+		"bin-debug/scene/l2/L2Char.js",
+		"bin-debug/scene/l2/L2CharAttr.js",
 		"bin-debug/scene/l2/L2MainScene.js",
+		"bin-debug/scene/l2/L2TimeManager.js",
 		"bin-debug/UI/LoadingUI.js",
 		"bin-debug/UI/MainUI.js",
 		"bin-debug/UI/StartPanel.js",
@@ -60,6 +64,8 @@
 		"bin-debug/UI/l1/L1BattleUIPort.js",
 		"bin-debug/UI/l1/L1MainUI.js",
 		"bin-debug/UI/l1/L1TouchLabel.js",
-		"bin-debug/UI/l2/L2MainUI.js"
+		"bin-debug/UI/l2/L2EnergyBarManager.js",
+		"bin-debug/UI/l2/L2MainUI.js",
+		"bin-debug/UI/l2/L2TimeBarPort.js"
 	]
 }

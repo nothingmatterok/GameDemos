@@ -143,6 +143,16 @@ class Util {
         shape.graphics.endFill();
     }
 
+    public static drawCircle(
+        shape: egret.Shape, radius: number, color: number = ColorDef.Tan, 
+        x:number = 0, y: number = 0, alpha: number = 1
+    ) {
+        shape.graphics.clear();
+        shape.graphics.beginFill(color, alpha);
+        shape.graphics.drawCircle(x, y, radius);
+        shape.graphics.endFill();
+    }
+
     /**
      * 画一个正方形
      * @param shape 要被绘制的对象
@@ -154,13 +164,20 @@ class Util {
         shape: egret.Shape, width: number,
         color: number = ColorDef.Tan, alpha: number = 1
     ) {
+        this.drawRect(shape, width, width, color, alpha);
+    }
+
+    public static drawRect(
+        shape: egret.Shape, width: number, height: number,
+        color: number = ColorDef.Tan, alpha: number = 1
+    ) {
         shape.graphics.clear();
         shape.graphics.beginFill(color, alpha);
-        shape.graphics.drawRect(0, 0, width, width);
+        shape.graphics.drawRect(0, 0, width, height);
         shape.graphics.endFill();
     }
 
-    
+
     public static pointDistance(p1: [number, number], p2: [number, number]): number {
         let xDis = p1[0] - p2[0];
         let yDis = p1[1] - p2[1];

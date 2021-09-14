@@ -5,7 +5,7 @@
 			"name": "preload"
 		},
 		{
-			"keys": "1_portrait_png,10_portrait_png,11_portrait_png,12_portrait_png,13_portrait_png,14_portrait_png,15_portrait_png,16_portrait_png,17_portrait_png,2_portrait_png,3_portrait_png,4_portrait_png,5_portrait_png,6_portrait_png,7_portrait_png,8_portrait_png,9_portrait_png",
+			"keys": "1_portrait_png,10_portrait_png,11_portrait_png,12_portrait_png,13_portrait_png,14_portrait_png,15_portrait_png,16_portrait_png,17_portrait_png,2_portrait_png,3_portrait_png,4_portrait_png,5_portrait_png,6_portrait_png,7_portrait_png,8_portrait_png,9_portrait_png,18_portrait_png,19_portrait_png,20_portrait_png,21_portrait_png,22_portrait_png,23_portrait_png,24_portrait_png,25_portrait_png,26_portrait_png,27_portrait_png,28_portrait_png,29_portrait_png,30_portrait_png,31_portrait_png",
 			"name": "portrait"
 		}
 	],
@@ -209,6 +209,76 @@
 			"url": "assets/portrait/9_portrait.png",
 			"type": "image",
 			"name": "9_portrait_png"
+		},
+		{
+			"url": "assets/portrait/18_portrait.png",
+			"type": "image",
+			"name": "18_portrait_png"
+		},
+		{
+			"url": "assets/portrait/19_portrait.png",
+			"type": "image",
+			"name": "19_portrait_png"
+		},
+		{
+			"url": "assets/portrait/20_portrait.png",
+			"type": "image",
+			"name": "20_portrait_png"
+		},
+		{
+			"url": "assets/portrait/21_portrait.png",
+			"type": "image",
+			"name": "21_portrait_png"
+		},
+		{
+			"url": "assets/portrait/22_portrait.png",
+			"type": "image",
+			"name": "22_portrait_png"
+		},
+		{
+			"url": "assets/portrait/23_portrait.png",
+			"type": "image",
+			"name": "23_portrait_png"
+		},
+		{
+			"url": "assets/portrait/24_portrait.png",
+			"type": "image",
+			"name": "24_portrait_png"
+		},
+		{
+			"url": "assets/portrait/25_portrait.png",
+			"type": "image",
+			"name": "25_portrait_png"
+		},
+		{
+			"url": "assets/portrait/26_portrait.png",
+			"type": "image",
+			"name": "26_portrait_png"
+		},
+		{
+			"url": "assets/portrait/27_portrait.png",
+			"type": "image",
+			"name": "27_portrait_png"
+		},
+		{
+			"url": "assets/portrait/28_portrait.png",
+			"type": "image",
+			"name": "28_portrait_png"
+		},
+		{
+			"url": "assets/portrait/29_portrait.png",
+			"type": "image",
+			"name": "29_portrait_png"
+		},
+		{
+			"url": "assets/portrait/30_portrait.png",
+			"type": "image",
+			"name": "30_portrait_png"
+		},
+		{
+			"url": "assets/portrait/31_portrait.png",
+			"type": "image",
+			"name": "31_portrait_png"
 		}
 	]
 }

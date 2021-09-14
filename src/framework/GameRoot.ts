@@ -38,11 +38,6 @@ class GameRoot {
             this.update, 
             this
         );
-        // let x = new eui.Button();
-        // this._gameStage.addChild(x);
-
-        // x.addEventListener(egret.TouchEvent.TOUCH_TAP,()=>{console.log(123);
-        // },this);
     }
     
     private update(): void{
