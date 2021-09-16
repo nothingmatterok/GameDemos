@@ -15,6 +15,10 @@ class Util {
         return false;
     }
 
+    public static contains(objs: any[], obj:any):boolean{
+        return objs.indexOf(obj) >= 0;
+    }
+
     /**
      * 创建一个纯色背景
      * @param width 

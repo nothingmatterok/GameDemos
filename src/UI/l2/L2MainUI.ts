@@ -5,6 +5,7 @@ class L2MainUI extends eui.Component {
     public roundLabel: eui.Label;
     public timeBarGroup: eui.Group;
     private energyBarGroup: eui.Group;
+    public continueButton: eui.Button;
     private selectBarGroup: eui.Group;
 
     constructor() {
@@ -16,6 +17,7 @@ class L2MainUI extends eui.Component {
 
     private UIEventInit() {
         this.backButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.backToMainScene, this);
+        this.continueButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.continueButtonTap, this);
         this.timePointLabel.text = "0";
         this.timePointLabel.textColor = ColorDef.DarkOrange;
         this.roundLabel.text = "0";
@@ -36,6 +38,11 @@ class L2MainUI extends eui.Component {
 
     private backToMainScene(){
         SceneManager.Ins.setScene(new MainScene());
+    }
+
+    private continueButtonTap():void{
+        this.continueButton.visible = false;
+        (SceneManager.Ins.curScene as L2MainScene).isPause = false;
     }
 
     release() {

@@ -4,7 +4,7 @@ class L2MainScene extends IScene {
     private static colStartDis = 200; // 初始行的高度
     public cellWidth: number;
     public realCellWidth: number; // 实际内部的格子宽度
-    public boardCells: L2Cell[][]; // 棋盘格子
+    public board:L2CellBoard; // 棋盘格子,访问时，先列，后行，第几列第几行，对标 X Y
     public mainUI: L2MainUI;
     private _resLoad: ResAsyncLoader = new ResAsyncLoader();
 
@@ -20,39 +20,22 @@ class L2MainScene extends IScene {
 
     public initial() {
         // 构造棋盘
-        let boardRow: number = 10;//棋盘列数，TODO:未来从关卡配置中读取
-        let boardCol: number = 14;//棋盘行数，未来从关卡配置中读取
-        let boardCells: L2Cell[][] = [];// 棋盘格子，访问时，先列，后行，第几列第几行
-        let cellWidth: number = GameRoot.StageWidth / boardRow;
-        this.cellWidth = cellWidth;
-        let realCellWidth = cellWidth - L2MainScene.cellDis;
-        this.realCellWidth = realCellWidth;
-        for (let row = 0; row < boardRow; row++) {
-            let x = this.getCellX(row);
-            let boardRowCells: L2Cell[] = [];// 棋盘的一列
-            for (let col = 0; col < boardCol; col++) {
-                let y = this.getCellY(col);
-                let cell = new L2Cell(realCellWidth, row, col);
-                boardRowCells.push(cell);
-                LayerManager.Ins.gameLayer.addChild(cell);
-                cell.x = x;
-                cell.y = y;
-            }
-            boardCells.push(boardRowCells);
-        }
-        this.boardCells = boardCells;
+        this.board = new L2CellBoard();
 
         // 定义角色与敌方单位 TODO: 测试过程
         this.players = [];
         this.enemies = [];
         for(let i = 1; i < 6;i++){
-            let charTest = new L2Char(realCellWidth, `${i*3}_portrait_png`, 1 - i%2 * 2);
+            let charTest = new L2Char(this.board.realCellWidth, `${i*3}_portrait_png`, 1 - i%2 * 2);
             charTest.attr.startTime = i * 20;
-            charTest.attr.actionSpeed = 20 + i * 10;
+            charTest.attr.actionSpeed = i * 5;
             charTest.attr.maxHp = 1000;
+            charTest.hpChangeTo(charTest.attr.maxHp);
             charTest.attr.atk = 100;
             charTest.attr.def = 20;
             charTest.attr.moveRange = 5;
+            charTest.attr.atkRange = i % 2 + 1;
+            charTest.name = `${i}`;
             if(charTest.camp == L2Camp.Player){this.players.push(charTest);}else{this.enemies.push(charTest);}
         }
 
@@ -60,8 +43,9 @@ class L2MainScene extends IScene {
         let i = 1;
         for(let char of this.enemies.concat(this.players)){
             LayerManager.Ins.gameLayer.addChild(char);
-            char.x = this.getCellX(i++);
-            char.y = this.getCellY(i++);
+            char.Cell = this.board.cells[i][i];
+            char.placeToCell();
+            i += 1;
         }
 
         // 定义UI
@@ -79,13 +63,21 @@ class L2MainScene extends IScene {
 
     // 如果行动没结束，玩家不能对格子cell进行任何操作
     public isCharActionEnd: boolean = true;
+    public isPause:boolean = false;
 
     public update(){
+        // 如果暂停了
+        if (this.isPause)return;
+
         // 如果上一个角色还没动完
         if (!this.isCharActionEnd) return;
+
+        // 如果角色都行动结束，同时timemanager上还有被布置的角色，那么该角色应该是刚行动完的角色
+        // timemanager 进行角色行动完毕后的回收
         if (this.timeManager.curChar != null){
             this.timeManager.afterCharNormalAction();
         }
+        // timemanager分配下一个角色，角色开始行动，角色行动是否结束只为false
         let charSelect = this.timeManager.toNextChar();
         this.isCharActionEnd = false;
         charSelect.startAction();
@@ -95,28 +87,26 @@ class L2MainScene extends IScene {
         // let char: L2Char = msg.messageContent;
         // this.timeManager.toNextChar();
         // this.timeManager.afterCharNormalAction();
+        this.isPause = true;
+        this.mainUI.continueButton.visible = true;
     }
 
     private timePortTap(msg: Message): void{
         let timePort:L2TimeBarPort = msg.messageContent;
         timePort.char.highLight();
+        this.isPause = true;
+        this.mainUI.continueButton.visible = true;
     }
 
     private cellTap(msg: Message): void {
         if(!this.isCharActionEnd) {
-            ToastInfoManager.newToast("请先选择一个单位");
+            // ToastInfoManager.newToast("请先选择一个单位");
             return;
         }
         let cell: L2Cell = msg.messageContent;
-        cell.changeColor(ColorDef.DarkOrange);
-    }
-
-    private getCellX(row: number): number {
-        return row * this.cellWidth;
-    }
-
-    private getCellY(col: number): number {
-        return L2MainScene.colStartDis + col * this.cellWidth;
+        if (cell.char != null){
+            cell.changeColor(ColorDef.DarkOrange);
+        }
     }
 
 
@@ -131,7 +121,8 @@ class L2MainScene extends IScene {
         this.timeManager = null;
         this.mainUI.release();
         this.mainUI = null;
-        this.boardCells = null;
+        this.board.release();
+        this.board = null;
     }
 
     public releaseResource(){

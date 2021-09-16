@@ -5,9 +5,15 @@ class L2TimeManager{
 
     public curChar: L2Char;
 
-    private getChars(): L2Char[]{
+    private getAliveChars(): L2Char[]{
         let scene = SceneManager.Ins.curScene as L2MainScene;
-        return scene.enemies.concat(scene.players);
+        let aliveChars = [];
+        for(let char of scene.enemies.concat(scene.players)){
+            if(char.alive){
+                aliveChars.push(char);
+            }
+        }
+        return aliveChars;
     }
 
     /**
@@ -15,7 +21,7 @@ class L2TimeManager{
      */
     public toNextChar(): L2Char{
         // 找到游戏中时间最近的单位，如果存在重叠时间，选择权重最小的那个，如果权重一致随机选择一个
-        let chars = this.getChars();
+        let chars = this.getAliveChars();
         let sortChars = chars.sort((a, b)=>{return a.NowTime - b.NowTime;});
         let beforeCharTime = sortChars[0].NowTime;
         let selectChars: L2Char[] = [];
@@ -61,7 +67,7 @@ class L2TimeManager{
         let defBackT = L2TimeManager.defBackTime
         char.setTime(Math.ceil(defBackT * (0.5 + 0.5 * speed/(speed + M))));
         // 如果存在时间重叠，则将该角色权重调至最高值，否则将该角色权重调整为100
-        let chars = this.getChars();
+        let chars = this.getAliveChars();
         let maxPrior = 100;
         // 如果其他角色没有大于等于100的，就让其优先度变成100，否则就一直加1加上去
         for(let charOther of chars){

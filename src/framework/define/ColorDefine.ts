@@ -10,4 +10,11 @@ enum ColorDef{
     White = 0xFFFFFF,
     DarkGray = 0xA9A9A9,
     DimGray = 0x696969,
+    Black = 0,
+    Chocolate = 0xD2691E,
+    Orange = 0xFFA500,
+    Gold = 0xFFD700,
+    Yellow = 0xFFFF00,
+    GreenYellow = 0xADFF2F,
+    DarkViolet = 0x9400D3,
 }

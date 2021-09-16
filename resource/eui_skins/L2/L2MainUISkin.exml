@@ -3,9 +3,10 @@
 	 width="400"
 	height="300" xmlns:e="http://ns.egret.com/eui">
 	<e:Button id="backButton" label="返回" left="30" top="30"/>
+	<e:Button id="continueButton" label="继续" y="30" right="200" visible="false"/>
 	<e:Label text="时点：" left="160" top="40"/>
 	<e:Label id="timePointLabel" text="时点" left="250" top="40"/>
-	<e:Label text="回合" right="120" x="340" top="40"/>
+	<e:Label text="第" right="120" x="340" top="40"/>
 	<e:Label id="roundLabel" text="5" right="85" top="40"/>
 	<e:Label text="回合" y="40" right="10"/>
 	<e:Group id="timeBarGroup" height="10" top="110" left="40" right="40">
