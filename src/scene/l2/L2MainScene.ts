@@ -11,6 +11,7 @@ class L2MainScene extends IScene {
     public players: L2Char[];
     public enemies: L2Char[];
     public timeManager: L2TimeManager;
+    public energyManager: L2EnergyManager;
 
     public energyNum: number = 0;
 
@@ -54,6 +55,8 @@ class L2MainScene extends IScene {
 
         // 初始化timeManager
         this.timeManager = new L2TimeManager();
+        this.energyManager = new L2EnergyManager();
+        this.status = new L2SceneStatusNormal();
 
         // 监听各种点击消息
         MessageManager.Ins.addEventListener(MessageType.L2CELLTAP, this.cellTap, this);
@@ -83,19 +86,17 @@ class L2MainScene extends IScene {
         charSelect.startAction();
     }
 
+    public status: IL2MainSceneStatus;
+    public focusChar: L2Char;
+
     private charTap(msg: Message): void {
-        // let char: L2Char = msg.messageContent;
-        // this.timeManager.toNextChar();
-        // this.timeManager.afterCharNormalAction();
-        this.isPause = true;
-        this.mainUI.continueButton.visible = true;
+        let char: L2Char = msg.messageContent;
+        this.status.charTap(char);
     }
 
     private timePortTap(msg: Message): void{
-        let timePort:L2TimeBarPort = msg.messageContent;
-        timePort.char.highLight();
-        this.isPause = true;
-        this.mainUI.continueButton.visible = true;
+        let timePort: L2TimeBarPort = msg.messageContent;
+        this.status.timePortTap(timePort);
     }
 
     private cellTap(msg: Message): void {
@@ -104,9 +105,7 @@ class L2MainScene extends IScene {
             return;
         }
         let cell: L2Cell = msg.messageContent;
-        if (cell.char != null){
-            cell.changeColor(ColorDef.DarkOrange);
-        }
+        this.status.cellTap(cell);
     }
 
 

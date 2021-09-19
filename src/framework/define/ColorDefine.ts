@@ -17,4 +17,5 @@ enum ColorDef{
     Yellow = 0xFFFF00,
     GreenYellow = 0xADFF2F,
     DarkViolet = 0x9400D3,
+    Red = 0xFF0000,
 }

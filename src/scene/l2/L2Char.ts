@@ -5,6 +5,7 @@ class L2Char extends eui.Group {
     public timeBarPort: L2TimeBarPort;
     private hpMask: egret.Shape;
     private bgWidth: number;
+    public imgName: string;
 
     // 角色属性
     public attr: L2CharAttr;
@@ -61,7 +62,7 @@ class L2Char extends eui.Group {
         }
         this.drawHpCircle(this.hp / this.attr.maxHp);
         this.harmFloat(-hpChangeNum, false);
-        if (this.hp != 0){
+        if (this.hp != 0 && hpChangeNum < 0){
             egret.Tween.get(this).to({rotation:-15}, 60).to({rotation:15}, 120).to({rotation:0}, 60);
         }
         // 执行死亡
@@ -94,6 +95,7 @@ class L2Char extends eui.Group {
         this.alive = true;
         this.attr = new L2CharAttr();
         this.hp = 0;
+        this.imgName = imgName;
 
         // 构建血条底色，绿色表示我方，红色表示敌方
         let hpBg = new egret.Shape();
@@ -257,7 +259,7 @@ class L2Char extends eui.Group {
                 let isHeal = harmNum < 0;
                 extraText = isCrit ? "暴击 " : isHeal ? "治疗 " : "";
                 color = isHeal ? ColorDef.LimeGreen : isCrit ?
-                    ColorDef.DarkRed : ColorDef.Black;
+                    ColorDef.DarkRed : ColorDef.Red;
                 harmText = `${isHeal?"+":""}${-harmNum}`;
             }
             ToastInfoManager.newToast(

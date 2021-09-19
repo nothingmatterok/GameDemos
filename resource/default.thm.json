@@ -20,7 +20,8 @@
 		"L1BattleSceneUI": "resource/eui_skins/L1/L1BattleSceneUISkin.exml",
 		"L1CharPortr": "resource/eui_skins/L1/L1CharPortrSkin.exml",
 		"L1TouchLabel": "resource/eui_skins/L1/L1TouchLabelSkin.exml",
-		"L1BattleInfo": "resource/eui_skins/L1/L1CharBattleInfoSkin.exml"
+		"L1BattleInfo": "resource/eui_skins/L1/L1CharBattleInfoSkin.exml",
+		"L2BattleInfo": "resource/eui_skins/L2/L2CharBattleInfoSkin.exml"
 	},
 	"autoGenerateExmlsList": true,
 	"exmls": [
@@ -34,6 +35,7 @@
 		"resource/eui_skins/L1/L1CharPortrSkin.exml",
 		"resource/eui_skins/L1/L1MainUISkin.exml",
 		"resource/eui_skins/L1/L1TouchLabelSkin.exml",
+		"resource/eui_skins/L2/L2CharBattleInfoSkin.exml",
 		"resource/eui_skins/L2/L2MainUISkin.exml",
 		"resource/eui_skins/MainUISkin.exml",
 		"resource/eui_skins/PanelSkin.exml",

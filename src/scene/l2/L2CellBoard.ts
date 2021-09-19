@@ -13,7 +13,7 @@ class L2CellBoard {
 
     public constructor() {
         let boardRow: number = 10;//棋盘列数，TODO:未来从关卡配置中读取
-        let boardCol: number = 14;//棋盘行数，未来从关卡配置中读取
+        let boardCol: number = 12;//棋盘行数，未来从关卡配置中读取
         this.maxRowX = boardRow - 1;
         this.maxColY = boardCol - 1;
         let boardCells: L2Cell[][] = [];// 棋盘格子，访问时，先列，后行，第几列第几行
@@ -70,8 +70,8 @@ class L2CellBoard {
             let curCell = throughCells.data.pop();
             if (curCell.disTo(cell) <= range) {
                 inRangeCells.add(curCell);
-                for(let othercell of this.getBetweenCells(curCell)){
-                    if (!Util.contains(throughedCells.data, othercell) && othercell.disTo(cell) < range){
+                for (let othercell of this.getBetweenCells(curCell)) {
+                    if (!Util.contains(throughedCells.data, othercell) && othercell.disTo(cell) < range) {
                         throughCells.add(othercell);
                         throughedCells.add(othercell);
                     }
@@ -79,6 +79,14 @@ class L2CellBoard {
             }
         }
         return inRangeCells.data;
+    }
+
+    public resetCellsColor(): void {
+        for (let cells of this.cells) {
+            for (let cell of cells) {
+                cell.changeColor(ColorDef.Tan);
+            }
+        }
     }
 
     public release(): void {

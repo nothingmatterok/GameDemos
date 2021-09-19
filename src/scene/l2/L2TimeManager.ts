@@ -80,6 +80,7 @@ class L2TimeManager{
         char.timePrior = maxPrior;
         char.timeBarPort.moveToTop();
         this.curChar = null;
+        this.roundAdd();
     }
 
     public charAddTime(char:L2Char, time: number, prior:number = -1): void{
@@ -88,6 +89,15 @@ class L2TimeManager{
         // 如果存在时间重叠，则对权重进行处理
         // 如果prior 不等于-1，那么权重就按照给予的权重直接赋值
         // 如果time是负数，代表加速往前冲，权重往大调；如果是正数，表示被推下来了，重叠权重往小调
+    }
+
+    public roundNum: number = 1;
+    public roundAdd(): void{
+        this.roundNum += 1;
+        if (this.roundNum % 3 == 0){
+            (SceneManager.Ins.curScene as L2MainScene).energyManager.addEnergy(1);
+        }
+        (SceneManager.Ins.curScene as L2MainScene).mainUI.roundLabel.text = `${this.roundNum}`
     }
 
     public release(): void{
