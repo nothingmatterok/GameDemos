@@ -1,4 +1,7 @@
 class L2BuffCfg{
+    /**
+     * 每次到角色行动后duration-1，目前游戏中只采用这一种类型的计数
+     */
     public duration: number;
     public name: string;
     public buffType: L2BuffType;
@@ -17,11 +20,14 @@ class L2BuffCfg{
 enum L2TriggerType{
     HpLowerThan,
     HpHigherThan,
-
+    
 }
 
 enum L2BuffType{
-    /** 监听特定情况，触发一个技能 或 一个函数，函数类在trigger时及时生效，技能类会加入技能列表，顺序执行 */
+    /** 
+     * 监听特定情况，触发一个技能 或 一个函数，
+     * 函数类在trigger时即时生效，技能类会加入技能列表，顺序执行
+     */
     Passive, 
     AttrChange,
     Status

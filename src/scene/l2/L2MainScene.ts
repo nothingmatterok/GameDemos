@@ -76,7 +76,7 @@ class L2MainScene extends IScene {
         // 如果上一个角色还没移动完
         if (!this.isCharMoveEnd) return;
         // 如果技能管理器还在处理技能中
-        if (!this.skillManager.IsInSkillProcess) return;
+        if (this.skillManager.IsInSkillProcess) return;
 
         // 如果角色都行动结束，同时timemanager上还有被布置的角色，那么该角色应该是刚行动完的角色
         // timemanager 进行角色行动完毕后的回收
@@ -103,7 +103,7 @@ class L2MainScene extends IScene {
 
     private cellTap(msg: Message): void {
         // 如果技能或者角色没有移动完，就可以直接返回了
-        if(!this.isCharMoveEnd || !this.isCharSkillEnd ) {
+        if(!this.isCharMoveEnd || this.skillManager.IsInSkillProcess ) {
             return;
         }
         let cell: L2Cell = msg.messageContent;

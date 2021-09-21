@@ -1,11 +1,11 @@
 class L2Buff{
 
     public config: L2BuffCfg;
-
     // 运行时状态
     public duration: number; // 持续回合，每次自己自动触发时进行一次结算
     public caster: L2Char;
     public target: L2Char;
+    // 子Buff，当该Buff被移除时，需要同步移除所有的子Buff
     public children: L2Buff[];
 
     public initial(cfg: L2BuffCfg, target: L2Char, caster: L2Char){
@@ -13,11 +13,14 @@ class L2Buff{
         this.target = target;
         this.caster = caster;
         this.duration = cfg.duration;
+        this.children = [];
         this.addToTarget(target);
     }
 
     public addToTarget(target: L2Char){
-
+        if(this.config.buffType == L2BuffType.AttrChange){
+            target.refreshBuffAttr();
+        }
     }
 
     private showBuffName(){
@@ -34,6 +37,9 @@ class L2Buff{
     public removeFromTarget(){
         let target = this.target;
         target.buffs.remove(this);
+        for(let buff of this.children){
+            buff.removeFromTarget();
+        }
         if (this.config.buffType == L2BuffType.Status){
             target.refreshBuffStatus();
         }
@@ -52,6 +58,12 @@ class L2Buff{
         if (this.duration == 0){
             this.removeFromTarget();
         }
+    }
+
+    public release(){
+        this.children = null;
+        this.target = null;
+        this.caster = null;
     }
 
 }

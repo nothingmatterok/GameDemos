@@ -152,7 +152,7 @@ class L2Char extends eui.Group {
         Util.drawAngleCircle(shape, endAngle, radius, startAngle);
     }
 
-    public drawHpCircle(hpPercent: number) {
+    private drawHpCircle(hpPercent: number) {
         this.hpMask.x = 0
         this.hpMask.y = 0;
         this.drawCircle(this.hpMask, hpPercent * 360, this.bgWidth);
@@ -167,7 +167,7 @@ class L2Char extends eui.Group {
         let scene = SceneManager.Ins.curScene as L2MainScene;
         scene.skillManager.currentSkillTargets = [target];
         if (this.isInAtkRange(target)) {
-            scene.skillManager.pushSkill(L2Config.SKILLCFG["NormalATK"], this);
+            scene.skillManager.pushSkill(L2Config.SkillCfg["NormalATK"], this);
         } else {
             // 找到离目标最近的移动范围的cell，如果存在距离一致的，就找同时离我自己最近的格子
             let movableCells = this.allMovableCells();
@@ -183,7 +183,7 @@ class L2Char extends eui.Group {
             tw.call(()=>{
                 scene.isCharMoveEnd = true;
                 if (this.isInAtkRange(target)){
-                    scene.skillManager.pushSkill(L2Config.SKILLCFG["NormalATK"], this);
+                    scene.skillManager.pushSkill(L2Config.SkillCfg["NormalATK"], this);
                 }
             });
         }
@@ -202,7 +202,7 @@ class L2Char extends eui.Group {
     /**
      * 返回最近的敌对阵营单位，如果存在距离一致的单位，那么就返回血量最少的单位
      */
-    public findMinDisOppose(): L2Char {
+    private findMinDisOppose(): L2Char {
         let scene = SceneManager.Ins.curScene as L2MainScene;
         let selectChars = this.camp == L2Camp.Player ? scene.enemies : scene.players;
         selectChars = selectChars.filter((item)=>{return item.alive == true;})
@@ -214,7 +214,7 @@ class L2Char extends eui.Group {
         return selectChars[0];
     }
 
-    public isInAtkRange(target: L2Char): boolean {
+    private isInAtkRange(target: L2Char): boolean {
         return this.isCellInAtkRange(target.cell);
     }
 
@@ -227,7 +227,7 @@ class L2Char extends eui.Group {
     }
 
 
-    public isCellInAtkRange(cell: L2Cell): boolean {
+    private isCellInAtkRange(cell: L2Cell): boolean {
         let dis = cell.disTo(this.cell);
         if (dis <= this.attr.atkRange) return true;
         return false;
@@ -248,18 +248,18 @@ class L2Char extends eui.Group {
         return targetCells;
     }
 
-    public disToChar(otherChar: L2Char): number {
+    private disToChar(otherChar: L2Char): number {
         return this.disToCell(otherChar.cell);
     }
 
-    public disToCell(otherCell: L2Cell): number {
+    private disToCell(otherCell: L2Cell): number {
         if (this.cell == null || otherCell == null) {
             return -1;
         }
         return this.cell.disTo(otherCell);
     }
 
-    public harmFloat(harmNum: number, isCrit: boolean) {
+    private harmFloat(harmNum: number, isCrit: boolean) {
         if (this.alive) {
             let harmText = "";
             let extraText = "miss";

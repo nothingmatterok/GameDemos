@@ -15,7 +15,7 @@ class L2EnergyManager{
         this.energyNum += energyNum;
         let floatEnergy: number = 0; // 溢出的数量
         if (this.energyNum > 10) {
-            floatEnergy = this.energyNum - 10; 
+            floatEnergy = this.energyNum - L2EnergyManager.MaxEnergy; 
             this.energyNum = 10;
         }
         let scene = SceneManager.Ins.curScene as L2MainScene;
