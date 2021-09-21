@@ -12,6 +12,7 @@ class L2MainScene extends IScene {
     public enemies: L2Char[];
     public timeManager: L2TimeManager;
     public energyManager: L2EnergyManager;
+    public skillManager: L2SkillManager;
 
     public energyNum: number = 0;
 
@@ -57,6 +58,7 @@ class L2MainScene extends IScene {
         this.timeManager = new L2TimeManager();
         this.energyManager = new L2EnergyManager();
         this.status = new L2SceneStatusNormal();
+        this.skillManager = new L2SkillManager();
 
         // 监听各种点击消息
         MessageManager.Ins.addEventListener(MessageType.L2CELLTAP, this.cellTap, this);
@@ -65,15 +67,16 @@ class L2MainScene extends IScene {
     }
 
     // 如果行动没结束，玩家不能对格子cell进行任何操作
-    public isCharActionEnd: boolean = true;
     public isPause:boolean = false;
+    public isCharMoveEnd: boolean = true;
 
     public update(){
         // 如果暂停了
         if (this.isPause)return;
-
-        // 如果上一个角色还没动完
-        if (!this.isCharActionEnd) return;
+        // 如果上一个角色还没移动完
+        if (!this.isCharMoveEnd) return;
+        // 如果技能管理器还在处理技能中
+        if (!this.skillManager.IsInSkillProcess) return;
 
         // 如果角色都行动结束，同时timemanager上还有被布置的角色，那么该角色应该是刚行动完的角色
         // timemanager 进行角色行动完毕后的回收
@@ -82,8 +85,7 @@ class L2MainScene extends IScene {
         }
         // timemanager分配下一个角色，角色开始行动，角色行动是否结束只为false
         let charSelect = this.timeManager.toNextChar();
-        this.isCharActionEnd = false;
-        charSelect.startAction();
+        charSelect.startAction(); // 行动的时候会把各种状态放到合适的值
     }
 
     public status: IL2MainSceneStatus;
@@ -100,8 +102,8 @@ class L2MainScene extends IScene {
     }
 
     private cellTap(msg: Message): void {
-        if(!this.isCharActionEnd) {
-            // ToastInfoManager.newToast("请先选择一个单位");
+        // 如果技能或者角色没有移动完，就可以直接返回了
+        if(!this.isCharMoveEnd || !this.isCharSkillEnd ) {
             return;
         }
         let cell: L2Cell = msg.messageContent;
@@ -122,6 +124,7 @@ class L2MainScene extends IScene {
         this.mainUI = null;
         this.board.release();
         this.board = null;
+        this.skillManager.release();
     }
 
     public releaseResource(){

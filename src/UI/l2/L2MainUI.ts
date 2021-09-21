@@ -13,6 +13,7 @@ class L2MainUI extends eui.Component {
     public waitButton: eui.Button;
     public battleInfo: L2BattleInfo;
     public commandButton: eui.Button;
+    public commandModeLabel: eui.Label;
 
     constructor() {
         super();
@@ -32,6 +33,7 @@ class L2MainUI extends eui.Component {
         this.timePointLabel.textColor = ColorDef.DarkOrange;
         this.roundLabel.text = "1";
         this.roundLabel.textColor = ColorDef.DarkOrange;
+        this.commandModeLabel.visible = false;
 
 
         // 初始化时间轴上的头像

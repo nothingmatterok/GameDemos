@@ -7,8 +7,8 @@ class L2Char extends eui.Group {
     private bgWidth: number;
     public imgName: string;
 
-    // 角色属性
-    public attr: L2CharAttr;
+    // 角色原始属性
+    private rawAttr: L2CharAttr;
 
     // 运行时状态
     private nowTime: number = 0;
@@ -17,6 +17,11 @@ class L2Char extends eui.Group {
     private hp: number;
     public alive: boolean;
     private cell: L2Cell;
+    public buffs: MySet<L2Buff>;
+    public status: MySet<L2BuffStatus>;
+
+    // 运行时属性
+    public attr: L2CharAttr;
 
     public name: string;
 
@@ -93,6 +98,8 @@ class L2Char extends eui.Group {
         this.width = width;
         this.height = width;
         this.alive = true;
+        this.rawAttr = new L2CharAttr();
+        // attr的属性等于raw的属性 + buff加成后得到TODO:复制raw的属性到attr中
         this.attr = new L2CharAttr();
         this.hp = 0;
         this.imgName = imgName;
@@ -120,6 +127,8 @@ class L2Char extends eui.Group {
 
         // 构建时间轴上的头像，在MainUI中intial完毕后统一加入到轴上
         this.timeBarPort = new L2TimeBarPort(imgName, this);
+
+        this.buffs = new MySet<L2Buff>();
 
         this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onTap, this);
     }
@@ -153,11 +162,12 @@ class L2Char extends eui.Group {
 
     public startAction(): void {
         console.log(`${this.debugNAndP()} action`);
-        
         let tw = egret.Tween.get(this);
         let target = this.findMinDisOppose();
+        let scene = SceneManager.Ins.curScene as L2MainScene;
+        scene.skillManager.currentSkillTargets = [target];
         if (this.isInAtkRange(target)) {
-            this.normalAtk(target, tw);
+            scene.skillManager.pushSkill(L2Config.SKILLCFG["NormalATK"], this);
         } else {
             // 找到离目标最近的移动范围的cell，如果存在距离一致的，就找同时离我自己最近的格子
             let movableCells = this.allMovableCells();
@@ -167,15 +177,16 @@ class L2Char extends eui.Group {
                 return rs;
             });
             let targetCell = movableCells[0];
+            scene.isCharMoveEnd = false;
             this.moveTo(targetCell, tw);
-            // 如果移动后能够打到目标
-            if (targetCell.disTo(target.cell) <= this.attr.atkRange){
-                this.normalAtk(target, tw);
-            }
+            // 移动结束后查看是否能够攻击到目标，可以就发起攻击
+            tw.call(()=>{
+                scene.isCharMoveEnd = true;
+                if (this.isInAtkRange(target)){
+                    scene.skillManager.pushSkill(L2Config.SKILLCFG["NormalATK"], this);
+                }
+            });
         }
-        tw.call(()=>{
-            (SceneManager.Ins.curScene as L2MainScene).isCharActionEnd = true;
-        });
     }
 
     public moveTo(desCell: L2Cell, tw:egret.Tween): void{
@@ -188,13 +199,6 @@ class L2Char extends eui.Group {
         return `${this.name} - ${this.cell.rowX},${this.cell.colY}`;
     }
 
-    public normalAtk(target:L2Char, tw:egret.Tween): void{
-        tw.to({x:target.x, y: target.y, scaleX:1.5, scaleY:1.5}, 250).call(()=>{
-            console.log(`${this.debugNAndP()} atk ${target.debugNAndP()}`);
-            target.hpChange(-(this.attr.atk - target.attr.def));
-        }).to({x:this.cell.x, y: this.cell.y, scaleX:1, scaleY:1}, 250);
-    }
-
     /**
      * 返回最近的敌对阵营单位，如果存在距离一致的单位，那么就返回血量最少的单位
      */
@@ -204,7 +208,7 @@ class L2Char extends eui.Group {
         selectChars = selectChars.filter((item)=>{return item.alive == true;})
         selectChars.sort((a, b) => {
             let result = this.disToChar(a) - this.disToChar(b);
-            if (result == 0){return result}
+            if (result != 0){return result}
             return a.hp - b.hp;
         });
         return selectChars[0];
@@ -212,6 +216,14 @@ class L2Char extends eui.Group {
 
     public isInAtkRange(target: L2Char): boolean {
         return this.isCellInAtkRange(target.cell);
+    }
+
+    public refreshBuffStatus(){
+
+    }
+
+    public refreshBuffAttr(){
+
     }
 
 

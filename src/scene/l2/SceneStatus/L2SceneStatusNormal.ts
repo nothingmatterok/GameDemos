@@ -34,6 +34,7 @@ class L2SceneStatusNormal extends IL2MainSceneStatus {
         mainUI.commandButton.visible = true;
         mainUI.showInfoImage.visible = false;
         scene.isPause = false;
+        mainUI.commandModeLabel.visible = false;
         scene.board.resetCellsColor();
     }
 
@@ -63,6 +64,7 @@ class L2SceneStatusShowInfo extends IL2MainSceneStatus {
         mainUI.skillGroup.visible = char.camp == L2Camp.Player;
         mainUI.skill1Button.visible = true;
         mainUI.skill2Button.visible = true;
+        mainUI.commandModeLabel.visible = true;
         scene.isPause = true;
 
         mainUI.showInfoImage.source = `${char.imgName}`
@@ -83,6 +85,10 @@ class L2SceneStatusShowInfo extends IL2MainSceneStatus {
 
     public cellTap(cell: L2Cell): void {
         let scene = SceneManager.Ins.curScene as L2MainScene;
+        if (!Util.contains(this.moveableCells, cell)){
+            ToastInfoManager.newToast("退出指令模式，战斗恢复");
+            this.back();
+        }
         if(Util.contains(this.moveableCells, cell) && scene.focusChar.camp == L2Camp.Player){
             if (scene.energyManager.energyNum < 1){
                 ToastInfoManager.newToast("移动所需能量不足");
@@ -116,6 +122,7 @@ class L2SceneStatusMoveSelect extends IL2MainSceneStatus {
         mainUI.skillGroup.visible = true;
         mainUI.skill1Button.visible = false;
         mainUI.skill2Button.visible = false;
+        mainUI.commandModeLabel.visible = false;
         scene.isPause = true;
 
         this.moveableCells = cells[1];

@@ -19,14 +19,14 @@ class L2EnergyManager{
             this.energyNum = 10;
         }
         let scene = SceneManager.Ins.curScene as L2MainScene;
-        // 溢出的能量会对全场敌人造成伤害
-        for(let i=0;i<floatEnergy;i++){
-            for(let enemy of scene.enemies){
-                if (enemy.alive){
-                    enemy.hpChange(-Math.ceil(enemy.HP * 0.05));
-                }
-            }
-        }
+        // 溢出的能量会对全场敌人造成伤害，感觉作用不大，暂时隐藏
+        // for(let i=0;i<floatEnergy;i++){
+        //     for(let enemy of scene.enemies){
+        //         if (enemy.alive){
+        //             enemy.hpChange(-Math.ceil(enemy.HP * 0.05));
+        //         }
+        //     }
+        // }
         scene.mainUI.addFires(energyNum - floatEnergy);
     }
 
