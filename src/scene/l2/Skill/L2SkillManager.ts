@@ -1,5 +1,5 @@
 class L2SkillManager {
-    private waitingSkillList: [L2Skill, L2Char][] = [];
+    private waitingSkillList: [L2SkillCfg, L2Char][] = [];
     public currentSkillTargets: any[];
     private isInSkillProcess: boolean = false;
 
@@ -7,7 +7,7 @@ class L2SkillManager {
         return this.isInSkillProcess;
     }
 
-    public pushSkill(skill: L2Skill, caster: L2Char){
+    public pushSkill(skill: L2SkillCfg, caster: L2Char){
         this.waitingSkillList.push([skill, caster]);
         // 如果没有在技能处理过程中，进行技能处理
         if (!this.isInSkillProcess) {
@@ -17,7 +17,7 @@ class L2SkillManager {
         }
     }
 
-    private castSkill(skill: L2Skill, caster: L2Char): void {
+    private castSkill(skill: L2SkillCfg, caster: L2Char): void {
         this.isInSkillProcess = true;
         let tw = egret.Tween.get(caster);
         skill.castFunc(caster, tw)

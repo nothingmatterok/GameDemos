@@ -8,5 +8,6 @@ enum MessageType {
     L2CHARTAP = "L2CHARTAP",
     L2TIMEPORTTAP = "L2TIMEPORTTAP",
     L2USEENERGY = "L2USEFIRE",
-    L2ADDENERGY = "L2ADDFIRE"
+    L2ADDENERGY = "L2ADDFIRE",
+    L2BuffTriggerTime = "L2BuffTriggerTime"
 }

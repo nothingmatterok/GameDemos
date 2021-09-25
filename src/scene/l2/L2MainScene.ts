@@ -13,6 +13,7 @@ class L2MainScene extends IScene {
     public timeManager: L2TimeManager;
     public energyManager: L2EnergyManager;
     public skillManager: L2SkillManager;
+    public buffManager: L2BuffManager;
 
     public energyNum: number = 0;
 
@@ -59,6 +60,11 @@ class L2MainScene extends IScene {
         this.energyManager = new L2EnergyManager();
         this.status = new L2SceneStatusNormal();
         this.skillManager = new L2SkillManager();
+        this.buffManager = new L2BuffManager();
+        this.buffManager.initial();
+
+        let buff = this.buffManager.newBuff(L2Config.BuffCfg[0], null);
+        this.buffManager.attachBuff2Char(buff, this.enemies[0]);
 
         // 监听各种点击消息
         MessageManager.Ins.addEventListener(MessageType.L2CELLTAP, this.cellTap, this);
@@ -85,6 +91,7 @@ class L2MainScene extends IScene {
         }
         // timemanager分配下一个角色，角色开始行动，角色行动是否结束只为false
         let charSelect = this.timeManager.toNextChar();
+        MessageManager.Ins.sendMessage(MessageType.L2BuffTriggerTime, L2TriggerTimeType.BeforeAction);
         charSelect.startAction(); // 行动的时候会把各种状态放到合适的值
     }
 
@@ -125,6 +132,9 @@ class L2MainScene extends IScene {
         this.board.release();
         this.board = null;
         this.skillManager.release();
+        this.skillManager = null;
+        this.buffManager.release();
+        this.buffManager = null;
     }
 
     public releaseResource(){

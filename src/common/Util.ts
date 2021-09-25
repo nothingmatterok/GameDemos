@@ -217,6 +217,10 @@ class Util {
         return deg;
     }
 
+    public static clamp(raw:number, min:number, max:number): number{
+        return raw < min ? min : raw > max ? max : raw;
+    }
+
 }
 
 const angle2RadParam = Math.PI / 180;

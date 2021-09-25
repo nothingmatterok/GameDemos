@@ -59,12 +59,9 @@ class L2Char extends eui.Group {
 
     public hpChange(hpChangeNum: number): number {
         // 更新血量
+        hpChangeNum = Math.ceil(hpChangeNum);
         let newHp = hpChangeNum + this.hp;
-        if (newHp > 0) {
-            this.hp = newHp;
-        } else {
-            this.hp = 0;
-        }
+        this.hp = Util.clamp(newHp, 0, this.attr.maxHp);
         this.drawHpCircle(this.hp / this.attr.maxHp);
         this.harmFloat(-hpChangeNum, false);
         if (this.hp != 0 && hpChangeNum < 0){
@@ -167,7 +164,7 @@ class L2Char extends eui.Group {
         let scene = SceneManager.Ins.curScene as L2MainScene;
         scene.skillManager.currentSkillTargets = [target];
         if (this.isInAtkRange(target)) {
-            scene.skillManager.pushSkill(L2Config.SkillCfg["NormalATK"], this);
+            scene.skillManager.pushSkill(L2Config.SkillCfg[0], this);
         } else {
             // 找到离目标最近的移动范围的cell，如果存在距离一致的，就找同时离我自己最近的格子
             let movableCells = this.allMovableCells();
@@ -183,7 +180,7 @@ class L2Char extends eui.Group {
             tw.call(()=>{
                 scene.isCharMoveEnd = true;
                 if (this.isInAtkRange(target)){
-                    scene.skillManager.pushSkill(L2Config.SkillCfg["NormalATK"], this);
+                    scene.skillManager.pushSkill(L2Config.SkillCfg[0], this);
                 }
             });
         }
@@ -269,7 +266,7 @@ class L2Char extends eui.Group {
             if (harmNum != 0) {
                 size = isCrit ? 30 : 25;
                 let isHeal = harmNum < 0;
-                extraText = isCrit ? "暴击 " : isHeal ? "治疗 " : "";
+                extraText = isCrit ? "暴击 " : "";
                 color = isHeal ? ColorDef.LimeGreen : isCrit ?
                     ColorDef.DarkRed : ColorDef.Red;
                 harmText = `${isHeal?"+":""}${-harmNum}`;
@@ -277,7 +274,7 @@ class L2Char extends eui.Group {
             ToastInfoManager.newToast(
                 `${extraText}${harmText}`, color,
                 this.y + this.width/2, this.x - GameRoot.GameStage.stageWidth / 2 + this.width/2,
-                -50, 0, 1000, size, false, egret.Ease.quadOut
+                -50, 0, 2000, size, false, egret.Ease.quadOut
             );
         }
     }
