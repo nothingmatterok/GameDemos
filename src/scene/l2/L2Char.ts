@@ -2,28 +2,34 @@ class L2Char extends eui.Group {
 
     private static hpBoardWidth: number = 3; // 周围一圈血条宽度
 
+    public config: L2CharCfg;
+    public target: L2Char;
+
+    // 展示组件
     public timeBarPort: L2TimeBarPort;
     private hpMask: egret.Shape;
     private bgWidth: number;
-    public imgName: string;
-
-    // 角色原始属性
+    // 角色原始属性，实际属性要根据Buff再计算一遍
     private rawAttr: L2CharAttr;
 
     // 运行时状态
+    /**
+     * 该角色的当前时间轴顺位
+     */
     private nowTime: number = 0;
-    public timePrior: number = 100; // 时间权重，正常为100，0最大
+    /**
+     * 时间权重，正常为100，越小代表当时间轴重叠时具有更优先的执行顺序
+     */
+    public timePrior: number = 100; 
     public camp: L2Camp;
     private hp: number;
     public alive: boolean;
     private cell: L2Cell;
     public buffs: MySet<L2Buff>;
-    public status: MySet<L2BuffStatus>;
+    private status: MySet<L2BuffStatus>;
 
     // 运行时属性
     public attr: L2CharAttr;
-
-    public name: string;
 
     public get HP(): number {
         return this.hp;
@@ -33,6 +39,9 @@ class L2Char extends eui.Group {
         return this.cell;
     }
 
+    /**
+     * 设置角色的cell，但并不会跟新角色位置，需要额外再调用placeToCell
+     */
     public set Cell(cell: L2Cell) {
         let beforeCell: L2Cell = null;
         if (this.cell != null) {
@@ -58,12 +67,14 @@ class L2Char extends eui.Group {
     }
 
     public hpChange(hpChangeNum: number): number {
+        if (!this.alive) return;
         // 更新血量
         hpChangeNum = Math.ceil(hpChangeNum);
         let newHp = hpChangeNum + this.hp;
-        this.hp = Util.clamp(newHp, 0, this.attr.maxHp);
+        newHp = Util.clamp(newHp, 0, this.attr.maxHp);
+        this.harmFloat(this.hp - newHp, false);
+        this.hp = newHp;
         this.drawHpCircle(this.hp / this.attr.maxHp);
-        this.harmFloat(-hpChangeNum, false);
         if (this.hp != 0 && hpChangeNum < 0){
             egret.Tween.get(this).to({rotation:-15}, 60).to({rotation:15}, 120).to({rotation:0}, 60);
         }
@@ -88,32 +99,33 @@ class L2Char extends eui.Group {
 
     public get NowTime(): number { return this.nowTime; }
 
-    public constructor(width: number, imgName: string, camp: L2Camp) {
+    public constructor(cfg: L2CharCfg, camp: L2Camp) {
         super();
+        let scene = SceneManager.Ins.curScene as L2MainScene;
+        let headWidth = scene.board.realCellWidth;
+        this.config = cfg;
+        this.rawAttr = new L2CharAttr(cfg);
+        this.attr = new L2CharAttr(cfg);
         this.camp = camp;
-        this.bgWidth = width;
-        this.width = width;
-        this.height = width;
         this.alive = true;
-        this.rawAttr = new L2CharAttr();
-        // attr的属性等于raw的属性 + buff加成后得到TODO:复制raw的属性到attr中
-        this.attr = new L2CharAttr();
         this.hp = 0;
-        this.imgName = imgName;
 
+        // 构造各种组件
+        this.bgWidth = headWidth;
+        this.width = headWidth;
+        this.height = headWidth;
         // 构建血条底色，绿色表示我方，红色表示敌方
         let hpBg = new egret.Shape();
         let bgColor = camp == L2Camp.Player ? ColorDef.LimeGreen : ColorDef.DarkRed;
-        Util.drawSquar(hpBg, width, bgColor);
+        Util.drawSquar(hpBg, headWidth, bgColor);
         this.addChild(hpBg);
         this.hpMask = new egret.Shape();
         hpBg.mask = this.hpMask;
         this.addChild(this.hpMask);
         this.drawHpCircle(1);
-
         // 构建头像
-        let imgWidth = width - L2Char.hpBoardWidth * 2;
-        let img = new eui.Image(imgName);
+        let imgWidth = headWidth - L2Char.hpBoardWidth * 2;
+        let img = new eui.Image(cfg.imgName);
         img.width = imgWidth * 1.6;
         img.height = img.width;
         let offset = (img.width - imgWidth) / 2;
@@ -121,12 +133,12 @@ class L2Char extends eui.Group {
         this.addChild(img);
         img.x = - offset + L2Char.hpBoardWidth;
         img.y = img.x;
-
         // 构建时间轴上的头像，在MainUI中intial完毕后统一加入到轴上
-        this.timeBarPort = new L2TimeBarPort(imgName, this);
-
+        this.timeBarPort = new L2TimeBarPort(this);
+        // 其他数值组件
         this.buffs = new MySet<L2Buff>();
-
+        this.status = new MySet<L2BuffStatus>();
+        // 事件
         this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onTap, this);
     }
 
@@ -161,10 +173,10 @@ class L2Char extends eui.Group {
         console.log(`${this.debugNAndP()} action`);
         let tw = egret.Tween.get(this);
         let target = this.findMinDisOppose();
+        this.target = target;
         let scene = SceneManager.Ins.curScene as L2MainScene;
-        scene.skillManager.currentSkillTargets = [target];
         if (this.isInAtkRange(target)) {
-            scene.skillManager.pushSkill(L2Config.SkillCfg[0], this);
+            this.normalAtk();
         } else {
             // 找到离目标最近的移动范围的cell，如果存在距离一致的，就找同时离我自己最近的格子
             let movableCells = this.allMovableCells();
@@ -180,7 +192,7 @@ class L2Char extends eui.Group {
             tw.call(()=>{
                 scene.isCharMoveEnd = true;
                 if (this.isInAtkRange(target)){
-                    scene.skillManager.pushSkill(L2Config.SkillCfg[0], this);
+                    this.normalAtk();
                 }
             });
         }
@@ -193,7 +205,7 @@ class L2Char extends eui.Group {
     }
 
     public debugNAndP():string{
-        return `${this.name} - ${this.cell.rowX},${this.cell.colY}`;
+        return `${this.config.name} - ${this.cell.rowX},${this.cell.colY}`;
     }
 
     /**
@@ -215,12 +227,88 @@ class L2Char extends eui.Group {
         return this.isCellInAtkRange(target.cell);
     }
 
-    public refreshBuffStatus(){
-
+    private normalAtk(){
+        let scene = SceneManager.Ins.curScene as L2MainScene;
+        scene.skillManager.pushSkill(
+            L2Config.SkillCfg[this.config.normalAtkSkillId], this
+        );
     }
 
-    public refreshBuffAttr(){
+    public isDizz(): boolean {
+        return this.status.has(L2BuffStatus.Dizz);
+    }
 
+    public isSlient(): boolean {
+        return this.status.has(L2BuffStatus.Slient);
+    }
+
+    public refreshBuffAttr() {
+        // 计算生效buff
+        let attrBuffTemp: L2Buff[] = [];
+        for (let buff of this.buffs.data) {
+            if (buff.enable && buff.config.buffType == L2BuffType.AttrChange) {
+                attrBuffTemp.push(buff);
+            }
+        }
+
+        // 统计增益比例及数值
+        let attrAdd: { [key: string]: number } = {}
+        let attrRatio: { [key: string]: number } = {}
+        for (let attrName in L2AttrNames) {
+            attrAdd[attrName] = 0;
+            attrRatio[attrName] = 0;
+        }
+        for (let buff of attrBuffTemp) {
+            for (let attrName in L2AttrNames) {
+                if (attrName in buff.config.attrNumAdd) {
+                    attrAdd[attrName] += buff.config.attrNumAdd[attrName];
+                }
+                if (attrName in buff.config.attrPercAdd) {
+                    attrRatio[attrName] += buff.config.attrPercAdd[attrName];
+                }
+            }
+        }
+
+        // 计算增益后属性
+        for(let attrName in L2AttrNames){
+            let newAttrNum = this.rawAttr[attrName] * (1 + attrRatio[attrName]) + attrAdd[attrName];
+            // 如果最大生命增加了，则对其生命也做相同的增加处理；如果最大生命降低了同理，但最多保留1点血量
+            if (attrName == L2AttrNames.maxHp){
+                let addHp = newAttrNum - this.attr.maxHp;
+                if (addHp + this.hp <= 0) {
+                    addHp = 1 - this.hp;
+                }
+                this.hpChange(addHp);
+            }
+            this.attr[attrName] = newAttrNum;
+        }
+    }
+
+    public refreshBuffStatus() {
+        // 计算状态
+        this.buffs.removeAll();
+        let statusTemp: L2BuffStatus[] = [];
+        for (let buff of this.buffs.data) {
+            if (buff.enable && buff.config.buffType == L2BuffType.Status) {
+                statusTemp.push(buff.config.status);
+            }
+        }
+        for (let status of statusTemp) {
+            this.status.add(status);
+        }
+
+        // TODO: 跟新状态表示
+        // if (this.isDizz()) {
+        //     this._charPort.toDizz();
+        // } else {
+        //     this._charPort.outDizz();
+        // }
+
+        // if (this.isSlient()) {
+        //     this._charPort.toSlient();
+        // } else {
+        //     this._charPort.outSlient();
+        // }
     }
 
 
@@ -259,24 +347,31 @@ class L2Char extends eui.Group {
     private harmFloat(harmNum: number, isCrit: boolean) {
         if (this.alive) {
             let harmText = "";
-            let extraText = "miss";
             let size = 25;
             let color:number = 0;
             harmNum = Math.ceil(harmNum);
             if (harmNum != 0) {
                 size = isCrit ? 30 : 25;
                 let isHeal = harmNum < 0;
-                extraText = isCrit ? "暴击 " : "";
-                color = isHeal ? ColorDef.LimeGreen : isCrit ?
-                    ColorDef.DarkRed : ColorDef.Red;
+                color = isHeal ? ColorDef.LimeGreen : ColorDef.Red;
                 harmText = `${isHeal?"+":""}${-harmNum}`;
             }
             ToastInfoManager.newToast(
-                `${extraText}${harmText}`, color,
+                `${harmText}`, color,
                 this.y + this.width/2, this.x - GameRoot.GameStage.stageWidth / 2 + this.width/2,
-                -50, 0, 2000, size, false, egret.Ease.quadOut
+                -50, 0, 2500, size, false, egret.Ease.quadOut
             );
         }
+    }
+
+    public endAction(): void{
+        let scene = SceneManager.Ins.curScene as L2MainScene;
+        // 行动结束时所有buff持续时间-1
+        for(let buff of this.buffs.data){
+            scene.buffManager.changeBuffDuration(buff, -1);
+        }
+        // 发送结束行动消息
+        MessageManager.Ins.sendMessage(MessageType.L2BuffTriggerTime, [L2TriggerTimeType.AfterAction]);
     }
 
     public release(): void {
@@ -284,6 +379,10 @@ class L2Char extends eui.Group {
         this.timeBarPort = null;
         this.hpMask = null;
         this.cell = null;
+        this.status = null;
+        this.config = null;
+        this.buffs.removeAll();
+        this.buffs = null;
     }
 
 }

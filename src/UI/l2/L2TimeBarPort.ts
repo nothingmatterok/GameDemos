@@ -6,7 +6,7 @@ class L2TimeBarPort extends eui.Group{
     private static barWidthOffset: number = 80; // 和stage宽度比，时间条短多少
     public char: L2Char;
 
-    public constructor(imgName: string, char:L2Char){
+    public constructor(char:L2Char){
         super();
         this.char = char;
         this.width = L2TimeBarPort.barPortWidth;
@@ -14,7 +14,7 @@ class L2TimeBarPort extends eui.Group{
 
         // 构建头像
         let width = L2TimeBarPort.barPortWidth;
-        let img = new eui.Image(imgName);
+        let img = new eui.Image(char.config.imgName);
         img.width = width * 1.6;
         img.height = img.width;
         let offset = (img.width - width) / 2;

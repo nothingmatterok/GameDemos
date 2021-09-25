@@ -29,17 +29,9 @@ class L2MainScene extends IScene {
         this.players = [];
         this.enemies = [];
         for(let i = 1; i < 6;i++){
-            let charTest = new L2Char(this.board.realCellWidth, `${i*3}_portrait_png`, 1 - i%2 * 2);
-            charTest.attr.startTime = i * 20;
-            charTest.attr.actionSpeed = i * 5;
-            charTest.attr.maxHp = 1000;
+            let charTest = new L2Char(L2Config.CharCfg[0], 1 - i%2 * 2);
             charTest.hpChangeTo(charTest.attr.maxHp);
-            charTest.attr.atk = 100;
-            charTest.attr.def = 20;
-            charTest.attr.moveRange = 5;
-            charTest.attr.atkRange = i % 2 + 1;
-            charTest.name = `${i}`;
-            if(charTest.camp == L2Camp.Player){this.players.push(charTest);}else{this.enemies.push(charTest);}
+            charTest.camp == L2Camp.Player ? this.players.push(charTest) : this.enemies.push(charTest);
         }
 
         // 角色及敌人进入到gameLayer中 TODO: 测试过程
@@ -91,7 +83,7 @@ class L2MainScene extends IScene {
         }
         // timemanager分配下一个角色，角色开始行动，角色行动是否结束只为false
         let charSelect = this.timeManager.toNextChar();
-        MessageManager.Ins.sendMessage(MessageType.L2BuffTriggerTime, L2TriggerTimeType.BeforeAction);
+        MessageManager.Ins.sendMessage(MessageType.L2BuffTriggerTime, [L2TriggerTimeType.BeforeAction]);
         charSelect.startAction(); // 行动的时候会把各种状态放到合适的值
     }
 

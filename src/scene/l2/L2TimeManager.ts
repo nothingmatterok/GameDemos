@@ -61,6 +61,7 @@ class L2TimeManager{
     public afterCharNormalAction(): void{
         let char = this.curChar;
         if(char == null){console.error("不应该出现这种情况");return;}
+        char.endAction();
         // 角色时间调整到默认回来的时间 * 角色speed所对应的加速
         let speed = char.attr.actionSpeed;
         let M = L2TimeManager.SpeedM;

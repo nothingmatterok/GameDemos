@@ -67,7 +67,7 @@ class L2SceneStatusShowInfo extends IL2MainSceneStatus {
         mainUI.commandModeLabel.visible = true;
         scene.isPause = true;
 
-        mainUI.showInfoImage.source = `${char.imgName}`
+        mainUI.showInfoImage.source = `${char.config.imgName}`
         let cells = char.allMovableCells();
         this.moveableCells = cells;
         let cellColor = char.camp == L2Camp.Player ? ColorDef.LimeGreen : ColorDef.Orange;

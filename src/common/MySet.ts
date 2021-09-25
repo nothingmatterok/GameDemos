@@ -21,4 +21,8 @@ class MySet<T> {
             this.add(e);
         }
     }
+
+    public has(a: T): boolean{
+        return this.data.indexOf(a) >= 0;
+    }
 }

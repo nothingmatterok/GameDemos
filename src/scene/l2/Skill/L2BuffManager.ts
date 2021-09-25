@@ -23,24 +23,24 @@ class L2BuffManager{
     }
 
     public changeBuffDuration(buff: L2Buff, changeNum: number): void{
+        // 0表示持续时间无限长，因此不对0的buff做任何时间上的处理
+        if (buff.duration == 0) return;
         buff.duration += changeNum;
         if(buff.duration <= 0){
             buff.removeFromTarget();
-            buff.release();
             Util.removeObjFromArray(this.buffs, buff);
+            buff.release();
             this.buffPool.push(buff);
         }
     }
 
     private buffTrigger(msg: Message): void{
-        let timeType : L2TriggerTimeType = msg.messageContent;
+        let timeType : L2TriggerTimeType = msg.messageContent[0];
         for (let buff of this.buffs){
-            if (buff.config.buffType == L2BuffType.Passive){
-                if (buff.config.funcTriggerType == timeType && buff.config.funcTriggerDudgeFunc(buff)){
-                    buff.config.triggerFunc(buff);
-                }
-                if (buff.config.skillTriggerTime == timeType && buff.config.skillTriggerDudgeFunc(buff)){
-                    (SceneManager.Ins.curScene as L2MainScene).skillManager.pushSkill(buff.config.triggerSkill, buff.target);
+            if (buff.enable && buff.config.buffType == L2BuffType.Passive){
+                if (buff.config.skillTriggerTime == timeType && buff.config.skillTriggerDudgeFunc(buff, msg.messageContent)){
+                    (SceneManager.Ins.curScene as L2MainScene).skillManager.pushSkill(
+                        L2Config.SkillCfg[buff.config.triggerSkillCfgId], buff.target);
                 }
             }
         }
