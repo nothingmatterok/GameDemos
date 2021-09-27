@@ -39,13 +39,13 @@ class L2Char extends eui.Group {
         return this.cell;
     }
 
-    public onSelect(){
-        if (!this.filters){
+    public onSelect() {
+        if (!this.filters) {
             L2Filters.addYellowGlow(this);
         }
     }
 
-    public unSelect(){
+    public unSelect() {
         this.filters = null;
     }
 
@@ -373,12 +373,12 @@ class L2Char extends eui.Group {
 
     public endAction(): void {
         let scene = SceneManager.Ins.curScene as L2MainScene;
+        // 发送结束行动消息
+        MessageManager.Ins.sendMessage(MessageType.L2BuffTriggerTime, [L2TriggerTimeType.AfterAction]);
         // 行动结束时所有buff持续时间-1
         for (let buff of this.buffs.data) {
             scene.buffManager.changeBuffDuration(buff, -1);
         }
-        // 发送结束行动消息
-        MessageManager.Ins.sendMessage(MessageType.L2BuffTriggerTime, [L2TriggerTimeType.AfterAction]);
     }
 
     public findMinDisAllies(range: number): L2Char {
