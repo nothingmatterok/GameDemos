@@ -65,18 +65,17 @@ class L2CellBoard {
         let throughCells = new MySet<L2Cell>();
         let throughedCells = new MySet<L2Cell>();
         throughCells.add(cell);
-        throughedCells.add(cell);
         while (throughCells.data.length > 0) {
             let curCell = throughCells.data.pop();
             if (curCell.disTo(cell) <= range) {
                 inRangeCells.add(curCell);
                 for (let othercell of this.getBetweenCells(curCell)) {
-                    if (!Util.contains(throughedCells.data, othercell) && othercell.disTo(cell) < range) {
+                    if (!Util.contains(throughedCells.data, othercell) && othercell.disTo(cell) <= range) {
                         throughCells.add(othercell);
-                        throughedCells.add(othercell);
                     }
                 }
             }
+            throughedCells.add(curCell);
         }
         return inRangeCells.data;
     }

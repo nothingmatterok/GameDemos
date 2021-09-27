@@ -26,9 +26,9 @@ class L2BattleInfo extends eui.Component{
 
     public initial(){ 
         let scene = SceneManager.Ins.curScene as L2MainScene;
-        let char = scene.focusChar;
+        let char = scene.FocusChar;
         this.visible = true;
-        this.charNameLabel.text = char.name;
+        this.charNameLabel.text = char.config.name;
         this.maxHpLabel.text = `${char.attr.maxHp}`;
         this.hpRateRect.percentWidth = char.HP / char.attr.maxHp * 100;
         this.atkNumLabel.text = `${char.attr.atk}`;

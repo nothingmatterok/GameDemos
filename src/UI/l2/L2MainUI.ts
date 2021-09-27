@@ -6,14 +6,16 @@ class L2MainUI extends eui.Component {
     public timeBarGroup: eui.Group;
     public energyBarGroup: eui.Group;
     public selectBarGroup: eui.Group;
-    public skillGroup: eui.Group;
     public skill1Button: eui.Button;
     public skill2Button: eui.Button;
     public showInfoImage: eui.Image;
-    public waitButton: eui.Button;
+    public moveButton: eui.Button;
     public battleInfo: L2BattleInfo;
     public commandButton: eui.Button;
     public commandModeLabel: eui.Label;
+    public skillInfoLabel: eui.Label;
+    public confirmButton: eui.Button;
+    public disConfirmButton: eui.Button;
 
     constructor() {
         super();
@@ -45,20 +47,40 @@ class L2MainUI extends eui.Component {
         }
 
         this.showInfoImage.addEventListener(egret.TouchEvent.TOUCH_TAP, this.showInfo, this);
-        this.commandButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.toCommandMod, this);
-        this.waitButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.waitButtonTap, this);
+        this.commandButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.commandButtonTap, this);
+        this.moveButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.moveButtonTap, this);
+        this.confirmButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.confirmButtonTap, this);
+        this.skill1Button.addEventListener(egret.TouchEvent.TOUCH_TAP, this.skill1ButtonTap, this);
+        this.skill2Button.addEventListener(egret.TouchEvent.TOUCH_TAP, this.skill2ButtonTap, this);
+        this.disConfirmButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.disConfirmButtonTap, this);
     }
 
-    public showInfo():void{
+    private showInfo():void{
         this.battleInfo.initial();
     }
 
-    public toCommandMod(): void{
-        (SceneManager.Ins.curScene as L2MainScene).status.toCommandMod();
+    private commandButtonTap(): void{
+        (SceneManager.Ins.curScene as L2MainScene).status.commandButtonTap();
     }
 
-    public waitButtonTap(): void{
+    private moveButtonTap(): void{
         (SceneManager.Ins.curScene as L2MainScene).status.moveButtonTap();
+    }
+
+    private confirmButtonTap(): void{
+        (SceneManager.Ins.curScene as L2MainScene).status.confirmButtonTap();
+    }
+
+    private skill1ButtonTap(): void{
+        (SceneManager.Ins.curScene as L2MainScene).status.skill1ButtonTap();
+    }
+
+    private skill2ButtonTap(): void{
+        (SceneManager.Ins.curScene as L2MainScene).status.skill2ButtonTap();
+    }
+
+    private disConfirmButtonTap(): void{
+        (SceneManager.Ins.curScene as L2MainScene).status.disConfirmButtonTap();
     }
 
     private fires: egret.Shape[] = [];
@@ -87,7 +109,7 @@ class L2MainUI extends eui.Component {
         (SceneManager.Ins.curScene as L2MainScene).status.back();
     }
 
-    release() {
+    public release() {
     }
 
 }

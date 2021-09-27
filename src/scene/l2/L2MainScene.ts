@@ -50,7 +50,7 @@ class L2MainScene extends IScene {
         // 初始化timeManager
         this.timeManager = new L2TimeManager();
         this.energyManager = new L2EnergyManager();
-        this.status = new L2SceneStatusNormal();
+        this.status = new L2NormalSceneStatus();
         this.skillManager = new L2SkillManager();
         this.buffManager = new L2BuffManager();
         this.buffManager.initial();
@@ -88,7 +88,23 @@ class L2MainScene extends IScene {
     }
 
     public status: IL2MainSceneStatus;
-    public focusChar: L2Char;
+
+    private focusChar: L2Char;
+    public get FocusChar(): L2Char{
+        if(this.focusChar == null){
+            for(let _ of this.players){
+                if(_.alive){
+                    this.focusChar = _;
+                    break;
+                }
+            }
+        }
+        return this.focusChar;
+    }
+
+    public set FocusChar(char: L2Char){
+        this.focusChar = char;
+    }
 
     private charTap(msg: Message): void {
         let char: L2Char = msg.messageContent;

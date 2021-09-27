@@ -20,7 +20,7 @@ class L2SkillManager {
         this.isInSkillProcess = true;
         let tw = egret.Tween.get(caster);
         if(DEBUG){console.log(`${caster.debugNAndP()} cast ${skillCfg.name}`)}
-        skillCfg.castFunc(caster, tw)
+        skillCfg.castFunc(caster, tw, params)
         tw.call(() => {
             // TODO:处理技能释放完毕的CD，及时间轴推后处理
             // 技能结束后，如果触发的释放技能对列为空，这一轮技能代表释放结束

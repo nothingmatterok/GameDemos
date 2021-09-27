@@ -3,7 +3,7 @@ class L2Char extends eui.Group {
     private static hpBoardWidth: number = 3; // 周围一圈血条宽度
 
     public config: L2CharCfg;
-    public target: L2Char;
+    public targets: any[]; // 可能是Char也可能是Cell
 
     // 展示组件
     public timeBarPort: L2TimeBarPort;
@@ -20,7 +20,7 @@ class L2Char extends eui.Group {
     /**
      * 时间权重，正常为100，越小代表当时间轴重叠时具有更优先的执行顺序
      */
-    public timePrior: number = 100; 
+    public timePrior: number = 100;
     public camp: L2Camp;
     private hp: number;
     public alive: boolean;
@@ -37,6 +37,16 @@ class L2Char extends eui.Group {
 
     public get Cell(): L2Cell {
         return this.cell;
+    }
+
+    public onSelect(){
+        if (!this.filters){
+            L2Filters.addYellowGlow(this);
+        }
+    }
+
+    public unSelect(){
+        this.filters = null;
     }
 
     /**
@@ -60,8 +70,8 @@ class L2Char extends eui.Group {
     /**
      * 设置cell和实际放到位置上分开，方便逻辑和表现分离
      */
-    public placeToCell():void{
-        if(this.cell==null) return;
+    public placeToCell(): void {
+        if (this.cell == null) return;
         this.x = this.cell.x;
         this.y = this.cell.y;
     }
@@ -72,15 +82,15 @@ class L2Char extends eui.Group {
         hpChangeNum = Math.ceil(hpChangeNum);
         let newHp = hpChangeNum + this.hp;
         newHp = Util.clamp(newHp, 0, this.attr.maxHp);
-        this.harmFloat(this.hp - newHp, false);
+        this.harmFloat(this.hp - newHp);
         this.hp = newHp;
         this.drawHpCircle(this.hp / this.attr.maxHp);
-        if (this.hp != 0 && hpChangeNum < 0){
-            egret.Tween.get(this).to({rotation:-15}, 60).to({rotation:15}, 120).to({rotation:0}, 60);
+        if (this.hp != 0 && hpChangeNum < 0) {
+            egret.Tween.get(this).to({ rotation: -15 }, 60).to({ rotation: 15 }, 120).to({ rotation: 0 }, 60);
         }
         // 执行死亡
         if (this.hp == 0) {
-            console.log(`${this.debugNAndP()} dead`);
+            if (DEBUG) console.log(`${this.debugNAndP()} dead`);
             this.alive = false;
             this.Cell = null;
             Util.safeRemoveFromParent(this.timeBarPort);
@@ -170,42 +180,42 @@ class L2Char extends eui.Group {
     }
 
     public startAction(): void {
-        console.log(`${this.debugNAndP()} action`);
+        if (DEBUG) console.log(`${this.debugNAndP()} start auto action`);
         let tw = egret.Tween.get(this);
         let target = this.findMinDisOppose();
-        this.target = target;
+        this.targets = [target];
         let scene = SceneManager.Ins.curScene as L2MainScene;
         if (this.isInAtkRange(target)) {
             this.normalAtk();
         } else {
             // 找到离目标最近的移动范围的cell，如果存在距离一致的，就找同时离我自己最近的格子
             let movableCells = this.allMovableCells();
-            movableCells.sort((a, b) => { 
+            movableCells.sort((a, b) => {
                 let rs = a.disTo(target.cell) - b.disTo(target.cell);
-                if(rs == 0){rs = a.disTo(this.cell) - b.disTo(this.cell)}
+                if (rs == 0) { rs = a.disTo(this.cell) - b.disTo(this.cell) }
                 return rs;
             });
             let targetCell = movableCells[0];
             scene.isCharMoveEnd = false;
             this.moveTo(targetCell, tw);
             // 移动结束后查看是否能够攻击到目标，可以就发起攻击
-            tw.call(()=>{
+            tw.call(() => {
                 scene.isCharMoveEnd = true;
-                if (this.isInAtkRange(target)){
+                if (this.isInAtkRange(target)) {
                     this.normalAtk();
                 }
             });
         }
     }
 
-    public moveTo(desCell: L2Cell, tw:egret.Tween): void{
-        console.log(`${this.debugNAndP()} move to ${desCell.rowX}, ${desCell.colY}`);
-        this.Cell=desCell;
-        tw.to({x:desCell.x, y:desCell.y}, 800);
+    public moveTo(desCell: L2Cell, tw: egret.Tween): void {
+        if (DEBUG) console.log(`${this.debugNAndP()} move to ${desCell.rowX + 1}, ${desCell.colY + 1}`);
+        this.Cell = desCell;
+        tw.to({ x: desCell.x, y: desCell.y }, 800);
     }
 
-    public debugNAndP():string{
-        return `${this.config.name} - ${this.cell.rowX},${this.cell.colY}`;
+    public debugNAndP(): string {
+        return `${this.config.name} - ${this.cell.rowX + 1},${this.cell.colY + 1}`;
     }
 
     /**
@@ -214,10 +224,10 @@ class L2Char extends eui.Group {
     private findMinDisOppose(): L2Char {
         let scene = SceneManager.Ins.curScene as L2MainScene;
         let selectChars = this.camp == L2Camp.Player ? scene.enemies : scene.players;
-        selectChars = selectChars.filter((item)=>{return item.alive == true;})
+        selectChars = selectChars.filter((item) => { return item.alive == true; })
         selectChars.sort((a, b) => {
             let result = this.disToChar(a) - this.disToChar(b);
-            if (result != 0){return result}
+            if (result != 0) { return result }
             return a.hp - b.hp;
         });
         return selectChars[0];
@@ -227,7 +237,7 @@ class L2Char extends eui.Group {
         return this.isCellInAtkRange(target.cell);
     }
 
-    private normalAtk(){
+    private normalAtk() {
         let scene = SceneManager.Ins.curScene as L2MainScene;
         scene.skillManager.pushSkill(
             L2Config.SkillCfg[this.config.normalAtkSkillId], this
@@ -270,10 +280,10 @@ class L2Char extends eui.Group {
         }
 
         // 计算增益后属性
-        for(let attrName in L2AttrNames){
+        for (let attrName in L2AttrNames) {
             let newAttrNum = this.rawAttr[attrName] * (1 + attrRatio[attrName]) + attrAdd[attrName];
             // 如果最大生命增加了，则对其生命也做相同的增加处理；如果最大生命降低了同理，但最多保留1点血量
-            if (attrName == L2AttrNames.maxHp){
+            if (attrName == L2AttrNames.maxHp) {
                 let addHp = newAttrNum - this.attr.maxHp;
                 if (addHp + this.hp <= 0) {
                     addHp = 1 - this.hp;
@@ -333,45 +343,59 @@ class L2Char extends eui.Group {
         return targetCells;
     }
 
-    private disToChar(otherChar: L2Char): number {
+    public disToChar(otherChar: L2Char): number {
         return this.disToCell(otherChar.cell);
     }
 
-    private disToCell(otherCell: L2Cell): number {
+    public disToCell(otherCell: L2Cell): number {
         if (this.cell == null || otherCell == null) {
             return -1;
         }
         return this.cell.disTo(otherCell);
     }
 
-    private harmFloat(harmNum: number, isCrit: boolean) {
+    private harmFloat(harmNum: number) {
         if (this.alive) {
             let harmText = "";
             let size = 25;
-            let color:number = 0;
+            let color: number = 0;
             harmNum = Math.ceil(harmNum);
-            if (harmNum != 0) {
-                size = isCrit ? 30 : 25;
-                let isHeal = harmNum < 0;
-                color = isHeal ? ColorDef.LimeGreen : ColorDef.Red;
-                harmText = `${isHeal?"+":""}${-harmNum}`;
-            }
+            let isHeal = harmNum <= 0;
+            color = isHeal ? ColorDef.LimeGreen : ColorDef.Red;
+            harmText = `${isHeal ? "+" : ""}${-harmNum}`;
             ToastInfoManager.newToast(
-                `${harmText}`, color,
-                this.y + this.width/2, this.x - GameRoot.GameStage.stageWidth / 2 + this.width/2,
+                harmText, color,
+                this.y + this.width / 2, this.x - GameRoot.GameStage.stageWidth / 2 + this.width / 2,
                 -50, 0, 2500, size, false, egret.Ease.quadOut
             );
         }
     }
 
-    public endAction(): void{
+    public endAction(): void {
         let scene = SceneManager.Ins.curScene as L2MainScene;
         // 行动结束时所有buff持续时间-1
-        for(let buff of this.buffs.data){
+        for (let buff of this.buffs.data) {
             scene.buffManager.changeBuffDuration(buff, -1);
         }
         // 发送结束行动消息
         MessageManager.Ins.sendMessage(MessageType.L2BuffTriggerTime, [L2TriggerTimeType.AfterAction]);
+    }
+
+    public findMinDisAllies(range: number): L2Char {
+        let scene = SceneManager.Ins.curScene as L2MainScene;
+        let allies = this.camp == L2Camp.Player ? scene.players : scene.enemies;
+        let minDis = 1000;
+        let resultChar = null;
+        for (let char of allies) {
+            if (char != this && char.alive) {
+                let dis = char.disToChar(this)
+                if (dis < minDis && dis <= range) {
+                    resultChar = char;
+                    minDis = dis;
+                }
+            }
+        }
+        return resultChar;
     }
 
     public release(): void {

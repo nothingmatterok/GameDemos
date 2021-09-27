@@ -53,6 +53,16 @@ class L2Cell extends egret.Shape{
         return (SceneManager.Ins.curScene as L2MainScene).board.getBetweenCells(this);
     }
 
+    public onSelect(){
+        if (!this.filters){
+            L2Filters.addYellowGlow(this);
+        }
+    }
+
+    public unSelect(){
+        this.filters = null;
+    }
+
     private onTap(): void{
         MessageManager.Ins.sendMessage(MessageType.L2CELLTAP, this);
         MessageManager.Ins.sendMessage(MessageType.L2USEENERGY, this)
