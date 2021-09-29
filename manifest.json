@@ -14,7 +14,7 @@
 		"bin-debug/scene/l2/Config/L2CharCfg.js",
 		"bin-debug/scene/l2/Config/L2SkillCfg.js",
 		"bin-debug/scene/l2/MainSceneStatus/IL2MainSceneStatus.js",
-		"bin-debug/scene/l1/l1skill/l1creation/L1CreationManager.js",
+		"bin-debug/scene/l1/l1skill/l1harm/L1Harm.js",
 		"bin-debug/common/MySet.js",
 		"bin-debug/common/ResAsyncLoader.js",
 		"bin-debug/common/ToastInfo.js",
@@ -45,8 +45,8 @@
 		"bin-debug/scene/l1/l1skill/l1buff/L1BuffManager.js",
 		"bin-debug/scene/l1/l1skill/l1creation/L1Creation.js",
 		"bin-debug/scene/l1/l1skill/l1creation/L1CreationConfig.js",
+		"bin-debug/scene/l1/l1skill/l1creation/L1CreationManager.js",
 		"bin-debug/GlobalConfig.js",
-		"bin-debug/scene/l1/l1skill/l1harm/L1Harm.js",
 		"bin-debug/scene/l1/l1skill/l1harm/L1HarmConfig.js",
 		"bin-debug/scene/l1/l1skill/l1Skill/L1Skill.js",
 		"bin-debug/scene/l1/l1skill/l1Skill/L1SkillConfig.js",
@@ -81,6 +81,7 @@
 		"bin-debug/UI/l1/L1MainUI.js",
 		"bin-debug/UI/l1/L1TouchLabel.js",
 		"bin-debug/UI/l2/L2BattleInfo.js",
+		"bin-debug/UI/l2/L2BattleSkillInfoButton.js",
 		"bin-debug/UI/l2/L2MainUI.js",
 		"bin-debug/UI/l2/L2TimeBarPort.js"
 	]

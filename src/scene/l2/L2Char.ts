@@ -9,6 +9,8 @@ class L2Char extends eui.Group {
     public timeBarPort: L2TimeBarPort;
     private hpMask: egret.Shape;
     private bgWidth: number;
+    // buff表示（暂时头顶的绿色方块表示buff，红色的方块表示debuff
+    private buffBar: eui.Group;
     // 角色原始属性，实际属性要根据Buff再计算一遍
     private rawAttr: L2CharAttr;
 
@@ -145,6 +147,9 @@ class L2Char extends eui.Group {
         img.y = img.x;
         // 构建时间轴上的头像，在MainUI中intial完毕后统一加入到轴上
         this.timeBarPort = new L2TimeBarPort(this);
+        // buff条
+        this.buffBar = new eui.Group();
+        this.addChild(this.buffBar);
         // 其他数值组件
         this.buffs = new MySet<L2Buff>();
         this.status = new MySet<L2BuffStatus>();
@@ -376,7 +381,8 @@ class L2Char extends eui.Group {
         // 发送结束行动消息
         MessageManager.Ins.sendMessage(MessageType.L2BuffTriggerTime, [L2TriggerTimeType.AfterAction]);
         // 行动结束时所有buff持续时间-1
-        for (let buff of this.buffs.data) {
+        let tmpBuffs = new Array(...this.buffs.data);
+        for (let buff of tmpBuffs) {
             scene.buffManager.changeBuffDuration(buff, -1);
         }
     }
@@ -398,6 +404,19 @@ class L2Char extends eui.Group {
         return resultChar;
     }
 
+    public refreshBuffIcon(): void {
+        this.buffBar.removeChildren();
+        for (let i in this.buffs.data) {
+            let buff = this.buffs.data[i];
+            let shape = new egret.Shape();
+            let color = buff.config.isDebuff ? ColorDef.Red : ColorDef.LimeGreen;
+            Util.drawSquar(shape, 10, color);
+            this.buffBar.addChild(shape);
+            shape.x = 2 + 12 * parseInt(i);
+            shape.y = 2;
+        }
+    }
+
     public release(): void {
         this.timeBarPort.release();
         this.timeBarPort = null;
@@ -407,6 +426,7 @@ class L2Char extends eui.Group {
         this.config = null;
         this.buffs.removeAll();
         this.buffs = null;
+        this.buffBar = null;
     }
 
 }

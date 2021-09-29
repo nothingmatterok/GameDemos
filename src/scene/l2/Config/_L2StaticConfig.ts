@@ -44,7 +44,7 @@ class L2Config {
 
         3: new L2SkillCfg({
             "name": "一个用来测试可以主动选择目标的技能",
-            "description": "选择一个范围5以内的敌方单位，给予一个每回合100伤害的Buff",
+            "description": "选择一个范围5以内的敌方单位，给予一个每回合100伤害的Buff，持续两回合 测试占位。。。。。。。。。",
             "castFunc": (caster: L2Char, tw: egret.Tween, skillCfg: L2SkillCfg, params:{[key:string]:any}) => {
                 let target = params["targetChar"];
                 let rawX = caster.x;
@@ -88,7 +88,9 @@ class L2Config {
             "duration": 2,
             "name": "测试BUFF",
             "buffType": L2BuffType.Passive,
+            "isDebuff": false,
             "triggerSkillCfgId": 5,
+            "description": "自动行动结束前，治疗自身200生命，持续两回合",
             "skillTriggerTime": L2TriggerTimeType.BeforeAction,
             "skillTriggerDudgeFunc": (buff: L2Buff): boolean => {
                 if ((SceneManager.Ins.curScene as L2MainScene).timeManager.curChar == buff.target) {
@@ -101,7 +103,8 @@ class L2Config {
         1: new L2BuffCfg({
             "duration": 2,
             "name": "燃烧",
-            "description": "目标常规行动结束时，造成100伤害，持续两次回合时间",
+            "isDebuff": true,
+            "description": "自动行动结束时，造成100伤害，持续两回合",
             "buffType": L2BuffType.Passive,
             "triggerSkillCfgId": 6,
             "skillTriggerTime": L2TriggerTimeType.AfterAction,

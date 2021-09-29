@@ -2,8 +2,8 @@
 <e:Skin class="L2MainUISkin"
 	 width="400"
 	height="300" xmlns:e="http://ns.egret.com/eui">
-	<e:Label id="commandModeLabel" text="命令模式中" size="60" alpha="0.7" textColor="0xFF8C00" touchEnabled="true" visible="true" horizontalCenter="0" bottom="5"/>
-	<e:Label id="skillInfoLabel" text="选择什么" alpha="0.7" textColor="0xFF8C00" touchEnabled="true" visible="true" horizontalCenter="0" bottom="60"/>
+	<e:Label id="commandModeLabel" text="指令模式中，点击空白格点退出" size="25" alpha="0.7" textColor="0xFF8C00" touchEnabled="true" visible="true" horizontalCenter="0" bottom="80"/>
+	<e:Label id="skillInfoLabel" text="选择什么" alpha="0.7" textColor="0xFF8C00" touchEnabled="true" visible="true" left="10" bottom="80" size="20" textAlign="left" right="10"/>
 	<e:Button id="backButton" label="返回" left="30" top="30"/>
 	<e:Label text="时点：" left="160" top="40"/>
 	<e:Label id="timePointLabel" text="时点" left="250" top="40"/>

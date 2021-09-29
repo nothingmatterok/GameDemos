@@ -12,6 +12,8 @@ class L2BuffCfg{
     public get triggerSkillCfgId(): number {return this.params["triggerSkillCfgId"]};
     public get status(): L2BuffStatus {return this.params["status"]};
     public get isShowInPanel(): boolean {return this.params["isShowInPanel"]};
+    public get isDebuff(): boolean{return this.params["isDebuff"]};
+    public get description(): string{return this.params["description"]};
 }
 
 enum L2TriggerTimeType{

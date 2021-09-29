@@ -51,6 +51,7 @@ class L2MainScene extends IScene {
         this.timeManager = new L2TimeManager();
         this.energyManager = new L2EnergyManager();
         this.status = new L2NormalSceneStatus();
+        this.status.initial();
         this.skillManager = new L2SkillManager();
         this.buffManager = new L2BuffManager();
         this.buffManager.initial();

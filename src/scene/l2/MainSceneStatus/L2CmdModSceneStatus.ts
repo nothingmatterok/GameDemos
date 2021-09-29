@@ -7,7 +7,7 @@ class L2CmdModSceneStatus extends IL2MainSceneStatus{
         scene.board.resetCellsColor();
         mainUI.selectBarGroup.visible = false;
         mainUI.commandButton.visible = false;
-        mainUI.showInfoImage.visible = true;
+        mainUI.showInfoImage.visible = false;
         mainUI.skill1Button.visible = false;
         mainUI.skill2Button.visible = false;
         mainUI.moveButton.visible = false;

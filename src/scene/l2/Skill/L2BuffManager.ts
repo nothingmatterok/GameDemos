@@ -19,6 +19,7 @@ class L2BuffManager{
 
     public attachBuff2Char(buff: L2Buff, char: L2Char): void{
         buff.attach2Char(char);
+        char.refreshBuffIcon();
         buff.showBuffName();
     }
 

@@ -13,7 +13,7 @@ class L2NormalSceneStatus extends IL2MainSceneStatus {
         mainUI.confirmButton.visible = false;
         mainUI.disConfirmButton.visible = false;
         mainUI.commandModeLabel.visible = false;
-        mainUI.skillInfoLabel.visible = true;
+        mainUI.skillInfoLabel.visible = false;
         scene.isPause = false;
     }
 

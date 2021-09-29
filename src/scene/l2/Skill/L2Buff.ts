@@ -43,6 +43,7 @@ class L2Buff {
         if (this.config.buffType == L2BuffType.AttrChange) {
             target.refreshBuffAttr();
         }
+        target.refreshBuffIcon();
     }
     
     /**
