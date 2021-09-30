@@ -12,7 +12,13 @@ class L2SkillCfg {
     public get timeBack(): number {return this.params["timeBack"] };
     public get targetSelectType(): number {return this.params["targetSelectType"] };
     private get canCastDudgeFunc(): (caster: L2Char, skillCfg: L2SkillCfg)=>[boolean, string] {return this.params["canCastDudgeFunc"]};
-    public canCast(caster: L2Char):[boolean, string]{return this.canCastDudgeFunc ? this.canCastDudgeFunc(caster, this) : [true, null];}
+    public canCast(caster: L2Char):[boolean, string]{
+        if (!caster.alive) {
+            if (DEBUG) {console.log(`${caster.debugNAndP} 准备释放${this.name} 时死亡`)}
+            return [false, "释放者已死亡"];
+        }
+        return this.canCastDudgeFunc ? this.canCastDudgeFunc(caster, this) : [true, null];
+    }
 }
 
 enum L2SkTgtSeltType{

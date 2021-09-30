@@ -22,15 +22,21 @@ class L2SkillManager {
         if(DEBUG){console.log(`${caster.debugNAndP()} cast ${skillCfg.name}`)}
         skillCfg.castFunc(caster, tw, params)
         tw.call(() => {
-            // TODO:处理技能释放完毕的CD，及时间轴推后处理
-            // 技能结束后，如果触发的释放技能对列为空，这一轮技能代表释放结束
-            if (this.waitingSkillList.length == 0) {
-                this.isInSkillProcess = false;
-            } else {
                 // 如果不为空，从里面找到头部的技能释放
-                let nextCastSkill = this.waitingSkillList.shift();
-                this.castSkill(nextCastSkill[0], nextCastSkill[1], nextCastSkill[2]);
-            }
+                let canCast = false;
+                let nextCastSkill = null;
+                // 找到可以释放的技能
+                while(!canCast && this.waitingSkillList.length != 0){
+                    nextCastSkill = this.waitingSkillList.shift();
+                    [canCast, ] = nextCastSkill[0].canCast(nextCastSkill[1]);
+                }
+                // 如果无法释放表示没有找到合适的下一个技能，停止技能释放，否则释放技能
+                if (canCast){
+                    this.castSkill(nextCastSkill[0], nextCastSkill[1], nextCastSkill[2]);
+                } else {
+                    this.isInSkillProcess = false;
+                }
+            
         });
     }
 

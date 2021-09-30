@@ -17,6 +17,11 @@ class L2NormalSceneStatus extends IL2MainSceneStatus {
         scene.isPause = false;
     }
 
+    public commandButtonTap(): void {
+        this.changeTo(new L2CmdModSceneStatus());
+    }
+
+
     public charTap(char: L2Char): void {
         let scene = SceneManager.Ins.curScene as L2MainScene;
         scene.FocusChar = char;

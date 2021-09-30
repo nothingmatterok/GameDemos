@@ -66,6 +66,7 @@
 		"bin-debug/common/MyLinkedList.js",
 		"bin-debug/scene/l2/MainSceneStatus/L2CharSelectSceneStatus.js",
 		"bin-debug/scene/l2/MainSceneStatus/L2CmdModSceneStatus.js",
+		"bin-debug/scene/l2/MainSceneStatus/L2GameEndStatus.js",
 		"bin-debug/scene/l2/MainSceneStatus/L2MoveSelectSceneStatus.js",
 		"bin-debug/scene/l2/MainSceneStatus/L2NormalSceneStatus.js",
 		"bin-debug/scene/l2/MainSceneStatus/L2SkillSelectStatus.js",

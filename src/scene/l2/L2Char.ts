@@ -95,6 +95,12 @@ class L2Char extends eui.Group {
             if (DEBUG) console.log(`${this.debugNAndP()} dead`);
             this.alive = false;
             this.Cell = null;
+            // 移除所有buff
+            let buttTmp = new Array(...this.buffs.data);
+            for(let buff of buttTmp){
+                (SceneManager.Ins.curScene as L2MainScene).buffManager.removeBuffFromTarget(buff);
+            }
+            // 移除展示组件
             Util.safeRemoveFromParent(this.timeBarPort);
             Util.safeRemoveFromParent(this);
         }
@@ -186,6 +192,10 @@ class L2Char extends eui.Group {
 
     public startAction(): void {
         if (DEBUG) console.log(`${this.debugNAndP()} start auto action`);
+        if (!this.alive){
+            if (DEBUG) console.log(`${this.debugNAndP()} is dead, end action`);
+            return;
+        }
         let tw = egret.Tween.get(this);
         let target = this.findMinDisOppose();
         this.targets = [target];

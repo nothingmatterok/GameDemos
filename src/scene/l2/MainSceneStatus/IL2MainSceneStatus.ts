@@ -8,7 +8,6 @@ abstract class IL2MainSceneStatus {
     }
     public charTap(char: L2Char): void { }
     public timePortTap(timePort: L2TimeBarPort): void {
-        let scene = SceneManager.Ins.curScene as L2MainScene;
         timePort.char.highLight();
     }
     public disConfirmButtonTap(): void{}
@@ -16,10 +15,7 @@ abstract class IL2MainSceneStatus {
     public skill1ButtonTap(): void { }
     public skill2ButtonTap(): void { }
     public cellTap(cell: L2Cell): void { }
-    public commandButtonTap(): void {
-        let scene = SceneManager.Ins.curScene as L2MainScene;
-        this.changeTo(new L2CmdModSceneStatus());
-    }
+    public commandButtonTap(): void {}
 
     public back() {
         SceneManager.Ins.setScene(new MainScene());

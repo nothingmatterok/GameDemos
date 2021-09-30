@@ -28,4 +28,8 @@
 	<e:Button id="confirmButton" label="确认" y="51" scaleX="1" scaleY="1" bottom="10" width="100" right="10"/>
 	<e:Button id="disConfirmButton" label="取消" y="61" scaleX="1" scaleY="1" bottom="10" width="100" right="120" x="300"/>
 	<e:Button id="commandButton" label="指令模式" right="10" bottom="10" visible="true"/>
+	<e:Group id="gameEndGroup" width="100%" height="100%" x="0" y="0" visible="false">
+		<e:Label id="gameEndLabel" text="Label" size="50" horizontalCenter="0" verticalCenter="0"/>
+		<e:Button id="gameEndButton" label="Button" horizontalCenter="100" verticalCenter="100"/>
+	</e:Group>
 </e:Skin>

@@ -16,6 +16,9 @@ class L2MainUI extends eui.Component {
     public skillInfoLabel: eui.Label;
     public confirmButton: eui.Button;
     public disConfirmButton: eui.Button;
+    public gameEndGroup: eui.Group;
+    public gameEndLabel: eui.Label;
+    public gameEndButton: eui.Button;
 
     constructor() {
         super();

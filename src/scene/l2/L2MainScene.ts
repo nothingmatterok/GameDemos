@@ -56,9 +56,6 @@ class L2MainScene extends IScene {
         this.buffManager = new L2BuffManager();
         this.buffManager.initial();
 
-        let buff = this.buffManager.newBuff(L2Config.BuffCfg[0], null);
-        this.buffManager.attachBuff2Char(buff, this.enemies[0]);
-
         // 监听各种点击消息
         MessageManager.Ins.addEventListener(MessageType.L2CELLTAP, this.cellTap, this);
         MessageManager.Ins.addEventListener(MessageType.L2CHARTAP, this.charTap, this);
@@ -68,6 +65,7 @@ class L2MainScene extends IScene {
     // 如果行动没结束，玩家不能对格子cell进行任何操作
     public isPause:boolean = false;
     public isCharMoveEnd: boolean = true;
+    public winner: L2Camp;
 
     public update(){
         // 如果暂停了
@@ -76,6 +74,14 @@ class L2MainScene extends IScene {
         if (!this.isCharMoveEnd) return;
         // 如果技能管理器还在处理技能中
         if (this.skillManager.IsInSkillProcess) return;
+        // 如果游戏结束
+        let [isGameEnd, winner] = this.isGameEnd();
+        if (isGameEnd) {
+            this.isPause = true;
+            this.winner = winner;
+            this.status.changeTo(new L2GameEndStatus());
+            return;
+        }
 
         // 如果角色都行动结束，同时timemanager上还有被布置的角色，那么该角色应该是刚行动完的角色
         // timemanager 进行角色行动完毕后的回收
@@ -86,6 +92,31 @@ class L2MainScene extends IScene {
         let charSelect = this.timeManager.toNextChar();
         MessageManager.Ins.sendMessage(MessageType.L2BuffTriggerTime, [L2TriggerTimeType.BeforeAction]);
         charSelect.startAction(); // 行动的时候会把各种状态放到合适的值
+    }
+
+    public isGameEnd(): [boolean, L2Camp]{
+        let isEnd = false;
+        let winner = L2Camp.Player;
+        let playerRemain = 0;
+        let enemyRemain = 0;
+        for (let char of this.players){
+            if (char.alive){
+                playerRemain += 1;
+            } 
+        }
+        for (let char of this.enemies){
+            if(char.alive){
+                enemyRemain += 1;
+            }
+        }
+        if (enemyRemain == 0){
+            isEnd = true;
+        }
+        if (playerRemain == 0 && enemyRemain != 0){
+            isEnd = true;
+            winner = L2Camp.Enemy;
+        }
+        return [isEnd, winner];
     }
 
     public status: IL2MainSceneStatus;

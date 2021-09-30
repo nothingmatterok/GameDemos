@@ -28,11 +28,15 @@ class L2BuffManager{
         if (buff.duration == 0) return;
         buff.duration += changeNum;
         if(buff.duration <= 0){
-            buff.removeFromTarget();
-            Util.removeObjFromArray(this.buffs, buff);
-            buff.release();
-            this.buffPool.push(buff);
+            this.removeBuffFromTarget(buff);
         }
+    }
+
+    public removeBuffFromTarget(buff: L2Buff): void{
+        buff.removeFromTarget();
+        Util.removeObjFromArray(this.buffs, buff);
+        buff.release();
+        this.buffPool.push(buff);
     }
 
     private buffTrigger(msg: Message): void{
